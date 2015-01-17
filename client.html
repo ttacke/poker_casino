@@ -29,15 +29,14 @@
   	t = new Date().getTime();
   	if(!waitingForResponse) {
   		I++;
-  		CHECK[I] = Math.random();
-  		websocket.send(window.location.search + CHECK[I]);
+  		websocket.send('{"from":"' + window.location.search + '","to":"s","msg":"' + window.location.search + '"}');
   		waitingForResponse = true;
   	}
   }
 
   function onOpen(evt)
   {
-    setInterval('go()', 1);
+    setInterval('go()', 1000);
   }
 
   function onClose(evt)
@@ -48,12 +47,7 @@
   function onMessage(evt)
   {
   	waitingForResponse = false;
-  	var l = new Date().getTime() - t;
-  	t = 0;
-  	if(evt.data != window.location.search + CHECK[I]) {
-  		console.log('ERROR');
-  	}
-    writeToScreen('R: ' + (I) + ' ' + evt.data+ ' ' + l);
+  	writeToScreen('R: ' + (I) + ' ' + evt.data);
     //websocket.close();
   }
 
@@ -65,7 +59,8 @@
   function writeToScreen(message)
   {
     var pre = document.getElementsByTagName("textarea");
-    pre[0].innerHTML = message;
+    pre[0].innerHTML = message + "\n" + pre[0].innerHTML;
+
   }
 
   window.addEventListener("load", init, false);
@@ -73,7 +68,7 @@
 </script>
 </head>
 <body>
-<textarea style="width:100%;height: 100%"></textarea>
+<textarea style="width:100%;height: 200px"></textarea>
 <div id="output"></div>
 </body>
 </html>

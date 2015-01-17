@@ -2,25 +2,50 @@ use strict;
 use lib './lib';
 use Net::WebSocket::Server;
 
-my $DATA = {};
+my $MESSAGES_TO = {
+};
 use Data::Dumper();
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::PP' }
 use JSON -support_by_pp, -no_export;
 
 my $json = JSON->new();
+my $connections = [];
 
 Net::WebSocket::Server->new(
 	listen => 8080,
 	on_connect => sub {
 		my ($serv, $conn) = @_;
+		
+		# TODO Connection zu playerId zuordnen!
+		# from, to, msg reichen aus, dann ist socket fertig
+		# der rest wird vom server gemacht, der tacktet und steuert
+		push(@$connections, $conn);
+		
+		# normaler ChildRequest
 		$conn->on(
 			utf8 => sub {
 				my ($conn, $msg) = @_;
 				
+				
 				my $data = eval {
-					return $json->decode($msg);
+					return $json->utf8->decode($msg);
 				};
+				if($data) {
+					#if($data->{'from'} eq 's') {
+						foreach my $c (@$connections) {
+							next if($c == $conn);
+							
+							# Verbindung gerade verfuegbar?
+							my $fh = $c->socket();
+							if(tell($fh) != -1) {
+								$c->send_utf8($data->{'msg'});
+							}
+						}
+						$MESSAGES_TO->{$data->{'to'}} = '';
+					#}
+				}
+				
 				# TODO fehler immer abweisen!
 				# 
 				# Server sagt spieler 1 PING1
@@ -33,9 +58,9 @@ Net::WebSocket::Server->new(
 				# Spieler 1 bekommt keine Nachricht
 				# Server kriegt PONG2
 				
-				$DATA->{$msg}++;
+				#$DATA->{$msg}++;
 				#warn Data::Dumper::Dumper($DATA);
-				$conn->send_utf8($msg);
+				#$conn->send_utf8("ENDE");
 			},
 		);
 	},

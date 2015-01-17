@@ -4,55 +4,46 @@
 <meta charset="utf-8" />
 
 <script language="javascript" type="text/javascript">
-  var wsUri = "ws://localhost:8080/";
-  var output;
   var I = 0;
   var CHECK = {};
   var waitingForResponse = false;
-
-  function init()
-  {
-    output = document.getElementById("output");
-    testWebSocket();
+  var t=0;
+  window.addEventListener("load", init, false);
+  
+  function init() {
+    websocket = new WebSocket("ws://localhost:8080/");
+    websocket.onopen = function(evt) { _socketConnected(evt) };
+    websocket.onmessage = function(evt) { _response(evt) };
+    websocket.onerror = function(evt) { writeToScreen('E ' + evt.data) };
   }
-
-  function testWebSocket()
-  {
-    websocket = new WebSocket(wsUri);
-    websocket.onopen = function(evt) { onOpen(evt) };
-    websocket.onclose = function(evt) { onClose(evt) };
-    websocket.onmessage = function(evt) { onMessage(evt) };
-    websocket.onerror = function(evt) { onError(evt) };
-  }
+  
   function go() {
   	t = new Date().getTime();
   	if(!waitingForResponse) {
   		I++;
   		CHECK[I] = Math.random();
-  		websocket.send(window.location.search + CHECK[I]);
+  		
   		waitingForResponse = true;
   	}
   }
 
-  function onOpen(evt)
+  function _socketConnected(evt)
   {
-    setInterval('go()', 1);
+  	// Das braucht nur der Server!
+    setTimeout('pingAn1()', 1000);
   }
-
+	function pingAn1() {
+		websocket.send('{"from":"s","to":"p1","msg":"PING1"}');
+	}
   function onClose(evt)
   {
     writeToScreen("DISCONNECTED");
   }
 
-  function onMessage(evt)
+  function _response(evt)
   {
   	waitingForResponse = false;
-  	var l = new Date().getTime() - t;
-  	t = 0;
-  	if(evt.data != window.location.search + CHECK[I]) {
-  		console.log('ERROR');
-  	}
-    writeToScreen('R: ' + (I) + ' ' + evt.data+ ' ' + l);
+    writeToScreen('R: ' + (I) + ' ' + evt.data);
     //websocket.close();
   }
 
@@ -64,15 +55,14 @@
   function writeToScreen(message)
   {
     var pre = document.getElementsByTagName("textarea");
-    pre[0].innerHTML = message;
+    pre[0].innerHTML = message + "\n" + pre[0].innerHTML;
   }
 
-  window.addEventListener("load", init, false);
+  
 
 </script>
 </head>
 <body>
-<textarea style="width:100%;height: 100%"></textarea>
-<div id="output"></div>
+<textarea style="width:100%;height: 200px"></textarea>
 </body>
 </html>
