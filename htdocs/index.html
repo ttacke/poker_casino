@@ -1,0 +1,49 @@
+<html>
+	<body>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			.spieler {
+				height: 47%;
+				width: 32%;
+				padding: 0;
+				margin: 0;
+				border: solid 5px green;
+				display: inline-block;
+			}
+			.spieler.meister {
+				border-color: red;
+				width: 97.5%;
+			}
+			.spieler h2 {
+				padding: 0;
+				margin: 0;
+			}
+			.spieler iframe {
+				display: block;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				border: none;
+			}
+		</style>
+		<div class="spieler meister">
+			<h2>Spielmeister</h2>
+			<iframe src="spielmeister.html"></iframe>
+		</div>
+		<div class="spieler">
+			<h2>Bot#1</h2>
+			<iframe src="bot.html?1"></iframe>
+		</div><div class="spieler">
+			<h2>Bot#2</h2>
+			<iframe src="bot.html?2"></iframe>
+		</div><div class="spieler">
+			<h2>Bot#3</h2>
+			<iframe src="bot.html?3"></iframe>
+		</div>
+	</body>
+</html>
