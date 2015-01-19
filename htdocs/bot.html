@@ -4,8 +4,15 @@
 	<meta charset="utf-8" />
 	<script src="bootstrap.js"></script>
 	<script language="javascript" type="text/javascript">
-		
-		
+		var token = window.location.search;
+		function authentifiziereDich() {
+				_versendeNachricht('{"aktion":"login","token":"' + token + '"}');
+		}
+		// VOID
+		function _verbindungErfolgreich(evt) {
+			authentifiziereDich();
+			//setInterval('authentifiziereDich()', 2000);
+		}
 	</script>
 	</head>
 	<body></body>
