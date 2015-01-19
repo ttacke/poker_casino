@@ -1,4 +1,4 @@
-package LOCAL::Vermittlung;
+package LOCAL::Casino;
 use strict;
 use warnings;
 
@@ -8,7 +8,7 @@ use Data::Dumper();
 BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::PP' }
 use JSON -support_by_pp, -no_export;
 
-use LOCAL::Verbindung();
+use LOCAL::Casino::Verbindung();
 
 my $MEISTER_TOKEN = 'ICHBINDERMEISTER_ESKANNNUREINENGEBEN';
 
@@ -26,7 +26,7 @@ sub new {
 sub neueVerbindung {
 	my ($self, $rawConnection) = @_;
 	
-	my $verbindung = LOCAL::Verbindung->new($rawConnection);
+	my $verbindung = LOCAL::Casino::Verbindung->new($rawConnection);
 	$self->{'verbindungen'}->{$verbindung} = $verbindung;
 	return;
 }
@@ -72,14 +72,14 @@ sub _login {
 	$self->{'spieler'}->{$token} = $verbindung;
 	return $verbindung->beantworteAnfrage(1, "Du bist jetzt ein Spieler");
 }
-# LOCAL::Verbindung
+# LOCAL::Casino::Verbindung
 sub _gibVerbindungFuer {
 	my ($self, $rawConnection) = @_;
 	
 	foreach my $bekannt (values(%{$self->{'verbindungen'}})) {
 		return $bekannt if($bekannt->istGleich($rawConnection));
 	}
-	return LOCAL::Verbindung->new($rawConnection);
+	return LOCAL::Casino::Verbindung->new($rawConnection);
 }
 # VOID
 sub _spielerUebersicht {

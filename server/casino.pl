@@ -2,9 +2,9 @@ use strict;
 use lib './lib';
 
 use Net::WebSocket::Server;
-use LOCAL::Vermittlung();
+use LOCAL::Casino();
 
-my $vermittlung = LOCAL::Vermittlung->new();
+my $vermittlung = LOCAL::Casino->new();
 Net::WebSocket::Server->new(
 	listen => 8080,
 	on_connect => sub {

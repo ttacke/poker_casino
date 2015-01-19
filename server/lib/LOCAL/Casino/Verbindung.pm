@@ -1,4 +1,4 @@
-package LOCAL::Verbindung;
+package LOCAL::Casino::Verbindung;
 use strict;
 use warnings;
 
