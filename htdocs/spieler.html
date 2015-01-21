@@ -1,4 +1,11 @@
-var websocket = null;
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8" />
+	<script language="javascript" type="text/javascript">
+		var token = window.location.search;
+		
+		var websocket = null;
 var startTime = new Date().getTime();
 
 window.addEventListener("load", init, false);
@@ -16,7 +23,7 @@ function init() {
 		log('EMPFANGE: ' + evt.data);
 		_empfangeNachricht(evt);
 	};
-	websocket.onerror = function(evt) { log('FEHLER: ' + evt.data) };
+	websocket.onerror = function(evt) { log("ABRUF FEHLER") };
 	websocket.onclose = function(evt) { log('ENDE') };
 }
 // VOID
@@ -39,3 +46,17 @@ function log(message) {
 	var pre = document.getElementsByTagName("textarea");
 	pre[0].innerHTML = time + ': ' + message + "\n" + pre[0].innerHTML;
 }
+
+		
+		function authentifiziereDich() {
+				_versendeNachricht('{"aktion":"login","token":"' + token + '"}');
+		}
+		// VOID
+		function _verbindungErfolgreich(evt) {
+			authentifiziereDich();
+			//setInterval('authentifiziereDich()', 2000);
+		}
+	</script>
+	</head>
+	<body></body>
+</html>

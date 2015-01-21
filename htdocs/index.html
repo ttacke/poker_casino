@@ -1,10 +1,14 @@
 <html>
+	<head>
+		<title>Casino 0.1</title>
+	</head>
 	<body>
 		<style>
 			body {
 				margin: 0;
 				padding: 0;
 			}
+			.croupier,
 			.spieler {
 				height: 47%;
 				width: 32%;
@@ -13,14 +17,16 @@
 				border: solid 5px green;
 				display: inline-block;
 			}
-			.spieler.meister {
+			.croupier {
 				border-color: red;
 				width: 97.5%;
 			}
+			.croupier h2,
 			.spieler h2 {
 				padding: 0;
 				margin: 0;
 			}
+			.croupier iframe,
 			.spieler iframe {
 				display: block;
 				width: 100%;
@@ -31,19 +37,19 @@
 				border: none;
 			}
 		</style>
-		<div class="spieler meister">
-			<h2>Spielmeister</h2>
-			<iframe src="spielmeister.html"></iframe>
+		<div class="croupier">
+			<h2>Croupier</h2>
+			<iframe src="croupier.html"></iframe>
 		</div>
 		<div class="spieler">
-			<h2>Bot#1</h2>
-			<iframe src="bot.html?1"></iframe>
+			<h2>Spieler#1</h2>
+			<iframe src="spieler.html?1"></iframe>
 		</div><div class="spieler">
-			<h2>Bot#2</h2>
-			<iframe src="bot.html?2"></iframe>
+			<h2>Spieler#2</h2>
+			<iframe src="spieler.html?2"></iframe>
 		</div><div class="spieler">
-			<h2>Bot#3</h2>
-			<iframe src="bot.html?3"></iframe>
+			<h2>Spieler#3</h2>
+			<iframe src="spieler.html?3"></iframe>
 		</div>
 	</body>
 </html>

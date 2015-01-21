@@ -45,11 +45,4 @@ sub sende {
 	$self->{'rawConnection'}->send_utf8($nachricht);
 	return 1;
 }
-# VOID
-sub beantworteAnfrage {
-	my ($self, $erfolg, $hinweis) = @_;
-	
-	$hinweis =~ s/"/'/gsm;
-	$self->sende('{"erfolg":"' . ($erfolg ? 'true' : 'false') . '","hinweis":"' . $hinweis . '"}');
-}
 1;

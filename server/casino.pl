@@ -14,7 +14,7 @@ Net::WebSocket::Server->new(
 		$conn->on(
 			utf8 => sub {
 				my ($conn, $msg) = @_;
-				$vermittlung->neueAnfrage($conn, $msg);
+				$vermittlung->neueNachricht($conn, $msg);
 			},
 		);
 	},

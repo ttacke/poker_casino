@@ -10,16 +10,17 @@ use JSON -support_by_pp, -no_export;
 
 use LOCAL::Casino::Verbindung();
 
-my $MEISTER_TOKEN = 'ICHBINDERMEISTER_ESKANNNUREINENGEBEN';
+
+*OK = sub { {"erfolg" => \1, "details" => ""} };
+*FEHLER = sub { {"erfolg" => \0, "details" => $_[0]} };
+
 
 # CONSTRUCTOR
 sub new {
 	return bless({
 		jsonParser		=> JSON->new(),
 		verbindungen	=> {},
-		
-		meister			=> undef,
-		spieler			=> {},
+		tische			=> {},
 	}, $_[0]);
 }
 # VOID
@@ -30,48 +31,6 @@ sub neueVerbindung {
 	$self->{'verbindungen'}->{$verbindung} = $verbindung;
 	return;
 }
-# ARRAY
-sub _gibAlleSpieler {
-	my ($self) = @_;
-	
-	my @liste = ();
-	foreach my $spielerToken (sort { $a cmp $b } keys(%{$self->{'spieler'}})) {
-		push(@liste, $self->{'spieler'}->{$spielerToken});
-	}
-	return \@liste;
-}
-# VOID
-sub _login {
-	my ($self, $verbindung, $token) = @_;
-	
-	if(
-		($self->{'meister'} && $self->{'meister'} == $verbindung)
-		||
-		($self->{'spieler'}->{$token} && $self->{'spieler'}->{$token} == $verbindung)
-	) {
-		return $verbindung->beantworteAnfrage(0, "Du bist bereits eingeloggt");
-	}
-	
-	if(
-		($token eq $MEISTER_TOKEN && $self->{'meister'} && $self->{'meister'}->istOffen())
-		||
-		($self->{'spieler'}->{$token} && $self->{'spieler'}->{$token}->istOffen())
-	) {
-		return $verbindung->beantworteAnfrage(0, "dieser Token wird derzeit von einem anderen genutzt");
-	}
-	
-	if($token eq $MEISTER_TOKEN) {
-		$self->{'meister'} = $verbindung;
-		return $verbindung->beantworteAnfrage(1, "Du bist jetzt der Meister");;
-	}
-	
-	if($token eq '') {
-		return $verbindung->beantworteAnfrage(1, "Der Token '' ist nicht erlaubt");
-	}
-	
-	$self->{'spieler'}->{$token} = $verbindung;
-	return $verbindung->beantworteAnfrage(1, "Du bist jetzt ein Spieler");
-}
 # LOCAL::Casino::Verbindung
 sub _gibVerbindungFuer {
 	my ($self, $rawConnection) = @_;
@@ -81,51 +40,88 @@ sub _gibVerbindungFuer {
 	}
 	return LOCAL::Casino::Verbindung->new($rawConnection);
 }
+# SCALAR
+sub _jsonToScalar {
+	my ($self, $textNachricht) = @_;
+	
+	return eval {
+		return $self->{'jsonParser'}->utf8->decode($textNachricht);
+	};
+}
+# STRING
+sub _scalarToJson {
+	my ($self, $nachricht) = @_;
+	
+	return $self->{'jsonParser'}->utf8->encode($nachricht);
+}
 # VOID
-sub _spielerUebersicht {
+sub _gibAntwort {
+	my ($self, $verbindung, $nachricht) = @_;
+	
+	$verbindung->sende($self->_scalarToJson($nachricht));
+}
+# VOID
+sub _eroeffneTisch {
+	my ($self, $verbindung, $tischId, $croupierId, $geheimeCroupierId) = @_;
+	
+	$self->{'tische'}->{$tischId} = {
+		id			=> $tischId,
+		daten		=> {},
+		spieler		=> [],
+		croupier	=> {
+			id			=> $croupierId,
+			geheimeId	=> $geheimeCroupierId,
+			verbindung	=> $verbindung,
+		},
+	};
+	return $self->_gibAntwort($verbindung, OK());
+}
+# VOID
+sub _spieleAnTisch {
+	my ($self, $verbindung, $tischId, $spielerId, $geheimeSpielerId) = @_;
+	
+	my $tisch = $self->{'tische'}->{$tischId};
+	push(@{$tisch->{'spieler'}}, {
+		id			=> $spielerId,
+		geheimeId	=> $geheimeSpielerId,
+		verbindung	=> $verbindung,
+		daten		=> {},
+	});
+	return $self->_gibAntwort($verbindung, OK());
+}
+# VOID
+sub _zeigeSpielerDesTisches {
 	my ($self, $verbindung) = @_;
 	
 	my @liste = ();
-	foreach my $spielerVerbindung (@{$self->_gibAlleSpieler()}) {
-		foreach my $spielerToken (keys(%{$self->{'spieler'}})) {
-			if($spielerVerbindung == $self->{'spieler'}->{$spielerToken}) {
-				push(@liste, {
-					token	=> $spielerToken,
-					aktiv	=> $spielerVerbindung->istOffen(),
-				});
-				last;
+	foreach my $tischId (keys(%{$self->{'tische'}})) {
+		my $tisch = $self->{'tische'}->{$tischId};
+		if($tisch->{'croupier'}->{'verbindung'} == $verbindung) {
+			foreach my $spieler (@{$tisch->{'spieler'}}) {
+				push(@liste, $spieler->{'id'});
 			}
 		}
 	}
-	$verbindung->sende($self->{'jsonParser'}->utf8->encode(\@liste));
-	return;
+	return $self->_gibAntwort($verbindung, \@liste);
 }
 # VOID
-sub neueAnfrage {
+sub neueNachricht {
 	my ($self, $rawConnection, $textNachricht) = @_;
 	
 	my $verbindung = $self->_gibVerbindungFuer($rawConnection);
-	my $nachricht = eval {
-		return $self->{'jsonParser'}->utf8->decode($textNachricht);
-	};
-	if(!$nachricht) {
-		$verbindung->sende('{"erfolg":"false","nachricht":"Fehler in Nachricht"}');
-		return;
-	}
+	my $nachricht = $self->_jsonToScalar($textNachricht);
 	
-	my $erfolg = 0;
 	my $aktion = $nachricht->{'aktion'};
-	if($aktion eq 'login') {
-		return $self->_login($verbindung, $nachricht->{'token'});
-	} elsif($aktion eq 'gibSpielerUebersicht') {
-		return $self->_spielerUebersicht($verbindung);
+	if($aktion eq 'eroeffneTisch') {
+		return $self->_eroeffneTisch($verbindung, $nachricht->{'tischId'}, $nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'});
+	} elsif($aktion eq 'spieleAnTisch') {
+		return $self->_spieleAnTisch($verbindung, $nachricht->{'tischId'}, $nachricht->{'spielerId'}, $nachricht->{'geheimeSpielerId'});
+	} elsif($aktion eq 'zeigeSpielerDesTisches') {
+		return $self->_zeigeSpielerDesTisches($verbindung);
 	}
 	
-	if($erfolg) {
-		$verbindung->sende('{"erfolg":"true","nachricht":""}');
-	} else {
-		$verbindung->sende('{"erfolg":"false","nachricht":"fehler in \'aktion\'"}');
-	}
+	$self->_gibAntwort($verbindung, FEHLER("Unbekannte Aktion"));
 	return;
 }
+
 1;
