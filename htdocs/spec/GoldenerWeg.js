@@ -6,8 +6,9 @@ var wsUrl = "ws://localhost:8080/";
 
 describe("der goldene Weg im Casino:", function() {
 	var croupier = null;
+	var croupierId = "Croupier1";
 	beforeEach(function(done) {
-		croupier = new CasinoCroupier("Croupier1", "1");
+		croupier = new CasinoCroupier(croupierId, "1");
 		croupier.betrete(wsUrl, function() {
 			done();
 		});
@@ -19,16 +20,28 @@ describe("der goldene Weg im Casino:", function() {
 	});
 	describe("Wenn ein Croupier einen Tisch erstellt", function(done) {
 		var tischId = 'tisch1';
+		var spielname = 'poker'
 		beforeEach(function(done) {
-			croupier.eroeffneTisch(tischId, function(antwort) {
+			croupier.eroeffneTisch(tischId, spielname, function(antwort) {
 				expect(croupier.stehtAmTisch).toBe(tischId);
 				done();
 			});
 		});
+		it("dann kann ein Spieler diesen Tisch in der Übersicht sehen", function(done) {
+			var spieler = new CasinoSpieler("Spieler1", "1");
+			spieler.betrete(wsUrl, function() {
+				spieler.zeigeOffeneTische(function(antwort) {
+					expect(antwort[0].nameDesSpiels).toEqual(spielname);
+					expect(antwort[0].tischId).toEqual(tischId);
+					done();
+				});
+			});
+		});
 		describe("und ein Spieler an diesem Tisch spielt", function() {
 			var spieler = null;
+			var spielerId = "Spieler1";
 			beforeEach(function(done) {
-				spieler = new CasinoSpieler("Spieler1", "1");
+				spieler = new CasinoSpieler(spielerId, "1");
 				spieler.betrete(wsUrl, function() {
 					spieler.spieleAnTisch(tischId, function(antwort) {
 						expect(spieler.spieltAnTisch).toBe(true);
@@ -54,6 +67,22 @@ describe("der goldene Weg im Casino:", function() {
 					expect(antwort.erfolg).toBe(false);
 					done();
 				});
+			});
+			it("dann kann ein Spieler die Wertung sehen", function(done) {
+				spieler.betrete(wsUrl, function() {
+					spieler.zeigeOffeneTische(function(antwort) {
+						expect(antwort[0].croupierId).toEqual(croupierId);
+						expect(antwort[0].spielerAnzahl).toEqual(1);
+						var wertung = antwort[0].wertung;
+						expect(wertung[0]).toEqual({
+							id: spielerId,
+							punkte: 0
+						});
+						done();
+					});
+				});
+			});
+			xit("TODO Wertung beeinflussen, d.h. der Test-Croupier muss mal Punkte vergeben un 2 Spieler haben", function() {
 			});
 		});
 		xit("dann kann er den Tisch schließen", function(done) {

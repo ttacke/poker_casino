@@ -62,16 +62,17 @@ sub _gibAntwort {
 }
 # VOID
 sub _eroeffneTisch {
-	my ($self, $verbindung, $tischId, $croupierId, $geheimeCroupierId) = @_;
+	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $geheimeCroupierId) = @_;
 	
 	$self->{'tische'}->{$tischId} = {
-		id			=> $tischId,
-		daten		=> {},
-		spieler		=> [],
-		croupier	=> {
-			id			=> $croupierId,
-			geheimeId	=> $geheimeCroupierId,
-			verbindung	=> $verbindung,
+		id				=> $tischId,
+		daten			=> {},
+		spieler			=> [],
+		nameDesSpiels	=> $nameDesSpiels,
+		croupier		=> {
+			id				=> $croupierId,
+			geheimeId		=> $geheimeCroupierId,
+			verbindung		=> $verbindung,
 		},
 	};
 	return $self->_gibAntwort($verbindung, OK());
@@ -105,6 +106,30 @@ sub _zeigeSpielerDesTisches {
 	return $self->_gibAntwort($verbindung, \@liste);
 }
 # VOID
+sub _zeigeOffeneTische {
+	my ($self, $verbindung) = @_;
+	
+	my @liste = ();
+	foreach my $tischId (sort keys(%{$self->{'tische'}})) {
+		my $tisch = $self->{'tische'}->{$tischId};
+		my $daten = {
+			nameDesSpiels	=> $tisch->{'nameDesSpiels'},
+			tischId			=> $tisch->{'id'},
+			spielerAnzahl	=> scalar(@{$tisch->{'spieler'}}),
+			croupierId		=> $tisch->{'croupier'}->{'id'},
+			wertung			=> [],
+		};
+		foreach my $spieler (@{$tisch->{'spieler'}}) {
+			push(@{$daten->{'wertung'}}, {
+				id		=> $spieler->{'id'},
+				punkte	=> 0,
+			});
+		}
+		push(@liste, $daten);
+	}
+	return $self->_gibAntwort($verbindung, \@liste);
+}
+# VOID
 sub neueNachricht {
 	my ($self, $rawConnection, $textNachricht) = @_;
 	
@@ -113,9 +138,17 @@ sub neueNachricht {
 	
 	my $aktion = $nachricht->{'aktion'};
 	if($aktion eq 'eroeffneTisch') {
-		return $self->_eroeffneTisch($verbindung, $nachricht->{'tischId'}, $nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'});
+		return $self->_eroeffneTisch(
+			$verbindung, $nachricht->{'tischId'}, $nachricht->{'nameDesSpiels'},
+			$nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'}
+		);
+	} elsif($aktion eq 'zeigeOffeneTische') {
+		return $self->_zeigeOffeneTische($verbindung);
 	} elsif($aktion eq 'spieleAnTisch') {
-		return $self->_spieleAnTisch($verbindung, $nachricht->{'tischId'}, $nachricht->{'spielerId'}, $nachricht->{'geheimeSpielerId'});
+		return $self->_spieleAnTisch(
+			$verbindung, $nachricht->{'tischId'}, $nachricht->{'spielerId'},
+			$nachricht->{'geheimeSpielerId'}
+		);
 	} elsif($aktion eq 'zeigeSpielerDesTisches') {
 		return $self->_zeigeSpielerDesTisches($verbindung);
 	}

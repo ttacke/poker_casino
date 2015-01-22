@@ -7,6 +7,7 @@ function CasinoSpieler(id, geheimeId) {
 	this.geheimeId = geheimeId;
 	this.spieltAnTisch = false;
 	
+	// VOID
 	this.spieleAnTisch = function(tischId, antwortFunktion) {
 		var self = this;
 		this._sende(
@@ -20,6 +21,18 @@ function CasinoSpieler(id, geheimeId) {
 				if(daten.erfolg) {
 					self.spieltAnTisch = true;
 				}
+				antwortFunktion(daten);
+			}
+		);
+	};
+	// VOID
+	this.zeigeOffeneTische = function(antwortFunktion) {
+		var self = this;
+		this._sende(
+			{
+				"aktion":"zeigeOffeneTische"
+			},
+			function(daten) {
 				antwortFunktion(daten);
 			}
 		);
