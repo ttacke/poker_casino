@@ -6,10 +6,10 @@ function CasinoSpieler(id, geheimeId) {
 	this.id = id;
 	this.geheimeId = geheimeId;
 	this.spieltAnTisch = false;
-	var self = this;
 	
 	// VOID
 	this.spieleAnTisch = function(tischId, antwortFunktion) {
+		var self = this;
 		this._sende(
 			{
 				"aktion":"spieleAnTisch",
@@ -44,7 +44,7 @@ function CasinoSpieler(id, geheimeId) {
 	this._unerwarteteAntwort = function(event) {
 		var daten = JSON.parse(event.data);
 		if(daten.aktion == 'frageVonCroupier') {
-			self.derCroupierFragt(daten.nachricht);
+			this.derCroupierFragt(daten.nachricht);
 		} else {
 			throw new Error("Unerwartete Antwort erhalten: " + event.data);
 		}

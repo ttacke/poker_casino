@@ -27,7 +27,6 @@ function CasinoCroupier(id, geheimeId) {
 	};
 	// VOID
 	this.zeigeSpielerDesTisches = function(antwortFunktion) {
-		var self = this;
 		this._sende(
 			{
 				"aktion":"zeigeSpielerDesTisches",
@@ -39,7 +38,6 @@ function CasinoCroupier(id, geheimeId) {
 	};
 	// VOID
 	this.frageDenSpieler = function(spieler, nachricht, antwortFunktion) {
-		var self = this;
 		this._sende(
 			{
 				"aktion":"frageDenSpieler",

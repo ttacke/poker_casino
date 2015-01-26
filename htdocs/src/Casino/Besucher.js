@@ -48,7 +48,9 @@ function CasinoBesucher() {
 		var self = this;
 		this.verbindung.onmessage = function(event) {
 			self.warteAufAntwort = false;
-			self.verbindung.onmessage = self._unerwarteteAntwort;
+			self.verbindung.onmessage = function(event) {
+				self._unerwarteteAntwort(event);
+			};
 			empfangsFunktion(JSON.parse(event.data));
 		};
 	};
