@@ -162,7 +162,7 @@ sub _gibMeinenTisch {
 	return undef;
 }
 # VOID
-sub _frageSpieler {
+sub _frageDenSpieler {
 	my ($self, $verbindung, $spielerId, $nachricht) = @_;
 	
 	my $tisch = $self->_gibMeinenTisch($verbindung);
@@ -222,7 +222,7 @@ sub _warteAufAntwortVon {
 	Time::HiRes::alarm($timeout * 1.01);
 }
 # VOID
-sub _antwortAnCroupier {
+sub _antwortAnDenCroupier {
 	my ($self, $verbindung, $nachricht) = @_;
 	
 	my $spieler = $self->_gibSpielerAnhandVerbindung($verbindung);
@@ -267,10 +267,10 @@ sub neueNachricht {
 		);
 	} elsif($aktion eq 'zeigeSpielerDesTisches') {
 		return $self->_zeigeSpielerDesTisches($verbindung);
-	} elsif($aktion eq 'frageSpieler') {
-		return $self->_frageSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
-	} elsif($aktion eq 'antwortAnCroupier') {
-		return $self->_antwortAnCroupier($verbindung, $nachricht->{'nachricht'});
+	} elsif($aktion eq 'frageDenSpieler') {
+		return $self->_frageDenSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
+	} elsif($aktion eq 'antwortAnDenCroupier') {
+		return $self->_antwortAnDenCroupier($verbindung, $nachricht->{'nachricht'});
 	}
 	
 	$self->_gibAntwort($verbindung, FEHLER("Unbekannte Aktion"));

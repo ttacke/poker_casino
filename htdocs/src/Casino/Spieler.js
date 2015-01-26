@@ -59,7 +59,7 @@ function CasinoSpieler(id, geheimeId) {
 		this.verbindung.send(
 			JSON.stringify(
 				{
-					aktion: 'antwortAnCroupier',
+					aktion: 'antwortAnDenCroupier',
 					nachricht: antwort,
 				}
 			)

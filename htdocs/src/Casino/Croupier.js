@@ -38,11 +38,11 @@ function CasinoCroupier(id, geheimeId) {
 		);
 	};
 	// VOID
-	this.frageSpieler = function(spieler, nachricht, antwortFunktion) {
+	this.frageDenSpieler = function(spieler, nachricht, antwortFunktion) {
 		var self = this;
 		this._sende(
 			{
-				"aktion":"frageSpieler",
+				"aktion":"frageDenSpieler",
 				"spielerId":spieler.id,
 				"nachricht":nachricht,
 			},

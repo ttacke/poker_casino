@@ -65,7 +65,7 @@ describe("der goldene Weg im Casino:", function() {
 					expect(frage).toEqual({'PING':'PING'});
 					this._antworteDemCroupier({'PONG':'PONG'});
 				};
-				croupier.frageSpieler(spieler, {'PING':'PING'}, function(antwort) {
+				croupier.frageDenSpieler(spieler, {'PING':'PING'}, function(antwort) {
 					expect(antwort).toEqual({
 						antwort: {'PONG':'PONG'},
 						status: 'OK'
