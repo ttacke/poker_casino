@@ -48,10 +48,12 @@ function CasinoBesucher() {
 		var self = this;
 		this.verbindung.onmessage = function(event) {
 			self.warteAufAntwort = false;
-			self.verbindung.onmessage = function(event) {
-				throw new Error("Unerwartete Antwort erhalten: " + event.data);
-			};
+			self.verbindung.onmessage = self._unerwarteteAntwort;
 			empfangsFunktion(JSON.parse(event.data));
 		};
+	};
+	// VOID
+	this._unerwarteteAntwort = function(event) {
+		throw new Error("Unerwartete Antwort erhalten: " + event.data);
 	};
 }

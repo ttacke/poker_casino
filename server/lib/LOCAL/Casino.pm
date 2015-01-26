@@ -7,6 +7,7 @@ use lib './lib';
 use Data::Dumper();
 BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::PP' }
 use JSON -support_by_pp, -no_export;
+use Time::HiRes();
 
 use LOCAL::Casino::Verbindung();
 
@@ -21,6 +22,7 @@ sub new {
 		jsonParser		=> JSON->new(),
 		verbindungen	=> {},
 		tische			=> {},
+		spielerAntwort	=> {},
 	}, $_[0]);
 }
 # VOID
@@ -110,8 +112,7 @@ sub _zeigeOffeneTische {
 	my ($self, $verbindung) = @_;
 	
 	my @liste = ();
-	foreach my $tischId (sort keys(%{$self->{'tische'}})) {
-		my $tisch = $self->{'tische'}->{$tischId};
+	foreach my $tisch (@{$self->_gibAlleTische()}) {
 		my $daten = {
 			nameDesSpiels	=> $tisch->{'nameDesSpiels'},
 			tischId			=> $tisch->{'id'},
@@ -128,6 +129,121 @@ sub _zeigeOffeneTische {
 		push(@liste, $daten);
 	}
 	return $self->_gibAntwort($verbindung, \@liste);
+}
+# \ARRAY
+sub _gibAlleTische {
+	my ($self) = @_;
+	
+	my @liste = ();
+	foreach my $tischId (sort keys(%{$self->{'tische'}})) {
+		push(@liste, $self->{'tische'}->{$tischId});
+	}
+	return \@liste;
+}
+# HASH || NULL
+sub _gibSpielerAnhandId {
+	my ($self, $tisch, $spielerId) = @_;
+	
+	foreach my $spieler (@{$tisch->{'spieler'}}) {
+		return $spieler if($spieler->{'id'} eq $spielerId);
+	}
+	return undef;
+}
+# \HASH || NULL
+sub _gibMeinenTisch {
+	my ($self, $croupierVerbindung) = @_;
+	
+	foreach my $tischId (keys(%{$self->{'tische'}})) {
+		my $tisch = $self->{'tische'}->{$tischId};
+		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
+			return $tisch;
+		}
+	}
+	return undef;
+}
+# VOID
+sub _frageSpieler {
+	my ($self, $verbindung, $spielerId, $nachricht) = @_;
+	
+	my $tisch = $self->_gibMeinenTisch($verbindung);
+	my $spieler = $self->_gibSpielerAnhandId($tisch, $spielerId);
+	
+	$spieler->{'verbindung'}->sende(
+		$self->_scalarToJson(
+			{
+				aktion		=> 'frageVonCroupier',
+				nachricht	=> $nachricht
+			}
+		)
+	);
+	$self->_warteAufAntwortVon($verbindung, $spielerId, 0.01);
+	return;
+}
+# VOID
+sub _warteAufAntwortVon {
+	my ($self, $croupierVerbindung, $spielerId, $timeout) = @_;
+	
+	$SIG{'ALRM'} ||= sub {
+		foreach my $spielerId (keys(%{$self->{'spielerAntwort'}})) {
+			my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spielerId};
+			if(
+				defined($erwarteteAntwort->{'antwort'})
+			) {
+				$self->_gibAntwort($
+					erwarteteAntwort->{'croupierVerbindng'},
+					{
+						antwort	=> $erwarteteAntwort->{'antwort'},
+						status	=> 'OK',
+					}
+				);
+			}
+#			if(
+#				!defined($erwarteteAntwort->{'antwort'})
+#				&& Time::HiRes::time() > $erwarteteAntwort->{'gueltigBis'}
+#			) {
+#				$self->_gibAntwort(
+#					$erwarteteAntwort->{'croupierVerbindng'},
+#					{
+#						antwort	=> undef,
+#						status	=> 'timeout',
+#					}
+#				);
+#				delete($self->{'spielerAntwort'}->{$spielerId});
+#			}
+		}
+	};
+
+	my $timeoutTimestamp = Time::HiRes::time() + $timeout;
+	$self->{'spielerAntwort'}->{$spielerId} = {
+		antwort				=> undef,
+		gueltigBis			=> $timeoutTimestamp,
+		croupierVerbindng	=> $croupierVerbindung,
+	};
+	Time::HiRes::alarm($timeout * 1.01);
+}
+# VOID
+sub _antwortAnCroupier {
+	my ($self, $verbindung, $nachricht) = @_;
+	
+	my $spieler = $self->_gibSpielerAnhandVerbindung($verbindung);
+	my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spieler->{'id'}};
+	my $now = Time::HiRes::time();
+	if($erwarteteAntwort && $erwarteteAntwort->{'gueltigBis'} > $now) {
+		$erwarteteAntwort->{'antwort'} = $nachricht;
+	}
+	#TODO Timeout melden??
+	return;
+}
+# \HASH || NULL
+sub _gibSpielerAnhandVerbindung {
+	my ($self, $verbindung) = @_;
+	
+	foreach my $tisch (@{$self->_gibAlleTische()}) {
+		foreach my $spieler (@{$tisch->{'spieler'}}) {
+			return $spieler if($spieler->{'verbindung'} == $verbindung);
+		}
+	}
+	return undef;
 }
 # VOID
 sub neueNachricht {
@@ -151,6 +267,10 @@ sub neueNachricht {
 		);
 	} elsif($aktion eq 'zeigeSpielerDesTisches') {
 		return $self->_zeigeSpielerDesTisches($verbindung);
+	} elsif($aktion eq 'frageSpieler') {
+		return $self->_frageSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
+	} elsif($aktion eq 'antwortAnCroupier') {
+		return $self->_antwortAnCroupier($verbindung, $nachricht->{'nachricht'});
 	}
 	
 	$self->_gibAntwort($verbindung, FEHLER("Unbekannte Aktion"));

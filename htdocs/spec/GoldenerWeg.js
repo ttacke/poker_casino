@@ -60,7 +60,18 @@ describe("der goldene Weg im Casino:", function() {
 					done();
 				});
 			});
-			xit("und der Croupier kann diesen Spieler ansprechen", function() {
+			it("und der Croupier kann diesen Spieler etwas fragen", function(done) {
+				spieler.derCroupierFragt = function(frage) {
+					expect(frage).toEqual({'PING':'PING'});
+					this._antworteDemCroupier({'PONG':'PONG'});
+				};
+				croupier.frageSpieler(spieler, {'PING':'PING'}, function(antwort) {
+					expect(antwort).toEqual({
+						antwort: {'PONG':'PONG'},
+						status: 'OK'
+					});
+					done();
+				});
 			});
 			it("und der Spieler den Tisch nicht mehr verlassen", function(done) {
 				spieler.verlasseTisch(function(antwort) {
@@ -122,5 +133,9 @@ describe("Grenzfälle:", function() {
 	xit("ein Spieler kann kein Croupier sein", function() {
 	});
 	xit("ein Spieler kann nur an einem Tisch spielen", function() {
+	});
+	xit("wenn ein Spieler auf die Frage des Croupiers nicht rechtzeitig antwortet, bekommt der Croupier einen Timeout und die Antwort wird nicht weitergeleitet", function() {
+	});
+	xit("wenn ein spieler zu spät antwortet, bekommt er einen TimeoutHinweis", function() {
 	});
 });

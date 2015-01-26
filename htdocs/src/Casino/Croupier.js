@@ -25,11 +25,26 @@ function CasinoCroupier(id, geheimeId) {
 			}
 		);
 	};
+	// VOID
 	this.zeigeSpielerDesTisches = function(antwortFunktion) {
 		var self = this;
 		this._sende(
 			{
 				"aktion":"zeigeSpielerDesTisches",
+			},
+			function(daten) {
+				antwortFunktion(daten);
+			}
+		);
+	};
+	// VOID
+	this.frageSpieler = function(spieler, nachricht, antwortFunktion) {
+		var self = this;
+		this._sende(
+			{
+				"aktion":"frageSpieler",
+				"spielerId":spieler.id,
+				"nachricht":nachricht,
 			},
 			function(daten) {
 				antwortFunktion(daten);
