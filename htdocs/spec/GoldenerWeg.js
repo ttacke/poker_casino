@@ -20,7 +20,7 @@ describe("der goldene Weg im Casino:", function() {
 	});
 	describe("Wenn ein Croupier einen Tisch erstellt", function(done) {
 		var tischId = 'tisch1';
-		var spielname = 'poker'
+		var spielname = 'pingpong'
 		beforeEach(function(done) {
 			croupier.eroeffneTisch(tischId, spielname, function(antwort) {
 				expect(croupier.stehtAmTisch).toBe(tischId);
@@ -65,7 +65,7 @@ describe("der goldene Weg im Casino:", function() {
 					expect(frage).toEqual({'PING':'PING'});
 					this._antworteDemCroupier({'PONG':'PONG'});
 				};
-				croupier.frageDenSpieler(spieler, {'PING':'PING'}, function(antwort) {
+				croupier.frageDenSpieler(spielerId, {'PING':'PING'}, function(antwort) {
 					expect(antwort).toEqual({
 						antwort: {'PONG':'PONG'},
 						status: 'OK'

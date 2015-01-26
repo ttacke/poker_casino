@@ -176,7 +176,7 @@ sub _frageDenSpieler {
 			}
 		)
 	);
-	$self->_warteAufAntwortVon($verbindung, $spielerId, 0.01);
+	$self->_warteAufAntwortVon($verbindung, $spielerId, 0.08);
 	return;
 }
 # VOID

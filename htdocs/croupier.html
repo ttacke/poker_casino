@@ -2,109 +2,85 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<script src="lib/Casino.js"></script>
-		<script src="lib/Casino/Croupier.js"></script>
-		<script src="lib/Casino/Spieler.js"></script>
-		
-		<script language="javascript" type="text/javascript">
-
-
-
-
-var GEHEIME_CROUPIER_ID = 'f44a931f-81c7-4608-ac03-6da14e1e0d99';
-var TISCH_ID = 'Maexchen-Light';
-
-var casinoC = new CasinoCroupier("ws://localhost:8080/", GEHEIME_CROUPIER_ID);
-casinoC.betreten(function() {
-	casinoC.eroeffneTisch(TISCH_ID, function(daten) {console.log(daten)});
-});
-
-
-var GEHEIME_SPIELER_ID = '8ac32ff3-a78b-49bb-9656-0870743f9281';
-var SPIELER_ID = 'Jack';
-
-var casinoS = new CasinoSpieler("ws://localhost:8080/", GEHEIME_SPIELER_ID, SPIELER_ID);
-casinoS.betreten(function() {
-	casinoS.spieleAnTisch(TISCH_ID, function(daten) {console.log(daten)});
-});
-
-
-
-/*
-
-
-var websocket = null;
-var startTime = new Date().getTime();
-
-window.addEventListener("load", init, false);
-
-// VOID
-function init() {
-	document.getElementsByTagName('body')[0].innerHTML = '<textarea style="width:100%;height: 140px"></textarea>';
-	
-	websocket = new WebSocket("ws://localhost:8080/");
-	websocket.onopen = function(evt) {
-		log('VERBUNDEN');
-		_verbindungErfolgreich(evt);
-	};
-	
-	websocket.onmessage = function(evt) {
-		log('EMPFANGE: ' + evt.data);
-		_empfangeNachricht(evt);
-	};
-	
-	websocket.onerror = function(evt) { log("ABRUF FEHLER") };
-	websocket.onclose = function(evt) { log('ENDE') };
-}
-// VOID
-function _verbindungErfolgreich(evt) {
-	//DoNothing
-}
-// VOID
-function _empfangeNachricht(evt) {
-	// DoNothing
-	//websocket.close();
-}
-// VOID
-function log(message) {
-	var time = new Date().getTime() - startTime;
-	var pre = document.getElementsByTagName("textarea");
-	pre[0].innerHTML = time + ': ' + message + "\n" + pre[0].innerHTML;
-}
-
-
-// VOID
-function _verbindungErfolgreich(evt) {
-	eroeffneTisch(TISCH_ID, GEHEIME_CROUPIER_ID);
-}
-// VOID
-function _versendeNachricht(data, antwortFunktion) {
-	var msg = JSON.stringify(data);
-	log('SENDE ' + msg);
-	websocket.send(msg);
-}
-// VOID
-function eroeffneTisch(tischId, geheimeCroupierId) {
-	_versendeNachricht(
-		{"aktion":"eroeffneTisch","tischId":tischId,"geheimeCroupierId":geheimeCroupierId},
-		function(antwort) {
-			log(antwort);
-		}
-	);
-	
-}
-	*/		
-			/*
-	# Server sagt spieler 1 PING1
-	# Spieler 1 kriegt PING1 und sagt PONG1
-	# Spieler 2 bekommt keine Nachricht
-	# Server kriegt PONG1
-	
-	# Server sagt spieler 2 PING2
-	# Spieler 2 kriegt PING2 und sagt PONG2
-	# Spieler 1 bekommt keine Nachricht
-	# Server kriegt PONG2*/
+		<script type="text/javascript" src="src/Casino/Besucher.js"></script>
+		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
+		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
+		<script type="text/javascript">
+			var CROUPIER_ID = window.location.search.substr(1, window.location.search.length);
+			var GEHEIME_CROUPIER_ID = window.location.search.substr(1, window.location.search.length);
+			var TISCH_ID = 'GrafZahl';
+			var SPIELNAME = 'Zaehlen';
+			var MIN_SPIELER = 2;
+			var croupier = null;
+			
+			document.addEventListener("load", init, false);
+			document.addEventListener("DOMContentLoaded", init, false);
+			
+			function init() {
+				window.i = 0;
+				window.sollAntwort = 0;
+				window.aktuelleSpielerliste = [];
+				window.aktuellerSpieler = -1;
+				window.rundenzaehler = 0;
+				
+				document.getElementsByTagName('textarea')[0].value = '';
+				
+				croupier = new CasinoCroupier(CROUPIER_ID, GEHEIME_CROUPIER_ID);
+				croupier.betrete("ws://localhost:8080/", function() {
+					croupier.eroeffneTisch(TISCH_ID, SPIELNAME, function(daten) {
+						if(daten.erfolg) {
+							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg);
+							warteAufSpieler();
+						} else {
+							logge("Tisch anlegen ist fehlgeschlagen");
+							setTimeout('init()', 1000);
+						}
+					});
+				});
+			}
+			function warteAufSpieler() {
+				croupier.zeigeSpielerDesTisches(function(liste) {
+					if(liste.length < MIN_SPIELER) {
+						logge('warte auf min. ' + MIN_SPIELER + ' Spieler...');
+						setTimeout('warteAufSpieler()', 1000);
+						return;
+					}
+					spiele_runde(liste);
+				});
+			}
+			function spiele_runde(liste) {
+				window.rundenzaehler++;
+				logge('Spiele Runde ' + window.rundenzaehler);
+				window.aktuellerSpieler = -1;
+				window.aktuelleSpielerliste = liste;
+				naechsterSpieler();
+				//setTimeout('naechsterSpieler()', 1000);
+			}
+			function naechsterSpieler() {
+				window.aktuellerSpieler++;
+				var liste = window.aktuelleSpielerliste;
+				if(window.aktuellerSpieler >= liste.length) {
+					warteAufSpieler();
+					return;
+				}
+				
+				var aktuelleSpielerId = liste[window.aktuellerSpieler];
+				croupier.frageDenSpieler(aktuelleSpielerId, window.sollAntwort, function(antwort) {
+					window.sollAntwort++;
+					if(antwort.status == 'OK' && antwort.antwort == window.sollAntwort) {
+						logge(aktuelleSpielerId + ': korrekt');
+					} else {
+						logge(aktuelleSpielerId + ': FALSCH (IST:' + antwort.antwort + ', SOLL:' + window.sollAntwort + ', STATUS:' + antwort.status + ')');
+					}
+					naechsterSpieler()
+					//setTimeout('naechsterSpieler()', 1000);
+				});
+			}
+			function logge(msg) {
+				var old = document.getElementsByTagName('textarea')[0].value.substr(0, 1000);
+				document.getElementsByTagName('textarea')[0].value = (++window.i) + ' ' + msg + "\n" + old;
+			}
 		</script>
 	</head>
-	<body></body>
+	<body><textarea style="width: 100%;height: 200px;"></textarea></body>
 </html>
