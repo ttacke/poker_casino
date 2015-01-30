@@ -26,17 +26,6 @@ function CasinoSpieler(id, geheimeId) {
 		);
 	};
 	// VOID
-	this.zeigeOffeneTische = function(antwortFunktion) {
-		this._sende(
-			{
-				"aktion":"zeigeOffeneTische"
-			},
-			function(daten) {
-				antwortFunktion(daten);
-			}
-		);
-	};
-	// VOID
 	this.verlasseTisch = function(antwortFunktion) {
 		antwortFunktion({'erfolg':false, 'details':'You can checkout any time you like, but you can never leave.'});
 	};

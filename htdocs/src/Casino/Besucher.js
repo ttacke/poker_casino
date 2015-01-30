@@ -7,6 +7,26 @@ function CasinoBesucher() {
 	this.warteAufAntwort = false;
 	
 	// VOID
+	this.DESTROY = function(func) {
+		var verbindungWirdGeschlossen = false;
+		if(this['verbindung']) {
+			verbindungWirdGeschlossen = true;
+			if(func) {
+				this.verbindung.onclose = function() {
+					func();
+				}
+			}
+			this.verbindung.close();
+		}
+		for(var key in this) {
+			delete(this[key]);
+		}
+		
+		if(func && !verbindungWirdGeschlossen) {
+			func();
+		}
+	};
+	// VOID
 	this.betrete = function(url, istVerbundenFunktion) {
 		try {
 			this.verbindung = new WebSocket(url);
@@ -22,6 +42,9 @@ function CasinoBesucher() {
 			self.verbindung = null;
 			self.istVerbunden = false;
 		};
+		this.verbindung.onerror = function() {
+			console.log('Es sind Fehler bei der Verbindung aufgetreten');
+		};
 	};
 	// VOID
 	this.verlasse = function(istGetrenntFunktion) {
@@ -33,6 +56,17 @@ function CasinoBesucher() {
 			};
 			this.verbindung.close();
 		}
+	};
+	// VOID
+	this.zeigeOffeneTische = function(antwortFunktion) {
+		this._sende(
+			{
+				"aktion":"zeigeOffeneTische"
+			},
+			function(daten) {
+				antwortFunktion(daten);
+			}
+		);
 	};
 	// VOID
 	this._sende = function(daten, empfangsFunktion) {

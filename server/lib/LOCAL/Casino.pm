@@ -11,19 +11,30 @@ use Time::HiRes();
 
 use LOCAL::Casino::Verbindung();
 
-
 *OK = sub { {"erfolg" => \1, "details" => ""} };
 *FEHLER = sub { {"erfolg" => \0, "details" => $_[0]} };
 
 
 # CONSTRUCTOR
 sub new {
-	return bless({
-		jsonParser		=> JSON->new(),
-		verbindungen	=> {},
-		tische			=> {},
-		spielerAntwort	=> {},
-	}, $_[0]);
+	my ($class) = @_;
+	my $self = bless({}, $class);
+	$self->_init();
+	return $self;
+}
+# VOID
+sub _init {
+	my ($self) = @_;
+	
+	foreach my $key (keys(%$self)) {
+		delete($self->{'key'});
+	}
+	
+	$self->{'jsonParser'}		= JSON->new();
+	$self->{'verbindungen'}		= {};
+	$self->{'tische'}			= {};
+	$self->{'spielerAntwort'}	= {};
+	return;
 }
 # VOID
 sub neueVerbindung {
@@ -66,17 +77,30 @@ sub _gibAntwort {
 sub _eroeffneTisch {
 	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $geheimeCroupierId) = @_;
 	
-	$self->{'tische'}->{$tischId} = {
-		id				=> $tischId,
-		daten			=> {},
-		spieler			=> [],
-		nameDesSpiels	=> $nameDesSpiels,
-		croupier		=> {
-			id				=> $croupierId,
-			geheimeId		=> $geheimeCroupierId,
-			verbindung		=> $verbindung,
-		},
-	};
+	my $bestehenderTisch = $self->{'tische'}->{$tischId};
+	if(!$bestehenderTisch) {
+		$self->{'tische'}->{$tischId} = {
+			id				=> $tischId,
+			daten			=> {},
+			spieler			=> [],
+			nameDesSpiels	=> $nameDesSpiels,
+			croupier		=> {
+				id				=> $croupierId,
+				geheimeId		=> $geheimeCroupierId,
+				verbindung		=> $verbindung,
+			},
+		};
+	} else {
+		my $croupier = $bestehenderTisch->{'croupier'};
+		if(
+			$croupier->{'id'} eq $croupierId
+			&& $croupier->{'geheimeId'} eq $geheimeCroupierId
+		) {
+			$croupier->{'verbindung'} = $verbindung;
+		} else {
+			return $self->_gibAntwort($verbindung, FEHLER('Dieser Tisch gehoert jemand anderem'));
+		}
+	}
 	return $self->_gibAntwort($verbindung, OK());
 }
 # VOID
@@ -271,6 +295,11 @@ sub neueNachricht {
 		return $self->_frageDenSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
 	} elsif($aktion eq 'antwortAnDenCroupier') {
 		return $self->_antwortAnDenCroupier($verbindung, $nachricht->{'nachricht'});
+	} elsif($aktion eq 'RESET') {
+		$self->_init();
+		warn "RESET";
+		$self->_gibAntwort($verbindung, OK());
+		return;
 	}
 	
 	$self->_gibAntwort($verbindung, FEHLER("Unbekannte Aktion"));
