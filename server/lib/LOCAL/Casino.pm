@@ -18,6 +18,7 @@ use LOCAL::Casino::Verbindung();
 # CONSTRUCTOR
 sub new {
 	my ($class) = @_;
+	
 	my $self = bless({}, $class);
 	$self->_init();
 	return $self;
@@ -118,18 +119,18 @@ sub _spieleAnTisch {
 }
 # VOID
 sub _zeigeSpielerDesTisches {
-	my ($self, $verbindung) = @_;
+	my ($self, $croupierVerbindung) = @_;
 	
 	my @liste = ();
 	foreach my $tischId (keys(%{$self->{'tische'}})) {
 		my $tisch = $self->{'tische'}->{$tischId};
-		if($tisch->{'croupier'}->{'verbindung'} == $verbindung) {
+		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
 			foreach my $spieler (@{$tisch->{'spieler'}}) {
 				push(@liste, $spieler->{'id'});
 			}
 		}
 	}
-	return $self->_gibAntwort($verbindung, \@liste);
+	return $self->_gibAntwort($croupierVerbindung, \@liste);
 }
 # VOID
 sub _zeigeOffeneTische {
@@ -191,7 +192,6 @@ sub _frageDenSpieler {
 	
 	my $tisch = $self->_gibMeinenTisch($verbindung);
 	my $spieler = $self->_gibSpielerAnhandId($tisch, $spielerId);
-	
 	$spieler->{'verbindung'}->sende(
 		$self->_scalarToJson(
 			{
@@ -210,52 +210,43 @@ sub _warteAufAntwortVon {
 	$SIG{'ALRM'} ||= sub {
 		foreach my $spielerId (keys(%{$self->{'spielerAntwort'}})) {
 			my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spielerId};
-			if(
-				defined($erwarteteAntwort->{'antwort'})
-			) {
-				$self->_gibAntwort($
-					erwarteteAntwort->{'croupierVerbindng'},
+			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
+				$self->_gibAntwort(
+					$erwarteteAntwort->{'croupierVerbindung'},
 					{
-						antwort	=> $erwarteteAntwort->{'antwort'},
-						status	=> 'OK',
+						antwort	=> undef,
+						status	=> 'timeout',
 					}
 				);
+				delete($self->{'spielerAntwort'}->{$spielerId});
 			}
-#			if(
-#				!defined($erwarteteAntwort->{'antwort'})
-#				&& Time::HiRes::time() > $erwarteteAntwort->{'gueltigBis'}
-#			) {
-#				$self->_gibAntwort(
-#					$erwarteteAntwort->{'croupierVerbindng'},
-#					{
-#						antwort	=> undef,
-#						status	=> 'timeout',
-#					}
-#				);
-#				delete($self->{'spielerAntwort'}->{$spielerId});
-#			}
 		}
 	};
-
 	my $timeoutTimestamp = Time::HiRes::time() + $timeout;
 	$self->{'spielerAntwort'}->{$spielerId} = {
-		antwort				=> undef,
 		gueltigBis			=> $timeoutTimestamp,
-		croupierVerbindng	=> $croupierVerbindung,
+		croupierVerbindung	=> $croupierVerbindung,
 	};
 	Time::HiRes::alarm($timeout * 1.01);
+	return;
 }
 # VOID
 sub _antwortAnDenCroupier {
 	my ($self, $verbindung, $nachricht) = @_;
 	
 	my $spieler = $self->_gibSpielerAnhandVerbindung($verbindung);
-	my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spieler->{'id'}};
-	my $now = Time::HiRes::time();
-	if($erwarteteAntwort && $erwarteteAntwort->{'gueltigBis'} > $now) {
-		$erwarteteAntwort->{'antwort'} = $nachricht;
+	return if(!$spieler);
+	
+	my $erwarteteAntwort = delete($self->{'spielerAntwort'}->{$spieler->{'id'}});
+	if($erwarteteAntwort && $erwarteteAntwort->{'gueltigBis'} >= Time::HiRes::time()) {
+		$self->_gibAntwort(
+			$erwarteteAntwort->{'croupierVerbindung'},
+			{
+				antwort	=> $nachricht,
+				status	=> 'OK',
+			}
+		);
 	}
-	#TODO Timeout melden??
 	return;
 }
 # \HASH || NULL
@@ -297,7 +288,6 @@ sub neueNachricht {
 		return $self->_antwortAnDenCroupier($verbindung, $nachricht->{'nachricht'});
 	} elsif($aktion eq 'RESET') {
 		$self->_init();
-		warn "RESET";
 		$self->_gibAntwort($verbindung, OK());
 		return;
 	}

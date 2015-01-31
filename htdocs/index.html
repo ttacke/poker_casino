@@ -10,12 +10,15 @@
 			}
 			.croupier,
 			.spieler {
-				height: 47%;
+				height: 50%;
 				width: 32%;
 				padding: 0;
 				margin: 0;
 				border: solid 5px green;
 				display: inline-block;
+			}
+			.spieler {
+				height: 4em;
 			}
 			.croupier {
 				border-color: red;
@@ -41,15 +44,15 @@
 			<h2>Croupier</h2>
 			<iframe src="croupier.html"></iframe>
 		</div>
-		<div class="spieler">
-			<h2>Spieler#1</h2>
-			<iframe src="spieler.html?1"></iframe>
-		</div><div class="spieler">
-			<h2>Spieler#2</h2>
-			<iframe src="spieler.html?2"></iframe>
-		</div><div class="spieler">
-			<h2>Spieler#3</h2>
-			<iframe src="spieler.html?3"></iframe>
-		</div>
+		<script>
+			for(var i = 0;i < 6;i++) {
+				document.write(
+					'<div class="spieler">'
+					+	'<h2>Spieler#' + i + '</h2>'
+					+	'<iframe src="spieler.html?' + i + '"></iframe>'
+					+ '</div>'
+				);
+			}
+		</script>
 	</body>
 </html>

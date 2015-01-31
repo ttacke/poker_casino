@@ -22,7 +22,8 @@
 				window.aktuelleSpielerliste = [];
 				window.aktuellerSpieler = -1;
 				window.rundenzaehler = 0;
-				
+				window.anfragenZaehler = 0;
+				window.anfragenStartZeit = new Date().getTime();
 				document.getElementsByTagName('textarea')[0].value = '';
 				
 				croupier = new CasinoCroupier(CROUPIER_ID, GEHEIME_CROUPIER_ID);
@@ -32,11 +33,19 @@
 							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg);
 							warteAufSpieler();
 						} else {
-							logge("Tisch anlegen ist fehlgeschlagen");
+							logge("Tisch anlegen ist fehlgeschlagen", true);
 							setTimeout('init()', 1000);
 						}
 					});
 				});
+			}
+			// FLOAT
+			function errechneGeschwindigkeit() {
+				var zeitRaum = new Date().getTime() - window.anfragenStartZeit;
+				var anfragenProSekunde = window.anfragenZaehler / (zeitRaum / 1000);
+				window.anfragenZaehler = 0;
+				window.anfragenStartZeit = new Date().getTime();
+				return anfragenProSekunde;
 			}
 			function warteAufSpieler() {
 				croupier.zeigeSpielerDesTisches(function(liste) {
@@ -50,14 +59,14 @@
 			}
 			function spiele_runde(liste) {
 				window.rundenzaehler++;
-				logge('Spiele Runde ' + window.rundenzaehler);
+				logge('Spielrunde#' + window.rundenzaehler);
 				window.aktuellerSpieler = -1;
 				window.aktuelleSpielerliste = liste;
 				naechsterSpieler();
-				//setTimeout('naechsterSpieler()', 1000);
 			}
 			function naechsterSpieler() {
 				window.aktuellerSpieler++;
+				window.i++;
 				var liste = window.aktuelleSpielerliste;
 				if(window.aktuellerSpieler >= liste.length) {
 					warteAufSpieler();
@@ -67,20 +76,20 @@
 				var aktuelleSpielerId = liste[window.aktuellerSpieler];
 				croupier.frageDenSpieler(aktuelleSpielerId, window.sollAntwort, function(antwort) {
 					window.sollAntwort++;
-					if(antwort.status == 'OK' && antwort.antwort == window.sollAntwort) {
-						logge(aktuelleSpielerId + ': korrekt');
-					} else {
-						logge(aktuelleSpielerId + ': FALSCH (IST:' + antwort.antwort + ', SOLL:' + window.sollAntwort + ', STATUS:' + antwort.status + ')');
+					window.anfragenZaehler++;
+					if(antwort.status != 'OK' || antwort.antwort != window.sollAntwort) {
+						logge(aktuelleSpielerId + ': FALSCH (IST:' + antwort.antwort + ', SOLL:' + window.sollAntwort + ', STATUS:' + antwort.status + ')', true);
 					}
-					naechsterSpieler()
-					//setTimeout('naechsterSpieler()', 1000);
+					naechsterSpieler();
 				});
 			}
-			function logge(msg) {
-				var old = document.getElementsByTagName('textarea')[0].value.substr(0, 1000);
-				document.getElementsByTagName('textarea')[0].value = (++window.i) + ' ' + msg + "\n" + old;
+			function logge(msg, error) {
+				if(window.i > 432 || error) {
+					document.getElementsByTagName('textarea')[0].value = msg + '(v = ' + errechneGeschwindigkeit() + ' PingPong/s)';
+					window.i = 0;
+				}
 			}
 		</script>
 	</head>
-	<body><textarea style="width: 100%;height: 200px;"></textarea></body>
+	<body><textarea style="width: 100%;height: 270px;"></textarea></body>
 </html>

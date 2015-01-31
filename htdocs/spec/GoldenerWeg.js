@@ -1,6 +1,6 @@
 "use strict";
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 var wsUrl = "ws://localhost:8080/";
 var croupierId = "Croupier1";
@@ -211,25 +211,40 @@ describe("Szenario: Casino", function() {
 						done();
 					});
 				});
-				it("TODO hier klemmt es!!! Ggf erst die EinspielerTests machen! dann kann ich diese Spieler etwas fragen", function(done) {
+				
+				it("dann kann ich diese Spieler etwas fragen", function(done) {
 					spielerA.derCroupierFragt = function(frage) {
-						expect(frage).toEqual({'PING':'PING'});
-						this._antworteDemCroupier({'PONG':'PONG'});
+						console.log('A');
+						expect(frage).toEqual(1);
+						this._antworteDemCroupier(2);
 					};
-					// 
-					croupier.frageDenSpieler(spielerId, {'PING':'PING'}, function(antwort) {
+					spielerB.derCroupierFragt = function(frage) {
+						console.log('B');
+						expect(frage).toEqual(3);
+						this._antworteDemCroupier(4);
+					};
+					croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
 						expect(antwort).toEqual({
-							antwort: {'PONG':'PONG'},
+							antwort: 2,
 							status: 'OK'
 						});
-						done();
+						croupier.frageDenSpieler(spielerBid, 3, function(antwort) {
+							expect(antwort).toEqual({
+								antwort: 4,
+								status: 'OK'
+							});
+							done();
+						});
 					});
 				});
+				
 			});
 			xit("dann kann ich diesen Tisch schließen", function() {
 			});
 		});
 		xit("jeder Spieler ist einmalig", function() {
+		});
+		xit("ein Croupier kann nicht vorhandene Spieler anfragen, das endet einfach im Timeout", function() {
 		});
 		xit("jeder Spieler kann nur ein mal einen Tisch betreten (je tisch einmalig)", function() {
 		});
