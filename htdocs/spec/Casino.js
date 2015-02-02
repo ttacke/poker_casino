@@ -15,23 +15,15 @@ var spielerPassword = "1";
 var spielerBId = "Spieler1";
 var spielerBPassword = "1";
 
-// VOID
-function RESET(done) {
-	var verbindung = new WebSocket(wsUrl);
-	verbindung.onopen = function(event) {
-		verbindung.send('{"aktion":"RESET"}');
-		verbindung.onmessage = function() {
-			done();
-		};
-	};
-}
-
 describe("Szenario: Casino", function() {
 	beforeEach(function(done) {
-		RESET(done);
-	});
-	afterEach(function(done) {
-		RESET(done);
+		var verbindung = new WebSocket(wsUrl);
+		verbindung.onopen = function(event) {
+			verbindung.send('{"aktion":"RESET"}');
+			verbindung.onmessage = function() {
+				done();
+			};
+		};
 	});
 	describe("Angenommen ich bin ein Casino-Besucher", function() {
 		var besucher;
@@ -41,16 +33,16 @@ describe("Szenario: Casino", function() {
 		afterEach(function(done) {
 			besucher.DESTROY(done);
 		});
-		describe("und ich will das Casino betreten", function() {
-			it("dann muss ich eine Websocket Verbindung nutzen", function() {
+		describe("und ich will das Casino via NICHT-Websocket-URL betreten", function() {
+			it("dann schlägt das fehl", function() {
 				expect(
 					function() {
-						new besucher.betrete("KEINE_WS_URL");
+						besucher.betrete("KEINE_WS_URL");
 					}
-				).toThrow();
+				).toThrow(new Error("die Casino-URL entspricht nicht dem Websocket-Protokoll"));
 			});
 		});
-		describe("und ich betrete das Casino", function() {
+		describe("und ich betrete das Casino via WebSocket", function() {
 			describe("und ich deponiere etwas in der Bank", function() {
 				xit("dann kann ich das auch wieder abholen", function() {
 				});
@@ -59,62 +51,92 @@ describe("Szenario: Casino", function() {
 	});
 	describe("Angenommen ich bin ein Spieler", function() {
 		var spieler = null;
-		beforeEach(function(done) {
+		var spielerId = "Spieler1";
+		var spielerPassword = "Spieler1";
+		beforeEach(function() {
 			spieler = new CasinoSpieler(spielerId, spielerPassword);
-			spieler.betrete(wsUrl, function() {
-				done();
-			});
 		});
-		describe("und finde ein Casino mit einem Tisch vor", function() {
-			var croupier = null;
+		afterEach(function(done) {
+			spieler.DESTROY(done);
+		});
+		describe("und ich betrete ein Casino", function() {
 			beforeEach(function(done) {
-				croupier = new CasinoCroupier(croupierId, croupierPassword);
-				croupier.betrete(wsUrl, function() {
-					croupier.eroeffneTisch(tischId, spielname, function(antwort) {
-						expect(croupier.stehtAmTisch).toBe(tischId);
-						expect(antwort.erfolg).toBe(true);
-						done();
-					});
-				});
-			});
-			it("dann kann ich diesen in der Übersicht sehen", function(done) {
-				spieler.zeigeOffeneTische(function(antwort) {
-					expect(antwort[0].nameDesSpiels).toEqual(spielname);
-					expect(antwort[0].tischId).toEqual(tischId);
+				spieler.betrete(wsUrl, function() {
 					done();
 				});
 			});
-			describe("und ich spiele an diesem Tisch", function() {
-				describe("und ich verlasse den Tisch", function() {
-					xit("dann ist mein Name nach wie vor in der Spielerliste", function() {
-					});
-					xit("dann kann ich an dem Tisch wieder spielen", function() {
-					});
-				});
-			});
-			describe("und an diesem spielt ein anderer Spieler", function() {
-				var spielerB = null;
+			describe("und dort existiert ein Tisch", function() {
+				var croupier = null;
+				var croupierId = "Croupier1";
+				var croupierPassword = "Croupier1";
+				var tischId = 'tisch1';
+				var spielname = 'pingpong';
 				beforeEach(function(done) {
-					spielerB = new CasinoSpieler(spielerBId, spielerBPassword);
-					spielerB.betrete(wsUrl, function() {
-						spielerB.spieleAnTisch(tischId, function(antwort) {
-							expect(spielerA.spieltAnTisch).toBe(true);
+					croupier = new CasinoCroupier(croupierId, croupierPassword);
+					croupier.betrete(wsUrl, function() {
+						croupier.eroeffneTisch(tischId, spielname, function(antwort) {
 							done();
 						});
 					});
 				});
-				xit("dann kann ich mich nicht mit dem gleichen Namen wie der andere Spieler dort spielen", function() {
-				});
 				afterEach(function(done) {
-					spielerB.DESTROY(done);
+					croupier.DESTROY(done);
+				});
+				it("dann kann ich diesen in der Übersicht sehen", function(done) {
+					spieler.zeigeOffeneTische(function(antwort) {
+						expect(antwort.length).toEqual(1);
+						expect(antwort[0].nameDesSpiels).toEqual(spielname);
+						expect(antwort[0].tischId).toEqual(tischId);
+						done();
+					});
+				});
+				describe("und ich spiele an diesem Tisch", function() {
+					beforeEach(function(done) {
+						spieler.spieleAnTisch(tischId, function(antwort) {
+							expect(antwort.erfolg).toBe(true);
+							done();
+						});
+					});
+					describe("und ein anderer Spieler mit dem gleichen Namen will auch an diesem Tisch spielen", function() {
+						var spielerB = null;
+						var spielerBpassword = "Spieler2";
+						beforeEach(function(done) {
+							spielerB = new CasinoSpieler(spielerId, spielerBpassword);
+							spielerB.betrete(wsUrl, function() {
+								done();
+							});
+						});
+						afterEach(function(done) {
+							spielerB.DESTROY(done);
+						});
+						it("dann wird er abgewiesen", function(done) {
+							spielerB.spieleAnTisch(tischId, function(antwort) {
+								expect(antwort.erfolg).toBe(false);
+								done();
+							});
+						});
+					});
+					describe("und ich verlasse das Casino", function() {
+						beforeEach(function(done) {
+							spieler.DESTROY(done);
+						});
+						describe("und ich betrete es wieder", function() {
+							beforeEach(function(done) {
+								spieler = new CasinoSpieler(spielerId, spielerPassword);
+								spieler.betrete(wsUrl, function() {
+									done();
+								});
+							});
+							it("dann kann ich an dem Tisch wieder spielen", function(done) {
+								spieler.spieleAnTisch(tischId, function(antwort) {
+									expect(antwort.erfolg).toBe(true);
+									done();
+								});
+							});
+						});
+					});
 				});
 			});
-			afterEach(function(done) {
-				croupier.DESTROY(done);
-			});
-		});
-		afterEach(function(done) {
-			spieler.DESTROY(done);
 		});
 	});
 	describe("Angenommen ich bin ein Croupier", function() {
@@ -143,9 +165,8 @@ describe("Szenario: Casino", function() {
 				});
 				describe("und ich betrete das Casino wieder", function() {
 					describe("und ich betrete den Tisch wieder", function() {
-						describe("und nutze dabei einen anderen Namen für das gespielte Spiel", function() {
-							it("dann bleibt der Name für das Spiel unveraendert", function(done) {
-								//TODO austeilen. Das gilt für alle Tests
+						describe("und nutze dabei einen anderen Spielnamen", function() {
+							it("dann bleibt der Spielname unveraendert", function(done) {
 								croupier = new CasinoCroupier(croupierId, croupierPassword);
 								croupier.betrete(wsUrl, function() {
 									var nichtVerwendeterSpielname = spielname + 'SINNFREI';
@@ -213,17 +234,19 @@ describe("Szenario: Casino", function() {
 						done();
 					});
 				});
-				
+				describe("und ein spieler das Casino verlässt", function() {
+					xit("dann wird er nach wie vor in der Spielerliste aufgeführt", function() {
+						
+					});
+				});
 				describe("und ich die Spieler etwas frage", function() {
 					describe("und diese rechtzeitig antworten", function() {
 						it("dann bekomme ich die Antworten", function(done) {
 							spielerA.derCroupierFragt = function(frage) {
-								console.log('A');
 								expect(frage).toEqual(1);
 								this._antworteDemCroupier(2);
 							};
 							spielerB.derCroupierFragt = function(frage) {
-								console.log('B');
 								expect(frage).toEqual(3);
 								this._antworteDemCroupier(4);
 							};

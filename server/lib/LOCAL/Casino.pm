@@ -109,6 +109,21 @@ sub _spieleAnTisch {
 	my ($self, $verbindung, $tischId, $spielerId, $geheimeSpielerId) = @_;
 	
 	my $tisch = $self->{'tische'}->{$tischId};
+	if(!$tisch) {
+		return $self->_gibAntwort($verbindung, FEHLER("Der Tisch existiert nicht"));
+	}
+	
+	foreach my $existierenderSpieler (@{$tisch->{'spieler'}}) {
+		if($existierenderSpieler->{'id'} eq $spielerId) {
+			if($existierenderSpieler->{'geheimeId'} eq $geheimeSpielerId) {
+				$existierenderSpieler->{'verbindung'} = $verbindung;
+				return $self->_gibAntwort($verbindung, OK());
+			} else {
+				return $self->_gibAntwort($verbindung, FEHLER("Der Spielername ist bereits vergeben"));
+			}
+		}
+	}
+	
 	push(@{$tisch->{'spieler'}}, {
 		id			=> $spielerId,
 		geheimeId	=> $geheimeSpielerId,
