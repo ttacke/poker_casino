@@ -22,7 +22,7 @@
 				
 				spieler = new CasinoSpieler(SPIELER_ID, GEHEIME_SPIELER_ID);
 				spieler.derCroupierFragt = spiele;
-				spieler.betrete("ws://10.1.1.198:8080/", function() {
+				spieler.betrete("ws://localhost:8080/", function() {
 					warteAufTisch();
 				});
 			}

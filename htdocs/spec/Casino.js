@@ -3,17 +3,22 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 var wsUrl = "ws://localhost:8080/";
-
-var croupierId = "Croupier1";
-var croupierPassword = "1";
-var tischId = 'tisch1';
-var spielname = 'pingpong';
-
-var spielerId = "Spieler1";
-var spielerPassword = "1";
-
-var spielerBId = "Spieler1";
-var spielerBPassword = "1";
+var antwortTimeout = 80;
+var spielerA = null;
+var spielerB = null;
+var timeoutAlaeuft = null;
+var timeoutBlaeuft = null;
+var spaeteAntwort = function(welcherSpieler, frage) {
+	if(welcherSpieler == 'A') {
+		spielerA._antworteDemCroupier(frage);
+		clearTimeout(timeoutAlaeuft);
+		timeoutAlaeuft = null;
+	} else {
+		spielerB._antworteDemCroupier(frage);
+		clearTimeout(timeoutBlaeuft);
+		timeoutBlaeuft = null;
+	}
+};
 
 describe("Szenario: Casino", function() {
 	beforeEach(function(done) {
@@ -25,7 +30,7 @@ describe("Szenario: Casino", function() {
 			};
 		};
 	});
-	describe("Angenommen ich bin ein Casino-Besucher", function() {
+	describe("Angenommen ich bin ein Besucher", function() {
 		var besucher;
 		beforeEach(function() {
 			besucher = new CasinoBesucher();
@@ -33,7 +38,7 @@ describe("Szenario: Casino", function() {
 		afterEach(function(done) {
 			besucher.DESTROY(done);
 		});
-		describe("und ich will das Casino via NICHT-Websocket-URL betreten", function() {
+		describe("und betrete das Casino via NICHT-Websocket-URL betreten", function() {
 			it("dann schlägt das fehl", function() {
 				expect(
 					function() {
@@ -42,7 +47,7 @@ describe("Szenario: Casino", function() {
 				).toThrow(new Error("die Casino-URL entspricht nicht dem Websocket-Protokoll"));
 			});
 		});
-		describe("und ich betrete das Casino via WebSocket", function() {
+		describe("TODO TODO NUR SPIELER UND CROUPIER und ich betrete das Casino via WebSocket", function() {
 			describe("und ich deponiere etwas in der Bank", function() {
 				xit("dann kann ich das auch wieder abholen", function() {
 				});
@@ -141,107 +146,124 @@ describe("Szenario: Casino", function() {
 	});
 	describe("Angenommen ich bin ein Croupier", function() {
 		var croupier = null;
-		beforeEach(function(done) {
+		var croupierId = "Croupier1";
+		var croupierPassword = "Croupier1";
+		beforeEach(function() {
 			croupier = new CasinoCroupier(croupierId, croupierPassword);
-			croupier.betrete(wsUrl, function() {
-				done();
-			});
 		});
 		afterEach(function(done) {
 			croupier.DESTROY(done);
 		});
-		
-		describe("und ich eroeffne einen Tisch", function(done) {
+		describe("und ich betrete das Casino", function() {
 			beforeEach(function(done) {
-				croupier.eroeffneTisch(tischId, spielname, function(antwort) {
-					expect(croupier.stehtAmTisch).toBe(tischId);
-					expect(antwort.erfolg).toBe(true);
+				croupier.betrete(wsUrl, function() {
 					done();
 				});
 			});
-			describe("und ich verlasse das Casino", function(done) {
+			describe("und ich eröffne einen Tisch", function(done) {
+				var tischId = 'tisch1';
+				var spielname = 'pingpong';
 				beforeEach(function(done) {
-					croupier.DESTROY(done);
-				});
-				describe("und ich betrete das Casino wieder", function() {
-					describe("und ich betrete den Tisch wieder", function() {
-						describe("und nutze dabei einen anderen Spielnamen", function() {
-							it("dann bleibt der Spielname unveraendert", function(done) {
-								croupier = new CasinoCroupier(croupierId, croupierPassword);
-								croupier.betrete(wsUrl, function() {
-									var nichtVerwendeterSpielname = spielname + 'SINNFREI';
-									croupier.eroeffneTisch(tischId, nichtVerwendeterSpielname, function(antwort) {
-										expect(croupier.stehtAmTisch).toBe(tischId);
-										croupier.zeigeOffeneTische(function(liste) {
-											expect(liste.length).toBe(1);
-											expect(liste[0].nameDesSpiels).toBe(spielname);
-											done();
-										});
-									});
-								});
-							});
-						});
+					croupier.eroeffneTisch(tischId, spielname, function(antwort) {
+						expect(antwort.erfolg).toBe(true);
+						done();
 					});
 				});
-				describe("und ich betrete das Casino mit anderem Namen", function() {
-					describe("und ich will den Tisch betreten", function() {
-						it("dann werde ich abgewiesen", function(done) {
-							croupier = new CasinoCroupier(croupierId + "FALSCH", croupierPassword + "FALSCH");
+				describe("und ich verlasse das Casino", function(done) {
+					beforeEach(function(done) {
+						croupier.DESTROY(done);
+					});
+					describe("und ich betrete das Casino wieder", function() {
+						beforeEach(function(done) {
+							croupier = new CasinoCroupier(croupierId, croupierPassword);
 							croupier.betrete(wsUrl, function() {
-								croupier.eroeffneTisch(tischId, spielname, function(antwort) {
-									expect(croupier.stehtAmTisch).toBe(null);
+								done();
+							});
+						});
+						describe("und ich betrete den Tisch wieder, vergebe dabei aber einen anderen Spielnamen", function() {
+							beforeEach(function(done) {
+								croupier.eroeffneTisch(tischId, spielname + 'SINNFREI', function(antwort) {
+									expect(antwort.erfolg).toBe(true);
+									done();
+								});
+							});
+							it("dann bleibt der Spielname unveraendert", function(done) {
+								croupier.zeigeOffeneTische(function(liste) {
+									expect(liste.length).toBe(1);
+									expect(liste[0].nameDesSpiels).toBe(spielname);
 									done();
 								});
 							});
 						});
 					});
-				});
-			});
-			describe("und zwei Spieler setzen sich an meinen Tisch", function(done) {
-				var spielerA;
-				var spielerB;
-				var spielerAid = 'a';
-				var spielerBid = 'b';
-				beforeEach(function(done) {
-					spielerA = new CasinoSpieler(spielerAid, spielerPassword);
-					spielerA.betrete(wsUrl, function() {
-						spielerA.spieleAnTisch(tischId, function(antwort) {
-							expect(spielerA.spieltAnTisch).toBe(true);
-							done();
+					describe("und ich betrete das Casino mit anderem Namen", function() {
+						beforeEach(function(done) {
+							croupier = new CasinoCroupier(croupierId + "FALSCH", croupierPassword);
+							croupier.betrete(wsUrl, function() {
+								done();
+							});
+						});
+						it("dann werde ich abgewiesen wenn ich den Tisch wieder eröffnen will", function(done) {
+							croupier.eroeffneTisch(tischId, spielname, function(antwort) {
+								expect(antwort.erfolg).toBe(false);
+								done();
+							});
 						});
 					});
 				});
-				beforeEach(function(done) {
-					spielerB = new CasinoSpieler(spielerBid, spielerPassword);
-					spielerB.betrete(wsUrl, function() {
-						spielerB.spieleAnTisch(tischId, function(antwort) {
-							expect(spielerA.spieltAnTisch).toBe(true);
+				describe("und zwei Spieler setzen sich an meinen Tisch", function(done) {
+					spielerA = null;
+					spielerB = null;
+					var spielerAid = 'a';
+					var spielerBid = 'b';
+					var spielerPassword = "ab";
+					beforeEach(function(done) {
+						spielerA = new CasinoSpieler(spielerAid, spielerPassword);
+						spielerA.betrete(wsUrl, function() {
+							spielerA.spieleAnTisch(tischId, function(antwort) {
+								expect(antwort.erfolg).toBe(true);
+								done();
+							});
+						});
+					});
+					afterEach(function(done) {
+						spielerA.DESTROY(done);
+					});
+					beforeEach(function(done) {
+						spielerB = new CasinoSpieler(spielerBid, spielerPassword);
+						spielerB.betrete(wsUrl, function() {
+							spielerB.spieleAnTisch(tischId, function(antwort) {
+								expect(antwort.erfolg).toBe(true);
+								done();
+							});
+						});
+					});
+					afterEach(function(done) {
+						spielerB.DESTROY(done);
+					});
+					it("dann kann ich diese Spieler sehen", function(done) {
+						croupier.zeigeSpielerDesTisches(function(liste) {
+							expect(liste.length).toBe(2);
+							expect(liste).toContain(spielerAid);
+							expect(liste).toContain(spielerBid);
 							done();
 						});
 					});
-				});
-				afterEach(function(done) {
-					spielerA.DESTROY(done);
-				});
-				afterEach(function(done) {
-					spielerB.DESTROY(done);
-				});
-				it("dann kann ich diese Spieler sehen", function(done) {
-					croupier.zeigeSpielerDesTisches(function(liste) {
-						expect(liste.length).toBe(2);
-						expect(liste).toContain(spielerAid);
-						expect(liste).toContain(spielerBid);
-						done();
+					describe("und ein Spieler das Casino verlässt", function() {
+						beforeEach(function(done) {
+							spielerB.DESTROY(done);
+						});
+						it("dann werden nach wie vor alle in der Spielerliste aufgeführt", function(done) {
+							croupier.zeigeSpielerDesTisches(function(liste) {
+								expect(liste.length).toBe(2);
+								expect(liste).toContain(spielerAid);
+								expect(liste).toContain(spielerBid);
+								done();
+							});
+						});
 					});
-				});
-				describe("und ein spieler das Casino verlässt", function() {
-					xit("dann wird er nach wie vor in der Spielerliste aufgeführt", function() {
-						
-					});
-				});
-				describe("und ich die Spieler etwas frage", function() {
-					describe("und diese rechtzeitig antworten", function() {
-						it("dann bekomme ich die Antworten", function(done) {
+					describe("und diese können immer eine Antwort geben", function() {
+						beforeEach(function() {
 							spielerA.derCroupierFragt = function(frage) {
 								expect(frage).toEqual(1);
 								this._antworteDemCroupier(2);
@@ -250,6 +272,8 @@ describe("Szenario: Casino", function() {
 								expect(frage).toEqual(3);
 								this._antworteDemCroupier(4);
 							};
+						});
+						it("dann bekomme ich die Antworten wenn ich die Spieler etwas frage", function(done) {
 							croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
 								expect(antwort).toEqual({
 									antwort: 2,
@@ -264,28 +288,111 @@ describe("Szenario: Casino", function() {
 								});
 							});
 						});
-					});
-					describe("und diese nicht Antworten", function() {
-						xit("dann bekomme ich eine Timeout-Meldung", function() {
+						describe("und diese nicht Antworten", function() {
+							beforeEach(function() {
+								spielerA.derCroupierFragt = function(frage) {
+								};
+								spielerB.derCroupierFragt = function(frage) {
+								};
+							});
+							it("dann bekomme ich eine Timeout-Meldung wenn ich die Spieler etwas frage", function(done) {
+								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+									expect(antwort).toEqual({
+										antwort: null,
+										status: 'timeout'
+									});
+									croupier.frageDenSpieler(spielerBid, 3, function(antwort) {
+										expect(antwort).toEqual({
+											antwort: null,
+											status: 'timeout'
+										});
+										done();
+									});
+								});
+							});
+						});
+						describe("und diese zu spät Antworten", function() {
+							beforeEach(function() {
+								spielerA.derCroupierFragt = function(frage) {
+									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", antwortTimeout * 1.1);
+								};
+								spielerB.derCroupierFragt = function(frage) {
+									timeoutBlaeuft = setTimeout("spaeteAntwort('B', " + frage + ")", antwortTimeout * 1.1);
+								};
+							});
+							afterEach(function() {
+								clearTimeout(timeoutAlaeuft);
+								clearTimeout(timeoutBlaeuft);
+								timeoutAlaeuft = null;
+								timeoutBlaeuft= null;
+							});
+							it("dann bekomme ich eine Timeout-Meldung und die Antwort kommt nie an", function(done) {
+								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+									expect(antwort).toEqual({
+										antwort: null,
+										status: 'timeout'
+									});
+									expect(timeoutAlaeuft).not.toBe(null);
+									
+									croupier.frageDenSpieler(spielerBid, 2, function(antwort) {
+										expect(antwort).toEqual({
+											antwort: null,
+											status: 'timeout'
+										});
+										expect(timeoutAlaeuft).toBe(null);
+										expect(timeoutBlaeuft).not.toBe(null);
+										
+										croupier.frageDenSpieler(spielerAid, 3, function(antwort) {
+											expect(antwort).toEqual({
+												antwort: null,
+												status: 'timeout'
+											});
+											expect(timeoutAlaeuft).not.toBe(null);
+											expect(timeoutBlaeuft).toBe(null);
+											done();
+										});
+									});
+								});
+							});
+						});
+						describe("und einer auf die erste Frage so spät Antwortet, dass schon die Zeit für die zweite Frage an ihn läuft", function() {
+							beforeEach(function() {
+								spielerA.derCroupierFragt = function(frage) {
+									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", antwortTimeout * 1.1);
+								};
+							});
+							afterEach(function() {
+								clearTimeout(timeoutAlaeuft);
+								timeoutAlaeuft = null;
+							});
+							it("dann bekomme ich erst eine Timeout-Meldung und auf die zweite Frage die erste Antwort", function(done) {
+								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+									expect(antwort).toEqual({
+										antwort: null,
+										status: 'timeout'
+									});
+									croupier.frageDenSpieler(spielerAid, 2, function(antwort) {
+										expect(antwort).toEqual({
+											antwort: 1,
+											status: 'OK'
+										});
+										done();
+									});
+								});
+							});
 						});
 					});
-					describe("und diese zu spät Antworten", function() {
-						xit("dann bekomme ich eine Timeout-Meldung und die Spieler-Antwort verfällt", function() {
-						});
-						xit("dann wird die zu späte Spielerantwort ignoriert", function() {
+					describe("und ich frage einen dritten, nicht vorhandenen Spieler", function() {
+						xit("dann bekomme ich eine Timeout-Anfrage", function() {
 						});
 					});
 				});
-				describe("und ich frage einen dritten, nicht vorhandenen Spieler", function() {
-					xit("dann bekomme ich eine Timeout-Anfrage", function() {
-					});
+				xit("dann kann ich diesen Tisch schließen", function() {
 				});
-			});
-			xit("dann kann ich diesen Tisch schließen", function() {
-			});
-			describe("und ein anderer Croupier eröffnet einen anderen Tisch", function() {
-				describe("und an diesem Tisch sitzt ein weiterer Spieler", function() {
-					xit("dann kann ich mit diesem Spieler nicht sprechen", function() {
+				describe("und ein anderer Croupier eröffnet einen anderen Tisch", function() {
+					describe("und an diesem Tisch sitzt ein weiterer Spieler", function() {
+						xit("dann kann ich mit diesem Spieler nicht sprechen", function() {
+						});
 					});
 				});
 			});
