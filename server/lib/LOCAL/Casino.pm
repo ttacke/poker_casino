@@ -207,7 +207,15 @@ sub _frageDenSpieler {
 	
 	my $tisch = $self->_gibMeinenTisch($verbindung);
 	my $spieler = $self->_gibSpielerAnhandId($tisch, $spielerId);
-	return if(!$spieler);
+	if(!$spieler) {
+		return $self->_gibAntwort(
+			$verbindung,
+			{
+				antwort	=> undef,
+				status	=> 'timeout',
+			}
+		);
+	}
 	
 	$spieler->{'verbindung'}->sende(
 		$self->_scalarToJson(

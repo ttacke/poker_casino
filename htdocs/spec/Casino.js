@@ -382,16 +382,13 @@ describe("Szenario: Casino", function() {
 							});
 						});
 					});
-					describe("und ich frage einen dritten, nicht vorhandenen Spieler", function() {
-						xit("dann bekomme ich eine Timeout-Anfrage", function() {
-						});
-					});
-				});
-				xit("dann kann ich diesen Tisch schließen", function() {
-				});
-				describe("und ein anderer Croupier eröffnet einen anderen Tisch", function() {
-					describe("und an diesem Tisch sitzt ein weiterer Spieler", function() {
-						xit("dann kann ich mit diesem Spieler nicht sprechen", function() {
+					it("dann bekomme ich eine Timeout-Anfrage wenn ich einen dritten, nicht vorhandenen Spieler frage", function(done) {
+						croupier.frageDenSpieler(spielerAid + 'UNBEKANNT', 1, function(antwort) {
+							expect(antwort).toEqual({
+								antwort: null,
+								status: 'timeout'
+							});
+							done();
 						});
 					});
 				});
