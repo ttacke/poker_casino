@@ -42,14 +42,16 @@
 		</style>
 		<div class="croupier">
 			<h2>Croupier</h2>
-			<iframe src="croupier.html"></iframe>
+			<iframe src="speedtest_croupier.html"></iframe>
 		</div>
 		<script>
-			for(var i = 0;i < 6;i++) {
+			var SPIELER_ANZAHL = window.location.search.substr(1, window.location.search.length) * 1;
+			if(!SPIELER_ANZAHL) SPIELER_ANZAHL = 6;
+			for(var i = 1;i <= SPIELER_ANZAHL;i++) {
 				document.write(
 					'<div class="spieler">'
 					+	'<h2>Spieler#' + i + '</h2>'
-					+	'<iframe src="spieler.html?' + i + '"></iframe>'
+					+	'<iframe src="speedtest_spieler.html?' + i + '"></iframe>'
 					+ '</div>'
 				);
 			}

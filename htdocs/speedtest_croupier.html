@@ -27,7 +27,7 @@
 				document.getElementsByTagName('textarea')[0].value = '';
 				
 				croupier = new CasinoCroupier(CROUPIER_ID, GEHEIME_CROUPIER_ID);
-				croupier.betrete("ws://localhost:8080/", function() {
+				croupier.betrete("ws://10.1.1.198:8080/", function() {
 					croupier.eroeffneTisch(TISCH_ID, SPIELNAME, function(daten) {
 						if(daten.erfolg) {
 							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg);

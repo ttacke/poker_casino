@@ -192,6 +192,8 @@ sub _frageDenSpieler {
 	
 	my $tisch = $self->_gibMeinenTisch($verbindung);
 	my $spieler = $self->_gibSpielerAnhandId($tisch, $spielerId);
+	return if(!$spieler);
+	
 	$spieler->{'verbindung'}->sende(
 		$self->_scalarToJson(
 			{
