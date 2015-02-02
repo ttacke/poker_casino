@@ -5,6 +5,7 @@ function CasinoBesucher() {
 	this.verbindung = null;
 	this.istVerbunden = false;
 	this.warteAufAntwort = false;
+	this.istAnTisch = null;
 	
 	// VOID
 	this.DESTROY = function(func) {
@@ -69,6 +70,33 @@ function CasinoBesucher() {
 		);
 	};
 	// VOID
+	this.deponiereImSafe = function(kombination, schatz, antwortFunktion) {
+		var self = this;
+		this._sende(
+			{
+				"aktion":"deponiereImSafe",
+				"kombination":kombination,
+				"schatz":schatz,
+			},
+			function(daten) {
+				antwortFunktion(daten);
+			}
+		);
+	};
+	// VOID
+	this.schaueInSafe = function(kombination, antwortFunktion) {
+		var self = this;
+		this._sende(
+			{
+				"aktion":"schaueInSafe",
+				"kombination":kombination,
+			},
+			function(daten) {
+				antwortFunktion(daten);
+			}
+		);
+	};
+	// VOID
 	this._sende = function(daten, empfangsFunktion) {
 		if(!this.istVerbunden) {
 			throw new Error("Du hast das Casino noch nicht betreten");
@@ -90,7 +118,6 @@ function CasinoBesucher() {
 	};
 	// VOID
 	this._unerwarteteAntwort = function(event) {
-		//TODO fuer Tests nicht gut!!
-		//throw new Error("Unerwartete Antwort erhalten: " + event.data + this.id1);
+		throw new Error("Unerwartete Antwort erhalten: " + event.data + this.id1);
 	};
 }

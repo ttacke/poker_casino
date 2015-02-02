@@ -30,7 +30,7 @@
 				croupier.betrete("ws://localhost:8080/", function() {
 					croupier.eroeffneTisch(TISCH_ID, SPIELNAME, function(daten) {
 						if(daten.erfolg) {
-							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg);
+							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg, true);
 							warteAufSpieler();
 						} else {
 							logge("Tisch anlegen ist fehlgeschlagen", true);
@@ -50,7 +50,7 @@
 			function warteAufSpieler() {
 				croupier.zeigeSpielerDesTisches(function(liste) {
 					if(liste.length < MIN_SPIELER) {
-						logge('warte auf min. ' + MIN_SPIELER + ' Spieler...');
+						logge('warte auf min. ' + MIN_SPIELER + ' Spieler...', true);
 						setTimeout('warteAufSpieler()', 1000);
 						return;
 					}
@@ -83,8 +83,8 @@
 					naechsterSpieler();
 				});
 			}
-			function logge(msg, error) {
-				if(window.i > 432 || error) {
+			function logge(msg, zeigeDirekt) {
+				if(window.i > 432 || zeigeDirekt) {
 					document.getElementsByTagName('textarea')[0].value = msg + '(v = ' + errechneGeschwindigkeit() + ' PingPong/s)';
 					window.i = 0;
 				}

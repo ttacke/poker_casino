@@ -20,6 +20,14 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
+xit("TODO timeout steuert der Croupier", function() {
+});
+xit("TODO Server nach Croupier und Spieler trennen (auslagern)", function() {
+});
+xit("TODO Server nicht per JSON anfragen", function() {
+});
+xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (slider)", function() {
+});
 describe("Szenario: Casino", function() {
 	beforeEach(function(done) {
 		var verbindung = new WebSocket(wsUrl);
@@ -38,18 +46,32 @@ describe("Szenario: Casino", function() {
 		afterEach(function(done) {
 			besucher.DESTROY(done);
 		});
-		describe("und betrete das Casino via NICHT-Websocket-URL betreten", function() {
-			it("dann schlägt das fehl", function() {
-				expect(
-					function() {
-						besucher.betrete("KEINE_WS_URL");
-					}
-				).toThrow(new Error("die Casino-URL entspricht nicht dem Websocket-Protokoll"));
-			});
+		it("dann schlägt es fehl wenn ich das Casino via NICHT-Websocket-URL betreten will", function() {
+			expect(
+				function() {
+					besucher.betrete("KEINE_WS_URL");
+				}
+			).toThrow(new Error("die Casino-URL entspricht nicht dem Websocket-Protokoll"));
 		});
-		describe("TODO TODO NUR SPIELER UND CROUPIER und ich betrete das Casino via WebSocket", function() {
-			describe("und ich deponiere etwas in der Bank", function() {
-				xit("dann kann ich das auch wieder abholen", function() {
+		describe("und ich betrete das Casino", function() {
+			beforeEach(function(done) {
+				besucher.betrete(wsUrl, function() {
+					done();
+				});
+			});
+			describe("und ich deponiere etwas im Safe", function() {
+				var kombination = 12345;
+				var schatz = 'derRingDesYogurt';
+				beforeEach(function(done) {
+					besucher.deponiereImSafe(kombination, schatz, function(antwort) {
+						done();
+					});
+				});
+				it("dann kann ich das auch wieder ansehen", function(done) {
+					besucher.schaueInSafe(kombination, function(antwort) {
+						expect(antwort.schatz).toBe(schatz);
+						done();
+					});
 				});
 			});
 		});

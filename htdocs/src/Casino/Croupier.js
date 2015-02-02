@@ -5,7 +5,6 @@ CasinoCroupier.prototype = new CasinoBesucher();
 function CasinoCroupier(id, geheimeId) {
 	this.id = id;
 	this.geheimeId = geheimeId;
-	this.stehtAmTisch = null;
 	
 	this.eroeffneTisch = function(tischId, nameDesSpiels, antwortFunktion) {
 		var self = this;
@@ -18,9 +17,6 @@ function CasinoCroupier(id, geheimeId) {
 				"geheimeCroupierId":this.geheimeId
 			},
 			function(daten) {
-				if(daten.erfolg) {
-					self.stehtAmTisch = tischId;
-				}
 				antwortFunktion(daten);
 			}
 		);

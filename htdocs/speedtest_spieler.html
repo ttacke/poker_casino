@@ -21,7 +21,11 @@
 				document.getElementsByTagName('input')[0].value = '';
 				
 				spieler = new CasinoSpieler(SPIELER_ID, GEHEIME_SPIELER_ID);
-				spieler.derCroupierFragt = spiele;
+				spieler.derCroupierFragt = function(frage) {
+					window.anfragenZaehler++;
+					logge('spiele');
+					this._antworteDemCroupier(frage + 1);
+				};
 				spieler.betrete("ws://localhost:8080/", function() {
 					warteAufTisch();
 				});
@@ -34,20 +38,15 @@
 				window.anfragenStartZeit = new Date().getTime();
 				return anfragenProSekunde;
 			}
-			function spiele(frage) {
-				window.anfragenZaehler++;
-				logge('spiele');
-				this._antworteDemCroupier(frage + 1);
-			};
 			function warteAufTisch() {
-				logge('warte auf Tisch "' + TISCH_ID + '"...');
+				logge('warte auf Tisch "' + TISCH_ID + '"...', true);
 				spieler.zeigeOffeneTische(function(liste) {
 					for(var i = 0; i < liste.length;i++) {
 						if(liste[i].tischId == TISCH_ID) {
-							logge("Tisch betreten...");
+							logge("Tisch betreten...", true);
 							spieler.spieleAnTisch(TISCH_ID, function() {
 								if(spieler.spieltAnTisch) {
-									logge("Spielen:");
+									logge("Spielen:", true);
 									return;
 									
 								} else {
@@ -60,9 +59,9 @@
 					setTimeout('warteAufTisch()', 1000);
 				});
 			}
-			function logge(msg, error) {
+			function logge(msg, zeigeDirekt) {
 				window.i++;
-				if(window.i > 432 || error) {
+				if(window.i > 432 || zeigeDirekt) {
 					document.getElementsByTagName('input')[0].value = msg + '(v = ' + errechneGeschwindigkeit() + ' PingPong/s)';
 					window.i = 0;
 				}

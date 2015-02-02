@@ -31,6 +31,7 @@ sub _init {
 		delete($self->{'key'});
 	}
 	
+	$self->{'safe'} = {};
 	$self->{'jsonParser'}		= JSON->new();
 	$self->{'verbindungen'}		= {};
 	$self->{'tische'}			= {};
@@ -82,7 +83,6 @@ sub _eroeffneTisch {
 	if(!$bestehenderTisch) {
 		$self->{'tische'}->{$tischId} = {
 			id				=> $tischId,
-			daten			=> {},
 			spieler			=> [],
 			nameDesSpiels	=> $nameDesSpiels,
 			croupier		=> {
@@ -128,7 +128,6 @@ sub _spieleAnTisch {
 		id			=> $spielerId,
 		geheimeId	=> $geheimeSpielerId,
 		verbindung	=> $verbindung,
-		daten		=> {},
 	});
 	return $self->_gibAntwort($verbindung, OK());
 }
@@ -286,6 +285,23 @@ sub _gibSpielerAnhandVerbindung {
 	return undef;
 }
 # VOID
+sub _deponiereImSafe {
+	my ($self, $verbindung, $kombination, $schatz) = @_;
+	
+	$self->{'safe'}->{$kombination} = $schatz;
+	return $self->_gibAntwort($verbindung, OK());
+}
+# VOID
+sub _schaueInSafe {
+	my ($self, $verbindung, $kombination) = @_;
+	
+	my $schatz = $self->{'safe'}->{$kombination} || '';
+	return $self->_gibAntwort($verbindung, {
+		erfolg	=> \1,
+		schatz	=> $schatz,
+	});
+}
+# VOID
 sub neueNachricht {
 	my ($self, $rawConnection, $textNachricht) = @_;
 	
@@ -311,6 +327,10 @@ sub neueNachricht {
 		return $self->_frageDenSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
 	} elsif($aktion eq 'antwortAnDenCroupier') {
 		return $self->_antwortAnDenCroupier($verbindung, $nachricht->{'nachricht'});
+	} elsif($aktion eq 'deponiereImSafe') {
+		return $self->_deponiereImSafe($verbindung, $nachricht->{'kombination'}, $nachricht->{'schatz'});
+	} elsif($aktion eq 'schaueInSafe') {
+		return $self->_schaueInSafe($verbindung, $nachricht->{'kombination'});
 	} elsif($aktion eq 'RESET') {
 		$self->_init();
 		$self->_gibAntwort($verbindung, OK());

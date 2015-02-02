@@ -5,7 +5,6 @@ CasinoSpieler.prototype = new CasinoBesucher();
 function CasinoSpieler(id, geheimeId) {
 	this.id = id;
 	this.geheimeId = geheimeId;
-	this.spieltAnTisch = false;
 	
 	// VOID
 	this.spieleAnTisch = function(tischId, antwortFunktion) {
@@ -18,9 +17,6 @@ function CasinoSpieler(id, geheimeId) {
 				"spielerId":this.id
 			},
 			function(daten) {
-				if(daten.erfolg) {
-					self.spieltAnTisch = true;
-				}
 				antwortFunktion(daten);
 			}
 		);
