@@ -20,13 +20,13 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO ID in Name umbenennen", function() {
-});
 xit("TODO Server nach Croupier und Spieler trennen (auslagern)", function() {
 });
 xit("TODO Server nicht per JSON anfragen", function() {
 });
-xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (slider)", function() {
+xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (für Timeout im Server und einen für Timeout im JS)", function() {
+});
+xit("TODO Maxschen Croupier und dummy-Spieler umsetzen: https://www.spielwiki.de/M%C3%A4xchen", function() {
 });
 describe("Szenario: Casino", function() {
 	beforeEach(function(done) {
@@ -78,10 +78,10 @@ describe("Szenario: Casino", function() {
 	});
 	describe("Angenommen ich bin ein Spieler", function() {
 		var spieler = null;
-		var spielerId = "Spieler1";
+		var spielerName = "Spieler1";
 		var spielerPassword = "Spieler1";
 		beforeEach(function() {
-			spieler = new CasinoSpieler(spielerId, spielerPassword);
+			spieler = new CasinoSpieler(spielerName, spielerPassword);
 		});
 		afterEach(function(done) {
 			spieler.DESTROY(done);
@@ -94,14 +94,14 @@ describe("Szenario: Casino", function() {
 			});
 			describe("und dort existiert ein Tisch", function() {
 				var croupier = null;
-				var croupierId = "Croupier1";
+				var croupierName = "Croupier1";
 				var croupierPassword = "Croupier1";
-				var tischId = 'tisch1';
+				var tischName = 'tisch1';
 				var spielname = 'pingpong';
 				beforeEach(function(done) {
-					croupier = new CasinoCroupier(croupierId, croupierPassword);
+					croupier = new CasinoCroupier(croupierName, croupierPassword);
 					croupier.betrete(wsUrl, function() {
-						croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
+						croupier.eroeffneTisch(tischName, spielname, spielerTimeout, function(antwort) {
 							done();
 						});
 					});
@@ -113,14 +113,14 @@ describe("Szenario: Casino", function() {
 					spieler.zeigeOffeneTische(function(antwort) {
 						expect(antwort.length).toEqual(1);
 						expect(antwort[0].nameDesSpiels).toEqual(spielname);
-						expect(antwort[0].tischId).toEqual(tischId);
+						expect(antwort[0].tischName).toEqual(tischName);
 						done();
 					});
 				});
 				describe("und ich spiele an diesem Tisch", function() {
 					beforeEach(function(done) {
-						spieler.spieleAnTisch(tischId, function(antwort) {
-							expect(antwort.erfolg).toBe(true);
+						spieler.spieleAnTisch(tischName, function(antwort) {
+							expect(antwort.status).toBe('ok');
 							done();
 						});
 					});
@@ -128,7 +128,7 @@ describe("Szenario: Casino", function() {
 						var spielerB = null;
 						var spielerBpassword = "Spieler2";
 						beforeEach(function(done) {
-							spielerB = new CasinoSpieler(spielerId, spielerBpassword);
+							spielerB = new CasinoSpieler(spielerName, spielerBpassword);
 							spielerB.betrete(wsUrl, function() {
 								done();
 							});
@@ -137,8 +137,8 @@ describe("Szenario: Casino", function() {
 							spielerB.DESTROY(done);
 						});
 						it("dann wird er abgewiesen", function(done) {
-							spielerB.spieleAnTisch(tischId, function(antwort) {
-								expect(antwort.erfolg).toBe(false);
+							spielerB.spieleAnTisch(tischName, function(antwort) {
+								expect(antwort.status).toBe('fehler');
 								done();
 							});
 						});
@@ -149,14 +149,14 @@ describe("Szenario: Casino", function() {
 						});
 						describe("und ich betrete es wieder", function() {
 							beforeEach(function(done) {
-								spieler = new CasinoSpieler(spielerId, spielerPassword);
+								spieler = new CasinoSpieler(spielerName, spielerPassword);
 								spieler.betrete(wsUrl, function() {
 									done();
 								});
 							});
 							it("dann kann ich an dem Tisch wieder spielen", function(done) {
-								spieler.spieleAnTisch(tischId, function(antwort) {
-									expect(antwort.erfolg).toBe(true);
+								spieler.spieleAnTisch(tischName, function(antwort) {
+									expect(antwort.status).toBe('ok');
 									done();
 								});
 							});
@@ -168,10 +168,10 @@ describe("Szenario: Casino", function() {
 	});
 	describe("Angenommen ich bin ein Croupier", function() {
 		var croupier = null;
-		var croupierId = "Croupier1";
+		var croupierName = "Croupier1";
 		var croupierPassword = "Croupier1";
 		beforeEach(function() {
-			croupier = new CasinoCroupier(croupierId, croupierPassword);
+			croupier = new CasinoCroupier(croupierName, croupierPassword);
 		});
 		afterEach(function(done) {
 			croupier.DESTROY(done);
@@ -183,11 +183,11 @@ describe("Szenario: Casino", function() {
 				});
 			});
 			describe("und ich eröffne einen Tisch", function(done) {
-				var tischId = 'tisch1';
+				var tischName = 'tisch1';
 				var spielname = 'pingpong';
 				beforeEach(function(done) {
-					croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
-						expect(antwort.erfolg).toBe(true);
+					croupier.eroeffneTisch(tischName, spielname, spielerTimeout, function(antwort) {
+						expect(antwort.status).toBe('ok');
 						done();
 					});
 				});
@@ -197,15 +197,15 @@ describe("Szenario: Casino", function() {
 					});
 					describe("und ich betrete das Casino wieder", function() {
 						beforeEach(function(done) {
-							croupier = new CasinoCroupier(croupierId, croupierPassword);
+							croupier = new CasinoCroupier(croupierName, croupierPassword);
 							croupier.betrete(wsUrl, function() {
 								done();
 							});
 						});
 						describe("und ich betrete den Tisch wieder, vergebe dabei aber einen anderen Spielnamen", function() {
 							beforeEach(function(done) {
-								croupier.eroeffneTisch(tischId, spielname + 'SINNFREI', spielerTimeout + 20, function(antwort) {
-									expect(antwort.erfolg).toBe(true);
+								croupier.eroeffneTisch(tischName, spielname + 'SINNFREI', spielerTimeout + 20, function(antwort) {
+									expect(antwort.status).toBe('ok');
 									done();
 								});
 							});
@@ -220,14 +220,14 @@ describe("Szenario: Casino", function() {
 					});
 					describe("und ich betrete das Casino mit anderem Namen", function() {
 						beforeEach(function(done) {
-							croupier = new CasinoCroupier(croupierId + "FALSCH", croupierPassword);
+							croupier = new CasinoCroupier(croupierName + "FALSCH", croupierPassword);
 							croupier.betrete(wsUrl, function() {
 								done();
 							});
 						});
 						it("dann werde ich abgewiesen wenn ich den Tisch wieder eröffnen will", function(done) {
-							croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
-								expect(antwort.erfolg).toBe(false);
+							croupier.eroeffneTisch(tischName, spielname, spielerTimeout, function(antwort) {
+								expect(antwort.status).toBe('fehler');
 								done();
 							});
 						});
@@ -236,14 +236,14 @@ describe("Szenario: Casino", function() {
 				describe("und zwei Spieler setzen sich an meinen Tisch", function(done) {
 					spielerA = null;
 					spielerB = null;
-					var spielerAid = 'a';
-					var spielerBid = 'b';
+					var spielerAName = 'a';
+					var spielerBName = 'b';
 					var spielerPassword = "ab";
 					beforeEach(function(done) {
-						spielerA = new CasinoSpieler(spielerAid, spielerPassword);
+						spielerA = new CasinoSpieler(spielerAName, spielerPassword);
 						spielerA.betrete(wsUrl, function() {
-							spielerA.spieleAnTisch(tischId, function(antwort) {
-								expect(antwort.erfolg).toBe(true);
+							spielerA.spieleAnTisch(tischName, function(antwort) {
+								expect(antwort.status).toBe('ok');
 								done();
 							});
 						});
@@ -252,10 +252,10 @@ describe("Szenario: Casino", function() {
 						spielerA.DESTROY(done);
 					});
 					beforeEach(function(done) {
-						spielerB = new CasinoSpieler(spielerBid, spielerPassword);
+						spielerB = new CasinoSpieler(spielerBName, spielerPassword);
 						spielerB.betrete(wsUrl, function() {
-							spielerB.spieleAnTisch(tischId, function(antwort) {
-								expect(antwort.erfolg).toBe(true);
+							spielerB.spieleAnTisch(tischName, function(antwort) {
+								expect(antwort.status).toBe('ok');
 								done();
 							});
 						});
@@ -266,8 +266,8 @@ describe("Szenario: Casino", function() {
 					it("dann kann ich diese Spieler sehen", function(done) {
 						croupier.zeigeSpielerDesTisches(function(liste) {
 							expect(liste.length).toBe(2);
-							expect(liste).toContain(spielerAid);
-							expect(liste).toContain(spielerBid);
+							expect(liste).toContain(spielerAName);
+							expect(liste).toContain(spielerBName);
 							done();
 						});
 					});
@@ -278,8 +278,8 @@ describe("Szenario: Casino", function() {
 						it("dann werden nach wie vor alle in der Spielerliste aufgeführt", function(done) {
 							croupier.zeigeSpielerDesTisches(function(liste) {
 								expect(liste.length).toBe(2);
-								expect(liste).toContain(spielerAid);
-								expect(liste).toContain(spielerBid);
+								expect(liste).toContain(spielerAName);
+								expect(liste).toContain(spielerBName);
 								done();
 							});
 						});
@@ -296,15 +296,15 @@ describe("Szenario: Casino", function() {
 							};
 						});
 						it("dann bekomme ich die Antworten wenn ich die Spieler etwas frage", function(done) {
-							croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+							croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 								expect(antwort).toEqual({
-									antwort: 2,
-									status: 'OK'
+									details: 2,
+									status: 'ok'
 								});
-								croupier.frageDenSpieler(spielerBid, 3, function(antwort) {
+								croupier.frageDenSpieler(spielerBName, 3, function(antwort) {
 									expect(antwort).toEqual({
-										antwort: 4,
-										status: 'OK'
+										details: 4,
+										status: 'ok'
 									});
 									done();
 								});
@@ -318,14 +318,14 @@ describe("Szenario: Casino", function() {
 								};
 							});
 							it("dann bekomme ich eine Timeout-Meldung wenn ich die Spieler etwas frage", function(done) {
-								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										antwort: null,
+										details: null,
 										status: 'timeout'
 									});
-									croupier.frageDenSpieler(spielerBid, 3, function(antwort) {
+									croupier.frageDenSpieler(spielerBName, 3, function(antwort) {
 										expect(antwort).toEqual({
-											antwort: null,
+											details: null,
 											status: 'timeout'
 										});
 										done();
@@ -349,24 +349,24 @@ describe("Szenario: Casino", function() {
 								timeoutBlaeuft= null;
 							});
 							it("dann bekomme ich eine Timeout-Meldung und die Antwort kommt nie an", function(done) {
-								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										antwort: null,
+										details: null,
 										status: 'timeout'
 									});
 									expect(timeoutAlaeuft).not.toBe(null);
 									
-									croupier.frageDenSpieler(spielerBid, 2, function(antwort) {
+									croupier.frageDenSpieler(spielerBName, 2, function(antwort) {
 										expect(antwort).toEqual({
-											antwort: null,
+											details: null,
 											status: 'timeout'
 										});
 										expect(timeoutAlaeuft).toBe(null);
 										expect(timeoutBlaeuft).not.toBe(null);
 										
-										croupier.frageDenSpieler(spielerAid, 3, function(antwort) {
+										croupier.frageDenSpieler(spielerAName, 3, function(antwort) {
 											expect(antwort).toEqual({
-												antwort: null,
+												details: null,
 												status: 'timeout'
 											});
 											expect(timeoutAlaeuft).not.toBe(null);
@@ -388,15 +388,15 @@ describe("Szenario: Casino", function() {
 								timeoutAlaeuft = null;
 							});
 							it("dann bekomme ich erst eine Timeout-Meldung und auf die zweite Frage die erste Antwort", function(done) {
-								croupier.frageDenSpieler(spielerAid, 1, function(antwort) {
+								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										antwort: null,
+										details: null,
 										status: 'timeout'
 									});
-									croupier.frageDenSpieler(spielerAid, 2, function(antwort) {
+									croupier.frageDenSpieler(spielerAName, 2, function(antwort) {
 										expect(antwort).toEqual({
-											antwort: 1,
-											status: 'OK'
+											details: 1,
+											status: 'ok'
 										});
 										done();
 									});
@@ -405,9 +405,9 @@ describe("Szenario: Casino", function() {
 						});
 					});
 					it("dann bekomme ich eine Timeout-Anfrage wenn ich einen dritten, nicht vorhandenen Spieler frage", function(done) {
-						croupier.frageDenSpieler(spielerAid + 'UNBEKANNT', 1, function(antwort) {
+						croupier.frageDenSpieler(spielerAName + 'UNBEKANNT', 1, function(antwort) {
 							expect(antwort).toEqual({
-								antwort: null,
+								details: null,
 								status: 'timeout'
 							});
 							done();

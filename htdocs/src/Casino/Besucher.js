@@ -118,6 +118,6 @@ function CasinoBesucher() {
 	};
 	// VOID
 	this._unerwarteteAntwort = function(event) {
-		throw new Error("Unerwartete Antwort erhalten: " + event.data + this.id1);
+		throw new Error("Unerwartete Antwort erhalten: " + event.data);
 	};
 }

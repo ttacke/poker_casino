@@ -4,12 +4,13 @@ use warnings;
 
 use lib './lib';
 
-use Data::Dumper();
 BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::PP' }
 use JSON -support_by_pp, -no_export;
 use Time::HiRes();
 
 use LOCAL::Casino::Verbindung();
+use LOCAL::Casino::Croupier();
+my $CROUPIER = 'LOCAL::Casino::Croupier';
 
 *OK = sub { {"erfolg" => \1, "details" => ""} };
 *FEHLER = sub { {"erfolg" => \0, "details" => $_[0]} };
@@ -77,18 +78,18 @@ sub _gibAntwort {
 }
 # VOID
 sub _eroeffneTisch {
-	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $croupierPasswort, $spielerTimeoutInMillisekunden) = @_;
+	my ($self, $verbindung, $tischName, $nameDesSpiels, $croupierName, $croupierPasswort, $spielerTimeoutInMillisekunden) = @_;
 	
 	my $timeoutInSekunden = ($spielerTimeoutInMillisekunden / 1000) || 0.05;
-	my $bestehenderTisch = $self->{'tische'}->{$tischId};
+	my $bestehenderTisch = $self->{'tische'}->{$tischName};
 	if(!$bestehenderTisch) {
-		$self->{'tische'}->{$tischId} = {
-			id				=> $tischId,
+		$self->{'tische'}->{$tischName} = {
+			name			=> $tischName,
 			spieler			=> [],
 			nameDesSpiels	=> $nameDesSpiels,
 			spielerTimeout	=> $timeoutInSekunden,
 			croupier		=> {
-				id				=> $croupierId,
+				name			=> $croupierName,
 				passwort		=> $croupierPasswort,
 				verbindung		=> $verbindung,
 			},
@@ -96,54 +97,54 @@ sub _eroeffneTisch {
 	} else {
 		my $croupier = $bestehenderTisch->{'croupier'};
 		if(
-			$croupier->{'id'} eq $croupierId
+			$croupier->{'name'} eq $croupierName
 			&& $croupier->{'passwort'} eq $croupierPasswort
 		) {
 			$croupier->{'verbindung'} = $verbindung;
 			$bestehenderTisch->{'spielerTimeout'} = $timeoutInSekunden;
 		} else {
-			return $self->_gibAntwort($verbindung, FEHLER('Dieser Tisch gehoert jemand anderem'));
+			return $verbindung->antworte('fehler', 'Dieser Tisch gehoert jemand anderem');
 		}
 	}
-	return $self->_gibAntwort($verbindung, OK());
+	return $verbindung->antworte('ok');
 }
 # VOID
 sub _spieleAnTisch {
-	my ($self, $verbindung, $tischId, $spielerId, $spielerPasswort) = @_;
+	my ($self, $verbindung, $tischName, $spielerName, $spielerPasswort) = @_;
 	
-	my $tisch = $self->{'tische'}->{$tischId};
+	my $tisch = $self->{'tische'}->{$tischName};
 	if(!$tisch) {
-		return $self->_gibAntwort($verbindung, FEHLER("Der Tisch existiert nicht"));
+		return $verbindung->antworte('fehler', "Der Tisch existiert nicht");
 	}
 	
 	foreach my $existierenderSpieler (@{$tisch->{'spieler'}}) {
-		if($existierenderSpieler->{'id'} eq $spielerId) {
+		if($existierenderSpieler->{'name'} eq $spielerName) {
 			if($existierenderSpieler->{'passwort'} eq $spielerPasswort) {
 				$existierenderSpieler->{'verbindung'} = $verbindung;
-				return $self->_gibAntwort($verbindung, OK());
+				return $verbindung->antworte('ok');
 			} else {
-				return $self->_gibAntwort($verbindung, FEHLER("Der Spielername ist bereits vergeben"));
+				return $verbindung->antworte('fehler', "Der Spielername ist bereits vergeben");
 			}
 		}
 	}
 	
 	push(@{$tisch->{'spieler'}}, {
-		id			=> $spielerId,
+		name			=> $spielerName,
 		passwort	=> $spielerPasswort,
 		verbindung	=> $verbindung,
 	});
-	return $self->_gibAntwort($verbindung, OK());
+	return $verbindung->antworte('ok');
 }
 # VOID
 sub _zeigeSpielerDesTisches {
 	my ($self, $croupierVerbindung) = @_;
 	
 	my @liste = ();
-	foreach my $tischId (keys(%{$self->{'tische'}})) {
-		my $tisch = $self->{'tische'}->{$tischId};
+	foreach my $tischName (keys(%{$self->{'tische'}})) {
+		my $tisch = $self->{'tische'}->{$tischName};
 		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
 			foreach my $spieler (@{$tisch->{'spieler'}}) {
-				push(@liste, $spieler->{'id'});
+				push(@liste, $spieler->{'name'});
 			}
 		}
 	}
@@ -157,14 +158,14 @@ sub _zeigeOffeneTische {
 	foreach my $tisch (@{$self->_gibAlleTische()}) {
 		my $daten = {
 			nameDesSpiels	=> $tisch->{'nameDesSpiels'},
-			tischId			=> $tisch->{'id'},
+			tischName		=> $tisch->{'name'},
 			spielerAnzahl	=> scalar(@{$tisch->{'spieler'}}),
-			croupierId		=> $tisch->{'croupier'}->{'id'},
+			croupierName	=> $tisch->{'croupier'}->{'name'},
 			wertung			=> [],
 		};
 		foreach my $spieler (@{$tisch->{'spieler'}}) {
 			push(@{$daten->{'wertung'}}, {
-				id		=> $spieler->{'id'},
+				name	=> $spieler->{'name'},
 				punkte	=> 0,
 			});
 		}
@@ -177,17 +178,17 @@ sub _gibAlleTische {
 	my ($self) = @_;
 	
 	my @liste = ();
-	foreach my $tischId (sort keys(%{$self->{'tische'}})) {
-		push(@liste, $self->{'tische'}->{$tischId});
+	foreach my $tischName (sort keys(%{$self->{'tische'}})) {
+		push(@liste, $self->{'tische'}->{$tischName});
 	}
 	return \@liste;
 }
 # HASH || NULL
-sub _gibSpielerAnhandId {
-	my ($self, $tisch, $spielerId) = @_;
+sub _gibSpielerAnhandName {
+	my ($self, $tisch, $spielerName) = @_;
 	
 	foreach my $spieler (@{$tisch->{'spieler'}}) {
-		return $spieler if($spieler->{'id'} eq $spielerId);
+		return $spieler if($spieler->{'name'} eq $spielerName);
 	}
 	return undef;
 }
@@ -195,8 +196,8 @@ sub _gibSpielerAnhandId {
 sub _gibMeinenTisch {
 	my ($self, $croupierVerbindung) = @_;
 	
-	foreach my $tischId (keys(%{$self->{'tische'}})) {
-		my $tisch = $self->{'tische'}->{$tischId};
+	foreach my $tischName (keys(%{$self->{'tische'}})) {
+		my $tisch = $self->{'tische'}->{$tischName};
 		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
 			return $tisch;
 		}
@@ -205,18 +206,12 @@ sub _gibMeinenTisch {
 }
 # VOID
 sub _frageDenSpieler {
-	my ($self, $verbindung, $spielerId, $nachricht) = @_;
+	my ($self, $verbindung, $spielerName, $nachricht) = @_;
 	
 	my $tisch = $self->_gibMeinenTisch($verbindung);
-	my $spieler = $self->_gibSpielerAnhandId($tisch, $spielerId);
+	my $spieler = $self->_gibSpielerAnhandName($tisch, $spielerName);
 	if(!$spieler) {
-		return $self->_gibAntwort(
-			$verbindung,
-			{
-				antwort	=> undef,
-				status	=> 'timeout',
-			}
-		);
+		return $verbindung->antworte('timeout');
 	}
 	
 	$spieler->{'verbindung'}->sende(
@@ -227,30 +222,24 @@ sub _frageDenSpieler {
 			}
 		)
 	);
-	$self->_warteAufAntwortVon($verbindung, $spielerId, $tisch->{'spielerTimeout'});
+	$self->_warteAufAntwortVon($verbindung, $spielerName, $tisch->{'spielerTimeout'});
 	return;
 }
 # VOID
 sub _warteAufAntwortVon {
-	my ($self, $croupierVerbindung, $spielerId, $timeout) = @_;
+	my ($self, $croupierVerbindung, $spielerName, $timeout) = @_;
 	
 	$SIG{'ALRM'} ||= sub {
-		foreach my $spielerId (keys(%{$self->{'spielerAntwort'}})) {
-			my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spielerId};
+		foreach my $spielerName (keys(%{$self->{'spielerAntwort'}})) {
+			my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spielerName};
 			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
-				$self->_gibAntwort(
-					$erwarteteAntwort->{'croupierVerbindung'},
-					{
-						antwort	=> undef,
-						status	=> 'timeout',
-					}
-				);
-				delete($self->{'spielerAntwort'}->{$spielerId});
+				$erwarteteAntwort->{'croupierVerbindung'}->antworte('timeout');
+				delete($self->{'spielerAntwort'}->{$spielerName});
 			}
 		}
 	};
 	my $timeoutTimestamp = Time::HiRes::time() + $timeout;
-	$self->{'spielerAntwort'}->{$spielerId} = {
+	$self->{'spielerAntwort'}->{$spielerName} = {
 		gueltigBis			=> $timeoutTimestamp,
 		croupierVerbindung	=> $croupierVerbindung,
 	};
@@ -264,15 +253,9 @@ sub _antwortAnDenCroupier {
 	my $spieler = $self->_gibSpielerAnhandVerbindung($verbindung);
 	return if(!$spieler);
 	
-	my $erwarteteAntwort = delete($self->{'spielerAntwort'}->{$spieler->{'id'}});
+	my $erwarteteAntwort = delete($self->{'spielerAntwort'}->{$spieler->{'name'}});
 	if($erwarteteAntwort && $erwarteteAntwort->{'gueltigBis'} >= Time::HiRes::time()) {
-		$self->_gibAntwort(
-			$erwarteteAntwort->{'croupierVerbindung'},
-			{
-				antwort	=> $nachricht,
-				status	=> 'OK',
-			}
-		);
+		$erwarteteAntwort->{'croupierVerbindung'}->antworte('ok', $nachricht);
 	}
 	return;
 }
@@ -292,7 +275,7 @@ sub _deponiereImSafe {
 	my ($self, $verbindung, $kombination, $schatz) = @_;
 	
 	$self->{'safe'}->{$kombination} = $schatz;
-	return $self->_gibAntwort($verbindung, OK());
+	return $verbindung->antworte('ok');
 }
 # VOID
 sub _schaueInSafe {
@@ -314,21 +297,21 @@ sub neueNachricht {
 	my $aktion = $nachricht->{'aktion'};
 	if($aktion eq 'eroeffneTisch') {
 		return $self->_eroeffneTisch(
-			$verbindung, $nachricht->{'tischId'}, $nachricht->{'nameDesSpiels'},
-			$nachricht->{'croupierId'}, $nachricht->{'croupierPasswort'},
+			$verbindung, $nachricht->{'tischName'}, $nachricht->{'nameDesSpiels'},
+			$nachricht->{'croupierName'}, $nachricht->{'croupierPasswort'},
 			$nachricht->{'spielerTimeout'}
 		);
 	} elsif($aktion eq 'zeigeOffeneTische') {
 		return $self->_zeigeOffeneTische($verbindung);
 	} elsif($aktion eq 'spieleAnTisch') {
 		return $self->_spieleAnTisch(
-			$verbindung, $nachricht->{'tischId'}, $nachricht->{'spielerId'},
+			$verbindung, $nachricht->{'tischName'}, $nachricht->{'spielerName'},
 			$nachricht->{'spielerPasswort'}
 		);
 	} elsif($aktion eq 'zeigeSpielerDesTisches') {
 		return $self->_zeigeSpielerDesTisches($verbindung);
 	} elsif($aktion eq 'frageDenSpieler') {
-		return $self->_frageDenSpieler($verbindung, $nachricht->{'spielerId'}, $nachricht->{'nachricht'});
+		return $self->_frageDenSpieler($verbindung, $nachricht->{'spielerName'}, $nachricht->{'nachricht'});
 	} elsif($aktion eq 'antwortAnDenCroupier') {
 		return $self->_antwortAnDenCroupier($verbindung, $nachricht->{'nachricht'});
 	} elsif($aktion eq 'deponiereImSafe') {
@@ -337,11 +320,11 @@ sub neueNachricht {
 		return $self->_schaueInSafe($verbindung, $nachricht->{'kombination'});
 	} elsif($aktion eq 'RESET') {
 		$self->_init();
-		$self->_gibAntwort($verbindung, OK());
+		$verbindung->antworte('ok');
 		return;
 	}
 	
-	$self->_gibAntwort($verbindung, FEHLER("Unbekannte Aktion"));
+	$verbindung->antworte('fehler', "Unbekannte Aktion");
 	return;
 }
 
