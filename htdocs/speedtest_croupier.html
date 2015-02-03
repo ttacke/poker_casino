@@ -28,7 +28,7 @@
 				document.getElementsByTagName('textarea')[0].value = '';
 				
 				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
-				croupier.betrete("ws://localhost:8080/", function() {
+				croupier.betrete("ws://10.1.6.150:8080/", function() {
 					croupier.eroeffneTisch(TISCH_NAME, SPIELNAME, TIMEOUT, function(daten) {
 						if(daten.status == 'ok') {
 							logge('Tisch "' + TISCH_NAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status, true);
@@ -49,7 +49,7 @@
 				return anfragenProSekunde;
 			}
 			function warteAufSpieler() {
-				if(window.rundenzaehler % 10000 == 0) {
+				if(window.rundenzaehler % 666 == 0) {
 					croupier.zeigeSpielerDesTisches(function(antwort) {
 						var liste = antwort.details;
 						if(liste.length < MIN_SPIELER) {
@@ -57,7 +57,7 @@
 							setTimeout('warteAufSpieler()', 1000);
 							return;
 						}
-						logge('Aktualisiere Spielrunde', true);
+						logge('Aktualisiere Spielrunde: ' + liste.length + " Spieler", true);
 						spiele_runde(liste);
 					});
 				} else {
