@@ -20,19 +20,20 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO Spieler-Bewertung vom Coupier hinterlegbar machen", function() {
-});
 xit("TODO Server nicht per JSON anfragen", function() {
 });
 xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (für Timeout im Server und einen für Timeout im JS)", function() {
 });
+xit("TODO Spieler-Bewertung vom Coupier hinterlegbar machen", function() {
+});
 xit("TODO Maxschen Croupier und dummy-Spieler umsetzen: https://www.spielwiki.de/M%C3%A4xchen", function() {
 });
-describe("Szenario: Casino", function() {
+
+describe("Szenario: das Casino ist geöffnet", function() {
 	beforeEach(function(done) {
 		var verbindung = new WebSocket(wsUrl);
 		verbindung.onopen = function(event) {
-			verbindung.send('{"aktion":"RESET"}');
+			verbindung.send('{"aktion":"RESET-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5"}');
 			verbindung.onmessage = function() {
 				done();
 			};

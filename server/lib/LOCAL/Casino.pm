@@ -145,7 +145,7 @@ sub neueNachricht {
 			$nachricht->{'nachricht'}
 		);
 		
-	} elsif($aktion eq 'RESET') {
+	} elsif($aktion eq 'RESET-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5') {
 		$self->_init();
 		$verbindung->antworte('ok');
 		return;
