@@ -12,7 +12,6 @@ use LOCAL::Casino::Verbindung();
 use LOCAL::Casino::Croupier();
 my $CROUPIER = 'LOCAL::Casino::Croupier';
 
-
 # CONSTRUCTOR
 sub new {
 	my ($class) = @_;
@@ -36,6 +35,20 @@ sub _init {
 	$self->{'spielerAntwort'}	= {};
 	return;
 }
+# \HASH
+sub gibTischDaten {
+	my ($self) = @_;
+	
+	return $self->{'tische'};
+}
+# \HASH
+sub gibSpielerAntwortDaten {
+	my ($self) = @_;
+	
+	return $self->{'spielerAntwort'};
+}
+
+
 # VOID
 sub neueVerbindung {
 	my ($self, $rawConnection) = @_;
@@ -65,39 +78,14 @@ sub _jsonToScalar {
 sub _eroeffneTisch {
 	my ($self, $verbindung, $tischName, $nameDesSpiels, $croupierName, $croupierPasswort, $spielerTimeoutInMillisekunden) = @_;
 	
-	my $timeoutInSekunden = ($spielerTimeoutInMillisekunden / 1000) || 0.05;
-	my $bestehenderTisch = $self->{'tische'}->{$tischName};
-	if(!$bestehenderTisch) {
-		$self->{'tische'}->{$tischName} = {
-			name			=> $tischName,
-			spieler			=> [],
-			nameDesSpiels	=> $nameDesSpiels,
-			spielerTimeout	=> $timeoutInSekunden,
-			croupier		=> {
-				name			=> $croupierName,
-				passwort		=> $croupierPasswort,
-				verbindung		=> $verbindung,
-			},
-		};
-	} else {
-		my $croupier = $bestehenderTisch->{'croupier'};
-		if(
-			$croupier->{'name'} eq $croupierName
-			&& $croupier->{'passwort'} eq $croupierPasswort
-		) {
-			$croupier->{'verbindung'} = $verbindung;
-			$bestehenderTisch->{'spielerTimeout'} = $timeoutInSekunden;
-		} else {
-			return $verbindung->antworte('fehler', 'Dieser Tisch gehoert jemand anderem');
-		}
-	}
-	return $verbindung->antworte('ok');
+	return $CROUPIER->eroeffneTisch($self->gibTischDaten(), $verbindung, $tischName, $nameDesSpiels, $croupierName, $croupierPasswort, $spielerTimeoutInMillisekunden);
+	
 }
 # VOID
 sub _spieleAnTisch {
 	my ($self, $verbindung, $tischName, $spielerName, $spielerPasswort) = @_;
 	
-	my $tisch = $self->{'tische'}->{$tischName};
+	my $tisch = $self->gibTischDaten()->{$tischName};
 	if(!$tisch) {
 		return $verbindung->antworte('fehler', "Der Tisch existiert nicht");
 	}
@@ -124,16 +112,7 @@ sub _spieleAnTisch {
 sub _zeigeSpielerDesTisches {
 	my ($self, $croupierVerbindung) = @_;
 	
-	my @liste = ();
-	foreach my $tischName (keys(%{$self->{'tische'}})) {
-		my $tisch = $self->{'tische'}->{$tischName};
-		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
-			foreach my $spieler (@{$tisch->{'spieler'}}) {
-				push(@liste, $spieler->{'name'});
-			}
-		}
-	}
-	return $croupierVerbindung->antworte('ok', \@liste);
+	return $CROUPIER->zeigeSpielerDesTisches($self->gibTischDaten(), $croupierVerbindung);
 }
 # VOID
 sub _zeigeOffeneTische {
@@ -163,65 +142,23 @@ sub _gibAlleTische {
 	my ($self) = @_;
 	
 	my @liste = ();
-	foreach my $tischName (sort keys(%{$self->{'tische'}})) {
-		push(@liste, $self->{'tische'}->{$tischName});
+	foreach my $tischName (sort keys(%{$self->gibTischDaten()})) {
+		push(@liste, $self->gibTischDaten()->{$tischName});
 	}
 	return \@liste;
-}
-# HASH || NULL
-sub _gibSpielerAnhandName {
-	my ($self, $tisch, $spielerName) = @_;
-	
-	foreach my $spieler (@{$tisch->{'spieler'}}) {
-		return $spieler if($spieler->{'name'} eq $spielerName);
-	}
-	return undef;
-}
-# \HASH || NULL
-sub _gibMeinenTisch {
-	my ($self, $croupierVerbindung) = @_;
-	
-	foreach my $tischName (keys(%{$self->{'tische'}})) {
-		my $tisch = $self->{'tische'}->{$tischName};
-		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
-			return $tisch;
-		}
-	}
-	return undef;
 }
 # VOID
 sub _frageDenSpieler {
 	my ($self, $verbindung, $spielerName, $nachricht) = @_;
 	
-	my $tisch = $self->_gibMeinenTisch($verbindung);
-	my $spieler = $self->_gibSpielerAnhandName($tisch, $spielerName);
+	my $tisch = $CROUPIER->gibMeinenTisch($self->gibTischDaten(), $verbindung);
+	my $spieler = $CROUPIER->gibSpielerAnhandName($tisch, $spielerName);
 	if(!$spieler) {
 		return $verbindung->antworte('timeout');
 	}
 	
 	$spieler->{'verbindung'}->antworte('frageVonCroupier', $nachricht);
-	$self->_warteAufAntwortVon($verbindung, $spielerName, $tisch->{'spielerTimeout'});
-	return;
-}
-# VOID
-sub _warteAufAntwortVon {
-	my ($self, $croupierVerbindung, $spielerName, $timeout) = @_;
-	
-	$SIG{'ALRM'} ||= sub {
-		foreach my $spielerName (keys(%{$self->{'spielerAntwort'}})) {
-			my $erwarteteAntwort = $self->{'spielerAntwort'}->{$spielerName};
-			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
-				$erwarteteAntwort->{'croupierVerbindung'}->antworte('timeout');
-				delete($self->{'spielerAntwort'}->{$spielerName});
-			}
-		}
-	};
-	my $timeoutTimestamp = Time::HiRes::time() + $timeout;
-	$self->{'spielerAntwort'}->{$spielerName} = {
-		gueltigBis			=> $timeoutTimestamp,
-		croupierVerbindung	=> $croupierVerbindung,
-	};
-	Time::HiRes::alarm($timeout * 1.01);
+	$CROUPIER->warteAufSpielerantwort($self, $verbindung, $spielerName, $tisch->{'spielerTimeout'});
 	return;
 }
 # VOID
