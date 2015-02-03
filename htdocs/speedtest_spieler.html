@@ -6,9 +6,9 @@
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		<script language="javascript" type="text/javascript">
-			var SPIELER_ID = window.location.search.substr(1, window.location.search.length);
-			var GEHEIME_SPIELER_ID = window.location.search.substr(1, window.location.search.length);
-			var TISCH_ID = 'GrafZahl';
+			var SPIELER_NAME = window.location.search.substr(1, window.location.search.length);
+			var SPIELER_PASSWORT = window.location.search.substr(1, window.location.search.length);
+			var TISCH_NAME = 'GrafZahl';
 			var spieler = null;
 			
 			document.addEventListener("load", init, false);
@@ -20,11 +20,11 @@
 				window.anfragenStartZeit = new Date().getTime();
 				document.getElementsByTagName('input')[0].value = '';
 				
-				spieler = new CasinoSpieler(SPIELER_ID, GEHEIME_SPIELER_ID);
+				spieler = new CasinoSpieler(SPIELER_NAME, SPIELER_PASSWORT);
 				spieler.derCroupierFragt = function(frage) {
 					window.anfragenZaehler++;
 					logge('spiele');
-					this._antworteDemCroupier(frage + 1);
+					this._antworteDemCroupier((frage * 1) + 1);
 				};
 				spieler.betrete("ws://localhost:8080/", function() {
 					warteAufTisch();
@@ -39,13 +39,14 @@
 				return anfragenProSekunde;
 			}
 			function warteAufTisch() {
-				logge('warte auf Tisch "' + TISCH_ID + '"...', true);
-				spieler.zeigeOffeneTische(function(liste) {
+				logge('warte auf Tisch "' + TISCH_NAME + '"...', true);
+				spieler.zeigeOffeneTische(function(antwort) {
+					var liste = antwort.details;
 					for(var i = 0; i < liste.length;i++) {
-						if(liste[i].tischId == TISCH_ID) {
+						if(liste[i].tischName == TISCH_NAME) {
 							logge("Tisch betreten...", true);
-							spieler.spieleAnTisch(TISCH_ID, function() {
-								if(spieler.spieltAnTisch) {
+							spieler.spieleAnTisch(TISCH_NAME, function(antwort) {
+								if(antwort.status == 'ok') {
 									logge("Spielen:", true);
 									return;
 									

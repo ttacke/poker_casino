@@ -6,11 +6,12 @@
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		<script type="text/javascript">
-			var CROUPIER_ID = window.location.search.substr(1, window.location.search.length);
-			var GEHEIME_CROUPIER_ID = window.location.search.substr(1, window.location.search.length);
-			var TISCH_ID = 'GrafZahl';
+			var CROUPIER_NAME = window.location.search.substr(1, window.location.search.length);
+			var CROUPIER_PASSWORT = window.location.search.substr(1, window.location.search.length);
+			var TISCH_NAME = 'GrafZahl';
 			var SPIELNAME = 'Zaehlen';
 			var MIN_SPIELER = 2;
+			var TIMEOUT = 500;
 			var croupier = null;
 			
 			document.addEventListener("load", init, false);
@@ -26,11 +27,11 @@
 				window.anfragenStartZeit = new Date().getTime();
 				document.getElementsByTagName('textarea')[0].value = '';
 				
-				croupier = new CasinoCroupier(CROUPIER_ID, GEHEIME_CROUPIER_ID);
+				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
 				croupier.betrete("ws://localhost:8080/", function() {
-					croupier.eroeffneTisch(TISCH_ID, SPIELNAME, function(daten) {
-						if(daten.erfolg) {
-							logge('Tisch "' + TISCH_ID + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.erfolg, true);
+					croupier.eroeffneTisch(TISCH_NAME, SPIELNAME, TIMEOUT, function(daten) {
+						if(daten.status == 'ok') {
+							logge('Tisch "' + TISCH_NAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status, true);
 							warteAufSpieler();
 						} else {
 							logge("Tisch anlegen ist fehlgeschlagen", true);
@@ -48,14 +49,20 @@
 				return anfragenProSekunde;
 			}
 			function warteAufSpieler() {
-				croupier.zeigeSpielerDesTisches(function(liste) {
-					if(liste.length < MIN_SPIELER) {
-						logge('warte auf min. ' + MIN_SPIELER + ' Spieler...', true);
-						setTimeout('warteAufSpieler()', 1000);
-						return;
-					}
-					spiele_runde(liste);
-				});
+				if(window.rundenzaehler % 10000 == 0) {
+					croupier.zeigeSpielerDesTisches(function(antwort) {
+						var liste = antwort.details;
+						if(liste.length < MIN_SPIELER) {
+							logge('warte auf min. ' + MIN_SPIELER + ' Spieler...', true);
+							setTimeout('warteAufSpieler()', 1000);
+							return;
+						}
+						logge('Aktualisiere Spielrunde', true);
+						spiele_runde(liste);
+					});
+				} else {
+					spiele_runde(window.aktuelleSpielerliste);
+				}
 			}
 			function spiele_runde(liste) {
 				window.rundenzaehler++;
@@ -73,12 +80,12 @@
 					return;
 				}
 				
-				var aktuelleSpielerId = liste[window.aktuellerSpieler];
-				croupier.frageDenSpieler(aktuelleSpielerId, window.sollAntwort, function(antwort) {
+				var aktuelleSpielerName = liste[window.aktuellerSpieler];
+				croupier.frageDenSpieler(aktuelleSpielerName, window.sollAntwort, function(antwort) {
 					window.sollAntwort++;
 					window.anfragenZaehler++;
-					if(antwort.status != 'OK' || antwort.antwort != window.sollAntwort) {
-						logge(aktuelleSpielerId + ': FALSCH (IST:' + antwort.antwort + ', SOLL:' + window.sollAntwort + ', STATUS:' + antwort.status + ')', true);
+					if(antwort.status != 'ok' || antwort.details != window.sollAntwort) {
+						logge(aktuelleSpielerName + ': FALSCH (IST:' + antwort.details + ', SOLL:' + window.sollAntwort + ', STATUS:' + antwort.status + ')', true);
 					}
 					naechsterSpieler();
 				});
