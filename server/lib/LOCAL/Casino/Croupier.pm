@@ -3,12 +3,12 @@ use strict;
 use warnings;
 
 # VOID
-sub warteAufSpielerantwort {
-	my ($class, $casino, $croupierVerbindung, $spielerName, $timeout) = @_;
+sub _warteAufSpielerantwort {
+	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout) = @_;
 	
-	my $spielerAntwortDaten = $casino->gibSpielerAntwortDaten();
+	my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
 	$SIG{'ALRM'} ||= sub {
-		my $spielerAntwortDaten = $casino->gibSpielerAntwortDaten();
+		my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
 		foreach my $spielerName (keys(%{$spielerAntwortDaten})) {
 			my $erwarteteAntwort = $spielerAntwortDaten->{$spielerName};
 			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
@@ -26,7 +26,7 @@ sub warteAufSpielerantwort {
 	return;
 }
 # \HASH || NULL
-sub gibMeinenTisch {
+sub _gibMeinenTisch {
 	my ($class, $tischDaten, $croupierVerbindung) = @_;
 	
 	foreach my $tischName (keys(%{$tischDaten})) {
@@ -38,7 +38,7 @@ sub gibMeinenTisch {
 	return undef;
 }
 # HASH || NULL
-sub gibSpielerAnhandName {
+sub _gibSpielerAnhandName {
 	my ($class, $tisch, $spielerName) = @_;
 	
 	foreach my $spieler (@{$tisch->{'spieler'}}) {
@@ -95,5 +95,19 @@ sub eroeffneTisch {
 		}
 	}
 	return $verbindung->antworte('ok');
+}
+# VOID
+sub frageDenSpieler {
+	my ($class, $gibSpielerAntwortenFunc, $tischDaten, $verbindung, $spielerName, $nachricht) = @_;
+	
+	my $tisch = $class->_gibMeinenTisch($tischDaten, $verbindung);
+	my $spieler = $class->_gibSpielerAnhandName($tisch, $spielerName);
+	if(!$spieler) {
+		return $verbindung->antworte('timeout');
+	}
+	
+	$spieler->{'verbindung'}->antworte('frageVonCroupier', $nachricht);
+	$class->_warteAufSpielerantwort($gibSpielerAntwortenFunc, $verbindung, $spielerName, $tisch->{'spielerTimeout'});
+	return;
 }
 1;

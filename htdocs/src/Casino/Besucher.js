@@ -84,11 +84,11 @@ function CasinoBesucher() {
 		);
 	};
 	// VOID
-	this.schaueInSafe = function(kombination, antwortFunktion) {
+	this.zeigeSafeInhalt = function(kombination, antwortFunktion) {
 		var self = this;
 		this._sende(
 			{
-				"aktion":"schaueInSafe",
+				"aktion":"zeigeSafeInhalt",
 				"kombination":kombination,
 			},
 			function(daten) {

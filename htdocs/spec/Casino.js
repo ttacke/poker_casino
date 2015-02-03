@@ -20,7 +20,7 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO Server nach Croupier und Spieler trennen (auslagern)", function() {
+xit("TODO Spieler-Bewertung vom Coupier hinterlegbar machen", function() {
 });
 xit("TODO Server nicht per JSON anfragen", function() {
 });
@@ -68,7 +68,7 @@ describe("Szenario: Casino", function() {
 					});
 				});
 				it("dann kann ich das auch wieder ansehen", function(done) {
-					besucher.schaueInSafe(kombination, function(antwort) {
+					besucher.zeigeSafeInhalt(kombination, function(antwort) {
 						expect(antwort.details).toBe(schatz);
 						done();
 					});
