@@ -4,6 +4,10 @@ use lib './lib';
 use Net::WebSocket::Server;
 use LOCAL::Casino();
 
+my $IP = $ARGV[0] || '127.0.0.1';
+my $PORT = $ARGV[1] || '8080';
+warn "Starte Server auf $IP:$PORT ...";
+
 my $vermittlung = LOCAL::Casino->new();
 Net::WebSocket::Server->new(
 	listen => 8080,
@@ -19,3 +23,5 @@ Net::WebSocket::Server->new(
 		);
 	},
 )->start;
+
+warn "Server laeuft";

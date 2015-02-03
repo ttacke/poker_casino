@@ -77,14 +77,16 @@ sub _gibAntwort {
 }
 # VOID
 sub _eroeffneTisch {
-	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $geheimeCroupierId) = @_;
+	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $geheimeCroupierId, $spielerTimeoutInMillisekunden) = @_;
 	
+	my $timeoutInSekunden = ($spielerTimeoutInMillisekunden / 1000) || 0.05;
 	my $bestehenderTisch = $self->{'tische'}->{$tischId};
 	if(!$bestehenderTisch) {
 		$self->{'tische'}->{$tischId} = {
 			id				=> $tischId,
 			spieler			=> [],
 			nameDesSpiels	=> $nameDesSpiels,
+			spielerTimeout	=> $timeoutInSekunden,
 			croupier		=> {
 				id				=> $croupierId,
 				geheimeId		=> $geheimeCroupierId,
@@ -98,6 +100,7 @@ sub _eroeffneTisch {
 			&& $croupier->{'geheimeId'} eq $geheimeCroupierId
 		) {
 			$croupier->{'verbindung'} = $verbindung;
+			$bestehenderTisch->{'spielerTimeout'} = $timeoutInSekunden;
 		} else {
 			return $self->_gibAntwort($verbindung, FEHLER('Dieser Tisch gehoert jemand anderem'));
 		}
@@ -224,7 +227,7 @@ sub _frageDenSpieler {
 			}
 		)
 	);
-	$self->_warteAufAntwortVon($verbindung, $spielerId, 0.08);
+	$self->_warteAufAntwortVon($verbindung, $spielerId, $tisch->{'spielerTimeout'});
 	return;
 }
 # VOID
@@ -312,7 +315,8 @@ sub neueNachricht {
 	if($aktion eq 'eroeffneTisch') {
 		return $self->_eroeffneTisch(
 			$verbindung, $nachricht->{'tischId'}, $nachricht->{'nameDesSpiels'},
-			$nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'}
+			$nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'},
+			$nachricht->{'spielerTimeout'}
 		);
 	} elsif($aktion eq 'zeigeOffeneTische') {
 		return $self->_zeigeOffeneTische($verbindung);

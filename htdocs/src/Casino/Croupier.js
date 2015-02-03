@@ -6,7 +6,7 @@ function CasinoCroupier(id, geheimeId) {
 	this.id = id;
 	this.geheimeId = geheimeId;
 	
-	this.eroeffneTisch = function(tischId, nameDesSpiels, antwortFunktion) {
+	this.eroeffneTisch = function(tischId, nameDesSpiels, spielerTimeout, antwortFunktion) {
 		var self = this;
 		this._sende(
 			{
@@ -14,7 +14,8 @@ function CasinoCroupier(id, geheimeId) {
 				"tischId":tischId,
 				"nameDesSpiels": nameDesSpiels,
 				"croupierId":this.id,
-				"geheimeCroupierId":this.geheimeId
+				"geheimeCroupierId":this.geheimeId,
+				"spielerTimeout": spielerTimeout
 			},
 			function(daten) {
 				antwortFunktion(daten);

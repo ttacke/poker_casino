@@ -3,7 +3,7 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 var wsUrl = "ws://localhost:8080/";
-var antwortTimeout = 80;
+var spielerTimeout = 80;
 var spielerA = null;
 var spielerB = null;
 var timeoutAlaeuft = null;
@@ -20,8 +20,6 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO timeout steuert der Croupier", function() {
-});
 xit("TODO Server nach Croupier und Spieler trennen (auslagern)", function() {
 });
 xit("TODO Server nicht per JSON anfragen", function() {
@@ -101,7 +99,7 @@ describe("Szenario: Casino", function() {
 				beforeEach(function(done) {
 					croupier = new CasinoCroupier(croupierId, croupierPassword);
 					croupier.betrete(wsUrl, function() {
-						croupier.eroeffneTisch(tischId, spielname, function(antwort) {
+						croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
 							done();
 						});
 					});
@@ -186,7 +184,7 @@ describe("Szenario: Casino", function() {
 				var tischId = 'tisch1';
 				var spielname = 'pingpong';
 				beforeEach(function(done) {
-					croupier.eroeffneTisch(tischId, spielname, function(antwort) {
+					croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
 						expect(antwort.erfolg).toBe(true);
 						done();
 					});
@@ -204,7 +202,7 @@ describe("Szenario: Casino", function() {
 						});
 						describe("und ich betrete den Tisch wieder, vergebe dabei aber einen anderen Spielnamen", function() {
 							beforeEach(function(done) {
-								croupier.eroeffneTisch(tischId, spielname + 'SINNFREI', function(antwort) {
+								croupier.eroeffneTisch(tischId, spielname + 'SINNFREI', spielerTimeout + 20, function(antwort) {
 									expect(antwort.erfolg).toBe(true);
 									done();
 								});
@@ -226,7 +224,7 @@ describe("Szenario: Casino", function() {
 							});
 						});
 						it("dann werde ich abgewiesen wenn ich den Tisch wieder eröffnen will", function(done) {
-							croupier.eroeffneTisch(tischId, spielname, function(antwort) {
+							croupier.eroeffneTisch(tischId, spielname, spielerTimeout, function(antwort) {
 								expect(antwort.erfolg).toBe(false);
 								done();
 							});
@@ -336,10 +334,10 @@ describe("Szenario: Casino", function() {
 						describe("und diese zu spät Antworten", function() {
 							beforeEach(function() {
 								spielerA.derCroupierFragt = function(frage) {
-									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", antwortTimeout * 1.1);
+									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", spielerTimeout * 1.1);
 								};
 								spielerB.derCroupierFragt = function(frage) {
-									timeoutBlaeuft = setTimeout("spaeteAntwort('B', " + frage + ")", antwortTimeout * 1.1);
+									timeoutBlaeuft = setTimeout("spaeteAntwort('B', " + frage + ")", spielerTimeout * 1.1);
 								};
 							});
 							afterEach(function() {
@@ -380,7 +378,7 @@ describe("Szenario: Casino", function() {
 						describe("und einer auf die erste Frage so spät Antwortet, dass schon die Zeit für die zweite Frage an ihn läuft", function() {
 							beforeEach(function() {
 								spielerA.derCroupierFragt = function(frage) {
-									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", antwortTimeout * 1.1);
+									timeoutAlaeuft = setTimeout("spaeteAntwort('A', " + frage + ")", spielerTimeout * 1.1);
 								};
 							});
 							afterEach(function() {
