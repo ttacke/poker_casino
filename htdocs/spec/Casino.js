@@ -20,8 +20,6 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO Server nicht per JSON anfragen", function() {
-});
 xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (für Timeout im Server und einen für Timeout im JS)", function() {
 });
 xit("TODO Spieler-Bewertung vom Coupier hinterlegbar machen", function() {
@@ -33,8 +31,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 	beforeEach(function(done) {
 		var verbindung = new WebSocket(wsUrl);
 		verbindung.onopen = function(event) {
-			verbindung.send('{"aktion":"RESET-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5"}');
-			verbindung.onmessage = function() {
+			//verbindung.send('{"aktion":"RESET-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5"}');
+			verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
+			verbindung.onmessage = function(antwort) {
 				done();
 			};
 		};
@@ -288,23 +287,23 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					describe("und diese können immer eine Antwort geben", function() {
 						beforeEach(function() {
 							spielerA.derCroupierFragt = function(frage) {
-								expect(frage).toEqual(1);
+								expect(frage).toEqual('1');
 								this._antworteDemCroupier(2);
 							};
 							spielerB.derCroupierFragt = function(frage) {
-								expect(frage).toEqual(3);
+								expect(frage).toEqual('3');
 								this._antworteDemCroupier(4);
 							};
 						});
 						it("dann bekomme ich die Antworten wenn ich die Spieler etwas frage", function(done) {
 							croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 								expect(antwort).toEqual({
-									details: 2,
+									details: '2',
 									status: 'ok'
 								});
 								croupier.frageDenSpieler(spielerBName, 3, function(antwort) {
 									expect(antwort).toEqual({
-										details: 4,
+										details: '4',
 										status: 'ok'
 									});
 									done();
@@ -321,12 +320,12 @@ describe("Szenario: das Casino ist geöffnet", function() {
 							it("dann bekomme ich eine Timeout-Meldung wenn ich die Spieler etwas frage", function(done) {
 								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										details: null,
+										details: '',
 										status: 'timeout'
 									});
 									croupier.frageDenSpieler(spielerBName, 3, function(antwort) {
 										expect(antwort).toEqual({
-											details: null,
+											details: '',
 											status: 'timeout'
 										});
 										done();
@@ -352,14 +351,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 							it("dann bekomme ich eine Timeout-Meldung und die Antwort kommt nie an", function(done) {
 								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										details: null,
+										details: '',
 										status: 'timeout'
 									});
 									expect(timeoutAlaeuft).not.toBe(null);
 									
 									croupier.frageDenSpieler(spielerBName, 2, function(antwort) {
 										expect(antwort).toEqual({
-											details: null,
+											details: '',
 											status: 'timeout'
 										});
 										expect(timeoutAlaeuft).toBe(null);
@@ -367,7 +366,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 										
 										croupier.frageDenSpieler(spielerAName, 3, function(antwort) {
 											expect(antwort).toEqual({
-												details: null,
+												details: '',
 												status: 'timeout'
 											});
 											expect(timeoutAlaeuft).not.toBe(null);
@@ -391,12 +390,12 @@ describe("Szenario: das Casino ist geöffnet", function() {
 							it("dann bekomme ich erst eine Timeout-Meldung und auf die zweite Frage die erste Antwort", function(done) {
 								croupier.frageDenSpieler(spielerAName, 1, function(antwort) {
 									expect(antwort).toEqual({
-										details: null,
+										details: '',
 										status: 'timeout'
 									});
 									croupier.frageDenSpieler(spielerAName, 2, function(antwort) {
 										expect(antwort).toEqual({
-											details: 1,
+											details: '1',
 											status: 'ok'
 										});
 										done();
@@ -408,7 +407,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					it("dann bekomme ich eine Timeout-Anfrage wenn ich einen dritten, nicht vorhandenen Spieler frage", function(done) {
 						croupier.frageDenSpieler(spielerAName + 'UNBEKANNT', 1, function(antwort) {
 							expect(antwort).toEqual({
-								details: null,
+								details: '',
 								status: 'timeout'
 							});
 							done();

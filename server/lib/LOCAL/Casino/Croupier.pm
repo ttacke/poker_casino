@@ -2,6 +2,8 @@ package LOCAL::Casino::Croupier;
 use strict;
 use warnings;
 
+my $JSON = JSON->new();
+
 # VOID
 sub _warteAufSpielerantwort {
 	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout) = @_;
@@ -59,7 +61,7 @@ sub zeigeSpielerDesTisches {
 			}
 		}
 	}
-	return $croupierVerbindung->antworte('ok', \@liste);
+	return $croupierVerbindung->antworte('ok', $JSON->utf8->encode(\@liste));
 }
 # VOID
 sub eroeffneTisch {

@@ -3,7 +3,6 @@ use strict;
 use warnings;
 
 use Scalar::Util();
-use JSON();
 
 # CONSTRUCTOR
 sub new {
@@ -49,12 +48,30 @@ sub _sende {
 sub antworte {
 	my ($self, $status, $details) = @_;
 	
-	#TODO ohne JSON!!
 	return $self->_sende(
-		JSON->new()->utf8->encode({
-			"status"	=> $status,# ok, fehler, timeout, frageVonCroupier
-			"details"	=> $details,
-		})
+		# JSON->new()->utf8->encode(
+		$self->_uebersetzeHashInKuerzel(
+			{
+				"status"	=> $status,# ok, fehler, timeout, frageVonCroupier
+				"details"	=> $details,
+			}
+		)
 	);
+}
+# STRING
+sub _uebersetzeHashInKuerzel {
+	my ($self, $daten) = @_;
+	
+	my $uebersetzung = {
+		'ok'				=> 'o',
+		'fehler'			=> 'e',
+		'timeout'			=> 't',
+		'frageVonCroupier'	=> 'q',
+	};
+	if(!$uebersetzung->{$daten->{'status'}}) {
+		warn "Unbekannte Antwort: $daten->{'status'}";
+		return '';
+	}
+	return $uebersetzung->{$daten->{'status'}} . ($daten->{'details'} || '');
 }
 1;

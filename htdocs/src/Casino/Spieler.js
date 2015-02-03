@@ -27,12 +27,18 @@ function CasinoSpieler(name, passwort) {
 	};
 	// VOID
 	this._unerwarteteAntwort = function(event) {
-		var daten = JSON.parse(event.data);
-		if(daten.status == 'frageVonCroupier') {
-			this.derCroupierFragt(daten.details);
-		} else {
-			throw new Error("Unerwartete Antwort erhalten: " + event.data);
-		}
+		var originalDaten = event.data;
+		var self = this;
+		this._empfangeRohdaten(
+			function(daten) {
+				if(daten.status == 'frageVonCroupier') {
+					self.derCroupierFragt(daten.details);
+				} else {
+					throw new Error("Unerwartete Antwort erhalten: " + originalDaten);
+				}
+			},
+			originalDaten
+		);
 	};
 	// VOID
 	this.derCroupierFragt = function(frage) {
@@ -41,13 +47,11 @@ function CasinoSpieler(name, passwort) {
 	};
 	// VOID
 	this._antworteDemCroupier = function(antwort) {
-		this.verbindung.send(
-			JSON.stringify(
-				{
-					aktion: 'antwortAnDenCroupier',
-					nachricht: antwort,
-				}
-			)
+		this._sendeRohdaten(
+			{
+				aktion: 'antwortAnDenCroupier',
+				nachricht: antwort,
+			}
 		);
 	};
 }

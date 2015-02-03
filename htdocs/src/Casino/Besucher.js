@@ -65,6 +65,7 @@ function CasinoBesucher() {
 				"aktion":"zeigeOffeneTische"
 			},
 			function(daten) {
+				daten.details = JSON.parse(daten.details);
 				antwortFunktion(daten);
 			}
 		);
@@ -104,8 +105,7 @@ function CasinoBesucher() {
 		if(this.warteAufAntwort) {
 			throw new Error("Es wartet noch eine Anfrage auf Antwort");
 		}
-		var nachricht = JSON.stringify(daten);
-		this.verbindung.send(nachricht);
+		this._sendeRohdaten(daten);
 		this.warteAufAntwort = true;
 		var self = this;
 		this.verbindung.onmessage = function(event) {
@@ -113,11 +113,67 @@ function CasinoBesucher() {
 			self.verbindung.onmessage = function(event) {
 				self._unerwarteteAntwort(event);
 			};
-			empfangsFunktion(JSON.parse(event.data));
+			self._empfangeRohdaten(empfangsFunktion, event.data);
 		};
 	};
+	// VOID
+	this._empfangeRohdaten = function(func, daten) {
+		var status = daten.substr(0, 1);
+		var details = daten.substr(1, daten.length);
+		var uebersetzung = {
+			'o': 'ok',
+			'e': 'fehler',
+			't': 'timeout',
+			'q': 'frageVonCroupier',
+		};
+		if(!uebersetzung[status]) {
+			throw new Error("Ungueltige Antwort: " + daten);
+		}
+		var antwort = {
+			'status': uebersetzung[status],
+			'details': details,
+		};
+		// var antwort = JSON.parse(daten);
+		func(antwort);
+	}
+	// VOID
+	this._sendeRohdaten = function(daten) {
+		// this.verbindung.send(JSON.stringify(daten));
+		this.verbindung.send(this.uebersetzeJSONinKuerzel(daten));
+	}
 	// VOID
 	this._unerwarteteAntwort = function(event) {
 		throw new Error("Unerwartete Antwort erhalten: " + event.data);
 	};
+	this.uebersetzeJSONinKuerzel = function(d) {
+		var msg = '';
+		if(d.aktion == 'eroeffneTisch') {
+			// {"aktion":"eroeffneTisch","tischName":"tisch1","nameDesSpiels":"pingpong","croupierName":"Croupier1","croupierPasswort":"Croupier1","spielerTimeout":80}
+			msg = 'o' + d.tischName + "\n" + d.nameDesSpiels + "\n" + d.croupierName + "\n" + d.croupierPasswort + "\n" + d.spielerTimeout;
+		} else if(d.aktion == 'deponiereImSafe') {
+			// {"aktion":"deponiereImSafe","kombination":12345,"schatz":"derRingDesYogurt"}
+			msg = 'd' + d.kombination + "\n" + d.schatz;
+		} else if(d.aktion == 'zeigeSafeInhalt') {
+			// {"aktion":"zeigeSafeInhalt","kombination":12345}
+			msg = 'g' + d.kombination;
+		} else if(d.aktion == 'zeigeOffeneTische') {
+			// {"aktion":"zeigeOffeneTische"}
+			msg = 'l';
+		} else if(d.aktion == 'spieleAnTisch') {
+			// {"aktion":"spieleAnTisch","tischName":"tisch1","spielerPasswort":"Spieler1","spielerName":"Spieler1"}
+			msg = 'p' + d.tischName + "\n" + d.spielerName + "\n" + d.spielerPasswort;
+		} else if(d.aktion == 'zeigeSpielerDesTisches') {
+			// {"aktion":"zeigeSpielerDesTisches"}
+			msg = 'v';
+		} else if(d.aktion == 'frageDenSpieler') {
+			// {"aktion":"frageDenSpieler","spielerName":"a","nachricht":1}
+			msg = 'q' + d.spielerName + "\n" + d.nachricht;
+		} else if(d.aktion == 'antwortAnDenCroupier') {
+			// {"aktion":"antwortAnDenCroupier","nachricht":2}
+			msg = 'r' + d.nachricht;
+		} else if(d.aktion == 'RESET-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5') {
+			msg = 'x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5';
+		}
+		return msg;
+	}
 }

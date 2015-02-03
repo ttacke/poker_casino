@@ -29,6 +29,7 @@ function CasinoCroupier(name, passwort) {
 				"aktion":"zeigeSpielerDesTisches",
 			},
 			function(daten) {
+				daten.details = JSON.parse(daten.details);
 				antwortFunktion(daten);
 			}
 		);

@@ -33,7 +33,6 @@ sub _init {
 	}
 	
 	$self->{'safe'} = {};
-	$self->{'jsonParser'}		= JSON->new();
 	$self->{'verbindungen'}		= {};
 	$self->{'tische'}			= {};
 	$self->{'spielerAntwort'}	= {};
@@ -57,13 +56,13 @@ sub _gibVerbindungFuer {
 	return LOCAL::Casino::Verbindung->new($rawConnection);
 }
 # SCALAR
-sub _jsonToScalar {
-	my ($self, $textNachricht) = @_;
-	
-	return eval {
-		return $self->{'jsonParser'}->utf8->decode($textNachricht);
-	};
-}
+#sub _jsonToScalar {
+#	my ($self, $textNachricht) = @_;
+#	
+#	return eval {
+#		return JSON->new()->utf8->decode($textNachricht);
+#	};
+#}
 # \HASH || NULL
 sub _gibSpielerAnhandVerbindung {
 	my ($self, $verbindung) = @_;
@@ -81,9 +80,8 @@ sub neueNachricht {
 	my ($self, $rawConnection, $textNachricht) = @_;
 	
 	my $verbindung = $self->_gibVerbindungFuer($rawConnection);
-	#TOTO JSON entfernen
-	my $nachricht = $self->_jsonToScalar($textNachricht);
-	
+	# my $nachricht = $self->_jsonToScalar($textNachricht);
+	my $nachricht = $self->_uebersetzeKuerzelZuHash($textNachricht);
 	my $aktion = $nachricht->{'aktion'};
 	if($aktion eq 'zeigeOffeneTische') {
 		return $BESUCHER->zeigeOffeneTische(
@@ -153,6 +151,67 @@ sub neueNachricht {
 	
 	$verbindung->antworte('fehler', "Unbekannte Aktion");
 	return;
+}
+# \HASH
+sub _uebersetzeKuerzelZuHash {
+	my ($self, $kuerzel) = @_;
+	
+	$kuerzel =~ s/^(.)//;
+	my ($aktion) = $1;
+	
+	my @p = split(/\n/, $kuerzel);
+	if($aktion eq 'o') {
+		return {
+			"aktion"			=> "eroeffneTisch",
+			"tischName"			=> $p[0],
+			"nameDesSpiels"		=> $p[1],
+			"croupierName"		=> $p[2],
+			"croupierPasswort"	=> $p[3],
+			"spielerTimeout"	=> $p[4],
+		};
+	} elsif($aktion eq 'd') {
+		return {
+			"aktion"		=> "deponiereImSafe",
+			"kombination"	=> $p[0],
+			"schatz"		=> $p[1],
+		};
+	} elsif($aktion eq 'g') {
+		return {
+			"aktion"		=> "zeigeSafeInhalt",
+			"kombination"	=> $p[0],
+		};
+	} elsif($aktion eq 'l') {
+		return {
+			"aktion"	=> "zeigeOffeneTische"
+		};
+	} elsif($aktion eq 'p') {
+		return {
+			"aktion"			=> "spieleAnTisch",
+			"tischName"			=> $p[0],
+			"spielerName"		=> $p[1],
+			"spielerPasswort"	=> $p[2],
+		};
+	} elsif($aktion eq 'v') {
+		return {
+			"aktion"	=> "zeigeSpielerDesTisches",
+		};
+	} elsif($aktion eq 'q') {
+		return {
+			"aktion"		=> "frageDenSpieler",
+			"spielerName"	=> $p[0],
+			"nachricht"		=> $p[1],
+		};
+	} elsif($aktion eq 'r') {
+		return {
+			"aktion"	=> "antwortAnDenCroupier",
+			"nachricht"	=> $p[0],
+		};
+	} elsif($aktion eq 'x') {
+		return {
+			'aktion'	=> 'RESET' . $p[0],
+		};
+	}
+	return {};
 }
 
 1;

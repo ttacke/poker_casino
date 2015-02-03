@@ -2,6 +2,8 @@ package LOCAL::Casino::Besucher;
 use strict;
 use warnings;
 
+my $JSON = JSON->new();
+
 # VOID
 sub zeigeOffeneTische {
 	my ($class, $tischDaten, $verbindung) = @_;
@@ -24,7 +26,7 @@ sub zeigeOffeneTische {
 		}
 		push(@liste, $daten);
 	}
-	return $verbindung->antworte('ok', \@liste);
+	return $verbindung->antworte('ok', $JSON->utf8->encode(\@liste));
 }
 # \ARRAY
 sub gibAlleTische {
