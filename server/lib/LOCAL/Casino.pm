@@ -77,7 +77,7 @@ sub _gibAntwort {
 }
 # VOID
 sub _eroeffneTisch {
-	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $geheimeCroupierId, $spielerTimeoutInMillisekunden) = @_;
+	my ($self, $verbindung, $tischId, $nameDesSpiels, $croupierId, $croupierPasswort, $spielerTimeoutInMillisekunden) = @_;
 	
 	my $timeoutInSekunden = ($spielerTimeoutInMillisekunden / 1000) || 0.05;
 	my $bestehenderTisch = $self->{'tische'}->{$tischId};
@@ -89,7 +89,7 @@ sub _eroeffneTisch {
 			spielerTimeout	=> $timeoutInSekunden,
 			croupier		=> {
 				id				=> $croupierId,
-				geheimeId		=> $geheimeCroupierId,
+				passwort		=> $croupierPasswort,
 				verbindung		=> $verbindung,
 			},
 		};
@@ -97,7 +97,7 @@ sub _eroeffneTisch {
 		my $croupier = $bestehenderTisch->{'croupier'};
 		if(
 			$croupier->{'id'} eq $croupierId
-			&& $croupier->{'geheimeId'} eq $geheimeCroupierId
+			&& $croupier->{'passwort'} eq $croupierPasswort
 		) {
 			$croupier->{'verbindung'} = $verbindung;
 			$bestehenderTisch->{'spielerTimeout'} = $timeoutInSekunden;
@@ -109,7 +109,7 @@ sub _eroeffneTisch {
 }
 # VOID
 sub _spieleAnTisch {
-	my ($self, $verbindung, $tischId, $spielerId, $geheimeSpielerId) = @_;
+	my ($self, $verbindung, $tischId, $spielerId, $spielerPasswort) = @_;
 	
 	my $tisch = $self->{'tische'}->{$tischId};
 	if(!$tisch) {
@@ -118,7 +118,7 @@ sub _spieleAnTisch {
 	
 	foreach my $existierenderSpieler (@{$tisch->{'spieler'}}) {
 		if($existierenderSpieler->{'id'} eq $spielerId) {
-			if($existierenderSpieler->{'geheimeId'} eq $geheimeSpielerId) {
+			if($existierenderSpieler->{'passwort'} eq $spielerPasswort) {
 				$existierenderSpieler->{'verbindung'} = $verbindung;
 				return $self->_gibAntwort($verbindung, OK());
 			} else {
@@ -129,7 +129,7 @@ sub _spieleAnTisch {
 	
 	push(@{$tisch->{'spieler'}}, {
 		id			=> $spielerId,
-		geheimeId	=> $geheimeSpielerId,
+		passwort	=> $spielerPasswort,
 		verbindung	=> $verbindung,
 	});
 	return $self->_gibAntwort($verbindung, OK());
@@ -315,7 +315,7 @@ sub neueNachricht {
 	if($aktion eq 'eroeffneTisch') {
 		return $self->_eroeffneTisch(
 			$verbindung, $nachricht->{'tischId'}, $nachricht->{'nameDesSpiels'},
-			$nachricht->{'croupierId'}, $nachricht->{'geheimeCroupierId'},
+			$nachricht->{'croupierId'}, $nachricht->{'croupierPasswort'},
 			$nachricht->{'spielerTimeout'}
 		);
 	} elsif($aktion eq 'zeigeOffeneTische') {
@@ -323,7 +323,7 @@ sub neueNachricht {
 	} elsif($aktion eq 'spieleAnTisch') {
 		return $self->_spieleAnTisch(
 			$verbindung, $nachricht->{'tischId'}, $nachricht->{'spielerId'},
-			$nachricht->{'geheimeSpielerId'}
+			$nachricht->{'spielerPasswort'}
 		);
 	} elsif($aktion eq 'zeigeSpielerDesTisches') {
 		return $self->_zeigeSpielerDesTisches($verbindung);

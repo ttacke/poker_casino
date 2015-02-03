@@ -2,9 +2,9 @@
 
 // CLASS DEFINITION
 CasinoCroupier.prototype = new CasinoBesucher();
-function CasinoCroupier(id, geheimeId) {
+function CasinoCroupier(id, passwort) {
 	this.id = id;
-	this.geheimeId = geheimeId;
+	this.passwort = passwort;
 	
 	this.eroeffneTisch = function(tischId, nameDesSpiels, spielerTimeout, antwortFunktion) {
 		var self = this;
@@ -14,7 +14,7 @@ function CasinoCroupier(id, geheimeId) {
 				"tischId":tischId,
 				"nameDesSpiels": nameDesSpiels,
 				"croupierId":this.id,
-				"geheimeCroupierId":this.geheimeId,
+				"croupierPasswort":this.passwort,
 				"spielerTimeout": spielerTimeout
 			},
 			function(daten) {

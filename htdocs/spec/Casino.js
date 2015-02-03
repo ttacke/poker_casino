@@ -20,6 +20,8 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
+xit("TODO ID in Name umbenennen", function() {
+});
 xit("TODO Server nach Croupier und Spieler trennen (auslagern)", function() {
 });
 xit("TODO Server nicht per JSON anfragen", function() {

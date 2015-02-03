@@ -2,9 +2,9 @@
 
 // CLASS DEFINITION
 CasinoSpieler.prototype = new CasinoBesucher();
-function CasinoSpieler(id, geheimeId) {
+function CasinoSpieler(id, passwort) {
 	this.id = id;
-	this.geheimeId = geheimeId;
+	this.passwort = passwort;
 	
 	// VOID
 	this.spieleAnTisch = function(tischId, antwortFunktion) {
@@ -13,7 +13,7 @@ function CasinoSpieler(id, geheimeId) {
 			{
 				"aktion":"spieleAnTisch",
 				"tischId":tischId,
-				"geheimeSpielerId":this.geheimeId,
+				"spielerPasswort":this.passwort,
 				"spielerId":this.id
 			},
 			function(daten) {
