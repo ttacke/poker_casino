@@ -12,9 +12,6 @@ use LOCAL::Casino::Verbindung();
 use LOCAL::Casino::Croupier();
 my $CROUPIER = 'LOCAL::Casino::Croupier';
 
-*OK = sub { {"erfolg" => \1, "details" => ""} };
-*FEHLER = sub { {"erfolg" => \0, "details" => $_[0]} };
-
 
 # CONSTRUCTOR
 sub new {
@@ -63,18 +60,6 @@ sub _jsonToScalar {
 	return eval {
 		return $self->{'jsonParser'}->utf8->decode($textNachricht);
 	};
-}
-# STRING
-sub _scalarToJson {
-	my ($self, $nachricht) = @_;
-	
-	return $self->{'jsonParser'}->utf8->encode($nachricht);
-}
-# VOID
-sub _gibAntwort {
-	my ($self, $verbindung, $nachricht) = @_;
-	
-	$verbindung->sende($self->_scalarToJson($nachricht));
 }
 # VOID
 sub _eroeffneTisch {
@@ -148,7 +133,7 @@ sub _zeigeSpielerDesTisches {
 			}
 		}
 	}
-	return $self->_gibAntwort($croupierVerbindung, \@liste);
+	return $croupierVerbindung->antworte('ok', \@liste);
 }
 # VOID
 sub _zeigeOffeneTische {
@@ -171,7 +156,7 @@ sub _zeigeOffeneTische {
 		}
 		push(@liste, $daten);
 	}
-	return $self->_gibAntwort($verbindung, \@liste);
+	return $verbindung->antworte('ok', \@liste);
 }
 # \ARRAY
 sub _gibAlleTische {
@@ -214,14 +199,7 @@ sub _frageDenSpieler {
 		return $verbindung->antworte('timeout');
 	}
 	
-	$spieler->{'verbindung'}->sende(
-		$self->_scalarToJson(
-			{
-				aktion		=> 'frageVonCroupier',
-				nachricht	=> $nachricht
-			}
-		)
-	);
+	$spieler->{'verbindung'}->antworte('frageVonCroupier', $nachricht);
 	$self->_warteAufAntwortVon($verbindung, $spielerName, $tisch->{'spielerTimeout'});
 	return;
 }
@@ -282,16 +260,14 @@ sub _schaueInSafe {
 	my ($self, $verbindung, $kombination) = @_;
 	
 	my $schatz = $self->{'safe'}->{$kombination} || '';
-	return $self->_gibAntwort($verbindung, {
-		erfolg	=> \1,
-		schatz	=> $schatz,
-	});
+	return $verbindung->antworte('ok', $schatz);
 }
 # VOID
 sub neueNachricht {
 	my ($self, $rawConnection, $textNachricht) = @_;
 	
 	my $verbindung = $self->_gibVerbindungFuer($rawConnection);
+	#TOTO JSON entfernen
 	my $nachricht = $self->_jsonToScalar($textNachricht);
 	
 	my $aktion = $nachricht->{'aktion'};

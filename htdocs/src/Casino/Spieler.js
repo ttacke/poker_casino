@@ -28,8 +28,8 @@ function CasinoSpieler(name, passwort) {
 	// VOID
 	this._unerwarteteAntwort = function(event) {
 		var daten = JSON.parse(event.data);
-		if(daten.aktion == 'frageVonCroupier') {
-			this.derCroupierFragt(daten.nachricht);
+		if(daten.status == 'frageVonCroupier') {
+			this.derCroupierFragt(daten.details);
 		} else {
 			throw new Error("Unerwartete Antwort erhalten: " + event.data);
 		}

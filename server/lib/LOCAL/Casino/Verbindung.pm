@@ -37,26 +37,24 @@ sub istOffen {
 	return 0;
 }
 # BOOLEAN
-sub sende {
+sub _sende {
 	my ($self, $nachricht) = @_;
 	
-	return 0 if(!$self->istOffen());
+	return if(!$self->istOffen());
 	
 	$self->{'rawConnection'}->send_utf8($nachricht);
-	return 1;
+	return;
 }
 # VOID
 sub antworte {
 	my ($self, $status, $details) = @_;
 	
 	#TODO ohne JSON!!
-	my $daten = {
-		"status"	=> $status,# ok, fehler, timeout
-		"details"	=> $details,
-	};
-	$self->sende(
-		JSON->new()->utf8->encode($daten)
+	return $self->_sende(
+		JSON->new()->utf8->encode({
+			"status"	=> $status,# ok, fehler, timeout, frageVonCroupier
+			"details"	=> $details,
+		})
 	);
-	return;
 }
 1;

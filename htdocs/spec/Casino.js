@@ -69,7 +69,7 @@ describe("Szenario: Casino", function() {
 				});
 				it("dann kann ich das auch wieder ansehen", function(done) {
 					besucher.schaueInSafe(kombination, function(antwort) {
-						expect(antwort.schatz).toBe(schatz);
+						expect(antwort.details).toBe(schatz);
 						done();
 					});
 				});
@@ -111,9 +111,9 @@ describe("Szenario: Casino", function() {
 				});
 				it("dann kann ich diesen in der Übersicht sehen", function(done) {
 					spieler.zeigeOffeneTische(function(antwort) {
-						expect(antwort.length).toEqual(1);
-						expect(antwort[0].nameDesSpiels).toEqual(spielname);
-						expect(antwort[0].tischName).toEqual(tischName);
+						expect(antwort.details.length).toEqual(1);
+						expect(antwort.details[0].nameDesSpiels).toEqual(spielname);
+						expect(antwort.details[0].tischName).toEqual(tischName);
 						done();
 					});
 				});
@@ -210,9 +210,9 @@ describe("Szenario: Casino", function() {
 								});
 							});
 							it("dann bleibt der Spielname unveraendert", function(done) {
-								croupier.zeigeOffeneTische(function(liste) {
-									expect(liste.length).toBe(1);
-									expect(liste[0].nameDesSpiels).toBe(spielname);
+								croupier.zeigeOffeneTische(function(antwort) {
+									expect(antwort.details.length).toBe(1);
+									expect(antwort.details[0].nameDesSpiels).toBe(spielname);
 									done();
 								});
 							});
@@ -264,10 +264,10 @@ describe("Szenario: Casino", function() {
 						spielerB.DESTROY(done);
 					});
 					it("dann kann ich diese Spieler sehen", function(done) {
-						croupier.zeigeSpielerDesTisches(function(liste) {
-							expect(liste.length).toBe(2);
-							expect(liste).toContain(spielerAName);
-							expect(liste).toContain(spielerBName);
+						croupier.zeigeSpielerDesTisches(function(antwort) {
+							expect(antwort.details.length).toBe(2);
+							expect(antwort.details).toContain(spielerAName);
+							expect(antwort.details).toContain(spielerBName);
 							done();
 						});
 					});
@@ -276,10 +276,10 @@ describe("Szenario: Casino", function() {
 							spielerB.DESTROY(done);
 						});
 						it("dann werden nach wie vor alle in der Spielerliste aufgeführt", function(done) {
-							croupier.zeigeSpielerDesTisches(function(liste) {
-								expect(liste.length).toBe(2);
-								expect(liste).toContain(spielerAName);
-								expect(liste).toContain(spielerBName);
+							croupier.zeigeSpielerDesTisches(function(antwort) {
+								expect(antwort.details.length).toBe(2);
+								expect(antwort.details).toContain(spielerAName);
+								expect(antwort.details).toContain(spielerBName);
 								done();
 							});
 						});
