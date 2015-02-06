@@ -103,6 +103,7 @@ function CasinoBesucher() {
 			throw new Error("Du hast das Casino noch nicht betreten");
 		}
 		if(this.warteAufAntwort) {
+			// TODO nach timeout auch wieder zulassen + abtesten
 			throw new Error("Es wartet noch eine Anfrage auf Antwort");
 		}
 		this._sendeRohdaten(daten);

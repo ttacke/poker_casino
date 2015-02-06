@@ -70,6 +70,10 @@ sub eroeffneTisch {
 		$croupierPasswort, $spielerTimeoutInMillisekunden
 	) = @_;
 	
+	if($spielerTimeoutInMillisekunden <= 0) {
+		$spielerTimeoutInMillisekunden = 1;
+	}
+	
 	my $timeoutInSekunden = ($spielerTimeoutInMillisekunden / 1000) || 0.05;
 	my $bestehenderTisch = $tischDaten->{$tischName};
 	if(!$bestehenderTisch) {

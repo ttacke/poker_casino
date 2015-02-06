@@ -1,17 +1,19 @@
 <html>
 	<head>
-		<title>Casino 0.1</title>
-	</head>
-	<body>
+		<title>Casino 1.0</title>
 		<style>
 			body {
 				margin: 0;
 				padding: 0;
 			}
-			.croupier,
+			body, p, input, button {
+				font-family: sans-serif;
+				font-size: 2rem;
+			}
+			#croupier,
 			.spieler {
 				height: 50%;
-				width: 32%;
+				width: 10%;
 				padding: 0;
 				margin: 0;
 				border: solid 5px green;
@@ -20,16 +22,16 @@
 			.spieler {
 				height: 4em;
 			}
-			.croupier {
+			#spielerListe,
+			#croupier {
+				display: none;
 				border-color: red;
 				width: 97.5%;
 			}
-			.croupier h2,
-			.spieler h2 {
-				padding: 0;
-				margin: 0;
+			#spielerListe {
+				border: solid 5px green;
 			}
-			.croupier iframe,
+			#croupier iframe,
 			.spieler iframe {
 				display: block;
 				width: 100%;
@@ -39,22 +41,68 @@
 				overflow: hidden;
 				border: none;
 			}
-		</style>
-		<div class="croupier">
-			<h2>Croupier</h2>
-			<iframe src="speedtest_croupier.html"></iframe>
-		</div>
-		<script>
-			var SPIELER_ANZAHL = window.location.search.substr(1, window.location.search.length) * 1;
-			if(!SPIELER_ANZAHL) SPIELER_ANZAHL = 6;
-			for(var i = 1;i <= SPIELER_ANZAHL;i++) {
-				document.write(
-					'<div class="spieler">'
-					+	'<h2>Spieler#' + i + '</h2>'
-					+	'<iframe src="speedtest_spieler.html?' + i + '"></iframe>'
-					+ '</div>'
-				);
+			#start {
+				margin-top: 10%;
+				width: 45rem;
+				margin-left: auto;
+				margin-right: auto;
 			}
+			#start label {
+				font-weight: bold;
+				padding-right: 0.3rem;
+			}
+			#start input {
+				width: 18rem;
+			}
+		</style>
+		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+		<script>
+			window.aktuelleSpielerNummer = 0;
+			window.casinoUrl = '';
+			
+			function _casinoReset() {
+				var verbindung = new WebSocket(window.casinoUrl);
+				verbindung.onopen = function(event) {
+					verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
+				};
+			}
+			function starten() {
+				window.casinoUrl = 'ws://' + $('#start .ip').val() + '/';
+				$('#start').hide();
+				_casinoReset();
+				_erzeugeCroupier();
+				$('#spielerListe').show();
+				return false;
+			}
+			function erzeugeSpieler() {
+				window.aktuelleSpielerNummer++;
+				var $b = $('#spielerListe button').remove();
+				$('#spielerListe').append(
+					'<div class="spieler">'
+					+	'<iframe src="speedtest_spieler.html?noCache=' + new Date().getTime() + '"></iframe>'
+					+ '</div>'
+				).append($b);
+			}
+			function _erzeugeCroupier() {
+				$('#croupier').html(
+					'<iframe src="speedtest_croupier.html?noCache=' + new Date().getTime() + '"></iframe>'
+				).show();
+			}
+			$(function() {
+				starten();
+				setTimeout("erzeugeSpieler()", 200);
+				setTimeout("erzeugeSpieler()", 400);
+			});
 		</script>
+	</head>
+	<body>
+		<form id="start">
+			<label>Casino-Server</label><input type="text" class="ip" value="127.0.0.1:8080"/>
+			<button onclick="return starten()">starten</button>
+		</form>
+		<div id="croupier"></div>
+		<div id="spielerListe">
+			<button onclick="return erzeugeSpieler()">mehr Spieler</button>
+		</div>
 	</body>
 </html>

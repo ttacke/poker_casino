@@ -6,9 +6,10 @@
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		<script language="javascript" type="text/javascript">
-			var SPIELER_NAME = window.location.search.substr(1, window.location.search.length);
-			var SPIELER_PASSWORT = window.location.search.substr(1, window.location.search.length);
+			var SPIELER_NAME = top.window.aktuelleSpielerNummer;
+			var SPIELER_PASSWORT = top.window.aktuelleSpielerNummer;
 			var TISCH_NAME = 'GrafZahl';
+			var CASINO_URL = top.window.casinoUrl;
 			var spieler = null;
 			
 			document.addEventListener("load", init, false);
@@ -26,7 +27,7 @@
 					logge('spiele');
 					this._antworteDemCroupier((frage * 1) + 1);
 				};
-				spieler.betrete("ws://10.1.6.150:8080/", function() {
+				spieler.betrete(CASINO_URL, function() {
 					warteAufTisch();
 				});
 			}
@@ -69,5 +70,5 @@
 			}
 		</script>
 	</head>
-	<body><input type="text" style="width: 100%;"/></body>
+	<body><input type="text" style="width: 10rem;"/></body>
 </html>
