@@ -5,50 +5,52 @@
 		<script type="text/javascript" src="src/Casino/Besucher.js"></script>
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
+		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 		<script language="javascript" type="text/javascript">
 			var SPIELER_NAME = top.window.aktuelleSpielerNummer;
 			var SPIELER_PASSWORT = top.window.aktuelleSpielerNummer;
 			var TISCH_NAME = 'GrafZahl';
 			var CASINO_URL = top.window.casinoUrl;
+			var LOG = {};
 			var spieler = null;
+			var pingpong = [];
 			
-			document.addEventListener("load", init, false);
-			document.addEventListener("DOMContentLoaded", init, false);
+			$(function() {
+				init();
+				setInterval('schreibeLog()', 1000);
+			});
 			
+			function ermittleGeschwindigkeit() {
+				var MAX = 100000;
+				var jetzt = new Date().getTime();
+				pingpong.push(jetzt);
+				while(pingpong.length > MAX) {
+					pingpong.shift();
+				}
+				var frueher = pingpong[0] || 0;
+				return Math.floor(pingpong.length / (jetzt - frueher) * 1000);
+			}
 			function init() {
-				window.i = 0;
-				window.anfragenZaehler = 0;
-				window.anfragenStartZeit = new Date().getTime();
-				document.getElementsByTagName('input')[0].value = '';
-				
 				spieler = new CasinoSpieler(SPIELER_NAME, SPIELER_PASSWORT);
 				spieler.derCroupierFragt = function(frage) {
-					window.anfragenZaehler++;
-					logge('spiele');
+					logge('geschwindigkeit', ermittleGeschwindigkeit());
+					logge('status', 'spiele...');
 					this._antworteDemCroupier((frage * 1) + 1);
 				};
 				spieler.betrete(CASINO_URL, function() {
 					warteAufTisch();
 				});
 			}
-			// FLOAT
-			function errechneGeschwindigkeit() {
-				var zeitRaum = new Date().getTime() - window.anfragenStartZeit;
-				var anfragenProSekunde = window.anfragenZaehler / (zeitRaum / 1000);
-				window.anfragenZaehler = 0;
-				window.anfragenStartZeit = new Date().getTime();
-				return anfragenProSekunde;
-			}
 			function warteAufTisch() {
-				logge('warte auf Tisch "' + TISCH_NAME + '"...', true);
+				logge('status', 'warte auf Tisch "' + TISCH_NAME + '"...');
 				spieler.zeigeOffeneTische(function(antwort) {
 					var liste = antwort.details;
 					for(var i = 0; i < liste.length;i++) {
 						if(liste[i].tischName == TISCH_NAME) {
-							logge("Tisch betreten...", true);
+							logge('status', "Tisch betreten...");
 							spieler.spieleAnTisch(TISCH_NAME, function(antwort) {
 								if(antwort.status == 'ok') {
-									logge("Spielen:", true);
+									logge('status', "Sitze am Tisch");
 									return;
 									
 								} else {
@@ -61,14 +63,18 @@
 					setTimeout('warteAufTisch()', 1000);
 				});
 			}
-			function logge(msg, zeigeDirekt) {
-				window.i++;
-				if(window.i > 432 || zeigeDirekt) {
-					document.getElementsByTagName('input')[0].value = msg + '(v = ' + errechneGeschwindigkeit() + ' PingPong/s)';
-					window.i = 0;
+			function logge(key, val) {
+				LOG[key] = val;
+			}
+			function schreibeLog() {
+				for(key in LOG) {
+					$('#' + key).html(LOG[key]);
 				}
 			}
 		</script>
 	</head>
-	<body><input type="text" style="width: 10rem;"/></body>
+	<body>
+		<div><strong>v = <span id="geschwindigkeit">0</span>/s</strong></div>
+		<div id="status">starte...</div>
+	</body>
 </html>

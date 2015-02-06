@@ -13,23 +13,29 @@
 			#croupier,
 			.spieler {
 				height: 50%;
-				width: 10%;
 				padding: 0;
 				margin: 0;
 				border: solid 5px green;
 				display: inline-block;
 			}
 			.spieler {
-				height: 4em;
+				height: 1.8em;
+				width: 10%;
+				display: inline-block;
+				border: solid 1px red;
+				float: left;
+				border: solid 5px green;
+			}
+			#plusSpieler {
+				border: none;
+				padding-top: 0.6rem;
+				padding-left: 0.7rem;
 			}
 			#spielerListe,
 			#croupier {
 				display: none;
 				border-color: red;
 				width: 97.5%;
-			}
-			#spielerListe {
-				border: solid 5px green;
 			}
 			#croupier iframe,
 			.spieler iframe {
@@ -76,7 +82,7 @@
 			}
 			function erzeugeSpieler() {
 				window.aktuelleSpielerNummer++;
-				var $b = $('#spielerListe button').remove();
+				var $b = $('#spielerListe #plusSpieler').remove();
 				$('#spielerListe').append(
 					'<div class="spieler">'
 					+	'<iframe src="speedtest_spieler.html?noCache=' + new Date().getTime() + '"></iframe>'
@@ -88,11 +94,13 @@
 					'<iframe src="speedtest_croupier.html?noCache=' + new Date().getTime() + '"></iframe>'
 				).show();
 			}
+			/* zum Entwickeln
 			$(function() {
 				starten();
 				setTimeout("erzeugeSpieler()", 200);
 				setTimeout("erzeugeSpieler()", 400);
 			});
+			*/
 		</script>
 	</head>
 	<body>
@@ -102,7 +110,7 @@
 		</form>
 		<div id="croupier"></div>
 		<div id="spielerListe">
-			<button onclick="return erzeugeSpieler()">mehr Spieler</button>
+			<div class="spieler" id="plusSpieler"><button onclick="return erzeugeSpieler()">+</button></div>
 		</div>
 	</body>
 </html>

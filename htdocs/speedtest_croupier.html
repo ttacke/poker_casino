@@ -12,11 +12,11 @@
 			var TISCH_NAME = 'GrafZahl';
 			var SPIELNAME = 'Zaehlen';
 			var MIN_SPIELER = 2;
-			var TIMEOUT = 10;
-			var croupier = null;
+			var TIMEOUT = 50;
 			var CASINO_URL = top.window.casinoUrl;
 			var LOG = {};
 			var TIMEOUT_NEU_SETZEN = false;
+			var croupier = null;
 			var pingpong = [];
 			
 			$(function() {
@@ -29,13 +29,10 @@
 				TIMEOUT_NEU_SETZEN = true;
 			}
 			function init() {
-				window.i = 0;
 				window.sollAntwort = 0;
 				window.aktuelleSpielerliste = [];
 				window.aktuellerSpieler = -1;
 				window.rundenzaehler = 0;
-				window.anfragenZaehler = 0;
-				window.anfragenStartZeit = new Date().getTime();
 				window.timeoutzaehler = 0;
 				
 				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
@@ -130,7 +127,6 @@
 			}
 			function naechsterSpieler() {
 				window.aktuellerSpieler++;
-				window.i++;
 				var liste = window.aktuelleSpielerliste;
 				if(window.aktuellerSpieler >= liste.length) {
 					warteAufSpieler();
@@ -142,7 +138,6 @@
 				var aktuelleSpielerName = liste[window.aktuellerSpieler];
 				croupier.frageDenSpieler(aktuelleSpielerName, window.sollAntwort, function(antwort) {
 					window.sollAntwort++;
-					window.anfragenZaehler++;
 					if(antwort.status == 'timeout') {
 						logge('spielerTimeouts' + aktuelleSpielerName, 'PLUS');
 						logge('timeoutzaehler', ++window.timeoutzaehler);
@@ -197,21 +192,18 @@
 		</style>
 	</head>
 	<body>
-		-- Rang sortierung stimmt nicht
-		-- SpielerLog umsetzen
-		<button onclick="return starteTisch()">Tisch wieder starten</button> 
 		<table>
 			<thead>
 				<tr>
 					<th>Spielrunde:</th><td id="spielrunde">0</td>
-					<th>PingPong/s:</th><td id="geschwindigkeit">0</td>
+					<th>PingPong</th><td><span id="geschwindigkeit">0</span>/s</td>
 					<th>benutzte Spieler:</th><td id="spieleranzahl">0</td>
 				</tr>
 				<tr>
 					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
-					<th>Timeout in ms</th><td>
+					<th>Timeout</th><td>
 						<button onclick="return timeout(-1)" id="minus">-</button>
-						<span id="timeout">0</span>
+						<span id="timeout">0</span> ms
 						<button onclick="return timeout(+1)" id="plus">+</button>
 					</td>
 					<th>letzter Status:</th><td id="status">starte...</td>
