@@ -118,6 +118,7 @@ sub neueNachricht {
 			$verbindung
 		);
 	} elsif($aktion eq 'frageDenSpieler') {
+#TODO wenn ein Spieler 10 Timeouts in Fogle hatte, dann 100 mal nicht beachten
 		return $CROUPIER->frageDenSpieler(
 			sub {
 				return $self->{'spielerAntwort'};

@@ -30,7 +30,6 @@
 			}
 			function init() {
 				logge('maxAnzahlFuerAuswertungen', top.window.maxAnzahlFuerAuswertungen);
-				logge('spielname', SPIELNAME);
 				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
 				croupier.betrete(top.window.casinoUrl, function() {
 					starteTisch();
@@ -191,7 +190,7 @@
 						<button onclick="return timeout(+1)" id="plus">+</button>
 					</td>
 					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
-					<th>gespielte Runden:</th><td id="spielrunde">0</td>
+					<th>Timeoutstrafe:</th><td>10 in Folge = 1s</td>
 				</tr>
 				<tr>
 					<th>Status:</th><td id="status">starte...</td>
@@ -200,7 +199,7 @@
 						<span id="maxAnzahlFuerAuswertungen">0</span>
 						<button onclick="return maxAnzahlFuerAuswertungen(2)" id="minus">*2</button>
 					</td>
-					<th>Spiel:</th><td id="spielname">-</td>
+					<th>gespielte Runden:</th><td id="spielrunde">0</td>
 				</tr>
 			</thead>
 			<tbody>

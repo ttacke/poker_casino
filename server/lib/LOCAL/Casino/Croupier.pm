@@ -5,9 +5,28 @@ use warnings;
 my $JSON = JSON->new();
 
 # VOID
-sub _warteAufSpielerantwort {
-	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout) = @_;
+sub _erhoeheTimeoutzaehler {
+	my ($class, $spielerName, $tischDatenFunc, $tischName) = @_;
 	
+	my $tischDaten = &$tischDatenFunc();
+	foreach my $spieler (@{$tischDaten->{$tischName}->{'spieler'}}) {
+		if($spieler->{'name'} eq $spielerName) {
+			$spieler->{'timeoutDaten'}->{'timeoutsInFolge'}++;
+			return;
+		}
+	}
+	warn "Kann Timeoutzaehler nicht finden $spielerName";
+	#TODO das passiert wohn noch! Warum?
+	use Data::Dumper;
+	$Data::Dumper::Maxdepth = 4;
+	die Dumper($tischDaten);
+	return;
+}
+# VOID
+sub _warteAufSpielerantwort {
+	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout, $tischDaten, $tischName) = @_;
+	
+	my $tischDatenFunc = sub { return $tischDaten };
 	my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
 	$SIG{'ALRM'} ||= sub {
 		my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
@@ -15,6 +34,7 @@ sub _warteAufSpielerantwort {
 			my $erwarteteAntwort = $spielerAntwortDaten->{$spielerName};
 			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
 				$erwarteteAntwort->{'croupierVerbindung'}->antworte('timeout');
+				$class->_erhoeheTimeoutzaehler($spielerName, $tischDatenFunc, $tischName);
 				delete($spielerAntwortDaten->{$spielerName});
 			}
 		}
@@ -112,8 +132,37 @@ sub frageDenSpieler {
 		return $verbindung->antworte('timeout');
 	}
 	
+	if($class->_zuVieleTimeoutsInFolge($spieler)) {
+		if($class->_timeoutstrafzeitLaeuftNoch($spieler)) {
+			return $verbindung->antworte('timeout');
+		}
+		$class->_timeoutStrafzeitNeuStarten($spieler);
+	}
 	$spieler->{'verbindung'}->antworte('frageVonCroupier', $nachricht);
-	$class->_warteAufSpielerantwort($gibSpielerAntwortenFunc, $verbindung, $spielerName, $tisch->{'spielerTimeout'});
+	$class->_warteAufSpielerantwort($gibSpielerAntwortenFunc, $verbindung, $spielerName, $tisch->{'spielerTimeout'}, $tischDaten, $tisch->{'name'});
 	return;
+}
+# BOOLEAN
+sub _zuVieleTimeoutsInFolge {
+	my ($class, $spieler) = @_;
+	
+	return 1 if($spieler->{'timeoutDaten'}->{'timeoutsInFolge'} >= 10);
+	
+	return 0;
+}
+# VOID
+sub _timeoutStrafzeitNeuStarten {
+	my ($class, $spieler) = @_;
+	
+	$spieler->{'timeoutDaten'}->{'strafzeitStart'} = Time::HiRes::time();
+	return;
+}
+# BOOLEAN
+sub _timeoutstrafzeitLaeuftNoch {
+	my ($class, $spieler) = @_;
+	
+	return 1 if(Time::HiRes::time() - $spieler->{'timeoutDaten'}->{'strafzeitStart'} < 3.0);
+	
+	return 0;
 }
 1;

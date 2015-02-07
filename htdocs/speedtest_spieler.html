@@ -9,6 +9,7 @@
 		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script language="javascript" type="text/javascript">
 			var spieler = null;
+			var ANTWORTE = false;
 			
 			$(function() {
 				init();
@@ -17,12 +18,26 @@
 				logge('spieler', top.window.aktuelleSpielerNummer);
 				spieler = new CasinoSpieler(top.window.aktuelleSpielerNummer, top.window.aktuelleSpielerNummer);
 				spieler.derCroupierFragt = function(frage) {
-					logge('status', 'spiele...');
-					this._antworteDemCroupier((frage * 1) + 1);
+					if(ANTWORTE) {
+						logge('status', 'spiele...');
+						this._antworteDemCroupier((frage * 1) + 1);
+					} else {
+						logge('status', 'schweige...');
+					}
 				};
 				spieler.betrete(top.window.casinoUrl, function() {
 					warteAufTisch();
 				});
+			}
+			function toggleOnOff(initialOn) {
+				var $el = $('body');
+				if(initialOn || !$el.hasClass('enabled')) {
+					$el.addClass('enabled');
+					ANTWORTE = true;
+				} else {
+					$el.removeClass('enabled');
+					ANTWORTE = false;
+				}
 			}
 			function warteAufTisch() {
 				logge('status', 'warte auf Tisch "' + top.window.tischName + '"...');
@@ -34,6 +49,7 @@
 							spieler.spieleAnTisch(top.window.tischName, function(antwort) {
 								if(antwort.status == 'ok') {
 									logge('status', "Sitze am Tisch");
+									toggleOnOff(true);
 									return;
 								} else {
 									setTimeout('warteAufTisch()', 1000);
@@ -48,13 +64,27 @@
 		</script>
 		<style>
 			body {
-				font-size: 0.7rem;
+				font-size: 0.8rem;
 				padding: 0.2rem 0.3rem;
 				margin: 0;
+				border: solid 1px white;
+				border-color: #F99;
+				background-color: #FCC;
+			}
+			body.enabled {
+				border-color: #9F9;
+				background-color: #CFC;
+			}
+			#spieler:after {
+				content: " ✘";
+			}
+			body.enabled #spieler:after {
+				content: " ✓";
 			}
 		</style>
 	</head>
-	<body>
-		#<span id="spieler">-</span>:<span id="status">starte...</span>
+	<body onclick="toggleOnOff()">
+		#<span id="spieler">-</span> <span id="status">starte...</span>
+		
 	</body>
 </html>

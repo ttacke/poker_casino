@@ -20,9 +20,7 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO Geschwindigkeitsregler in SpeedtestCroupier einfügen (für Timeout im Server und einen für Timeout im JS)", function() {
-});
-xit("TODO Spieler-Bewertung vom Coupier hinterlegbar machen", function() {
+xit("TODO TimeoutStrafe abtesten", function() {
 });
 xit("TODO Maxschen Croupier und dummy-Spieler umsetzen: https://www.spielwiki.de/M%C3%A4xchen", function() {
 });
