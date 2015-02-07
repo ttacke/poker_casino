@@ -15,8 +15,9 @@
 				init();
 			});
 			function init() {
-				logge('spieler', top.window.aktuelleSpielerNummer);
-				spieler = new CasinoSpieler(top.window.aktuelleSpielerNummer, top.window.aktuelleSpielerNummer);
+				var spielerNummer = ++top.window.aktuelleSpielerNummer;
+				logge('spieler', spielerNummer);
+				spieler = new CasinoSpieler(spielerNummer, spielerNummer);
 				spieler.derCroupierFragt = function(frage) {
 					if(ANTWORTE) {
 						logge('status', 'spiele...');

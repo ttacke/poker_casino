@@ -66,7 +66,7 @@
 			window.aktuelleSpielerNummer = 0;
 			window.casinoUrl = '';
 			window.maxAnzahlFuerAuswertungen = 10000;
-			window.timeout = 30;
+			window.timeout = 10;
 			function _casinoReset() {
 				var verbindung = new WebSocket(window.casinoUrl);
 				verbindung.onopen = function(event) {
@@ -85,7 +85,6 @@
 				return false;
 			}
 			function erzeugeSpieler() {
-				window.aktuelleSpielerNummer++;
 				$('#spielerListe').append(
 					'<div class="spieler">'
 					+	'<iframe src="speedtest_spieler.html?noCache=' + new Date().getTime() + '"></iframe>'
@@ -97,13 +96,13 @@
 					'<iframe src="speedtest_croupier.html?noCache=' + new Date().getTime() + '"></iframe>'
 				).show();
 			}
-			/* zum Entwickeln*/
+			/* zum Entwickeln
 			$(function() {
 				starten('192.168.1.5:8080');
 				setTimeout("erzeugeSpieler()", 200);
 				setTimeout("erzeugeSpieler()", 400);
 			});
-			/**/
+			*/
 		</script>
 	</head>
 	<body>

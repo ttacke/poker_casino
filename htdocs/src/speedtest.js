@@ -45,12 +45,6 @@ function ermittleGeschwindigkeit() {
 }
 // VOID
 function logge(key, val) {
-	//TODO Punkte und Timeouts auch auf einen Zeitraum beziehen /MAX)
-	if(val == 'PLUS') {
-		if(!aktuelleLogEintragungen[key]) aktuelleLogEintragungen[key] = 0;
-		aktuelleLogEintragungen[key]++;
-		return;
-	}
 	aktuelleLogEintragungen[key] = val;
 }
 // VOID

@@ -1,11 +1,19 @@
 "use strict";
 
+var CasinoVerbindungen = [];
+function CasinoHerzschrittmacher(instanzId) {
+	console.log("kammerflimmern");
+	if(instanzId > -1 && CasinoVerbindungen[instanzId]) {
+		CasinoVerbindungen[instanzId].verbindung.onmessage({ data: 'eKammerflimmern besetigt' });
+	}
+}
 // CLASS DEFINITION
 function CasinoBesucher() {
 	this.verbindung = null;
 	this.istVerbunden = false;
 	this.warteAufAntwort = false;
 	this.istAnTisch = null;
+	this.instanzId = -1;
 	
 	// VOID
 	this.DESTROY = function(func) {
@@ -36,6 +44,9 @@ function CasinoBesucher() {
 		}
 		var self = this;
 		this.verbindung.onopen = function(event) {
+			CasinoVerbindungen.push(self);
+			self.instanzId = CasinoVerbindungen.length - 1;
+			
 			self.istVerbunden = true;
 			istVerbundenFunktion();
 		};
@@ -103,13 +114,14 @@ function CasinoBesucher() {
 			throw new Error("Du hast das Casino noch nicht betreten");
 		}
 		if(this.warteAufAntwort) {
-			// TODO nach timeout auch wieder zulassen + abtesten
 			throw new Error("Es wartet noch eine Anfrage auf Antwort");
 		}
+		var herzschrittmacher = setTimeout("CasinoHerzschrittmacher(" + this.instanzId + ")", 100);
 		this._sendeRohdaten(daten);
 		this.warteAufAntwort = true;
 		var self = this;
 		this.verbindung.onmessage = function(event) {
+			clearTimeout(herzschrittmacher);
 			self.warteAufAntwort = false;
 			self.verbindung.onmessage = function(event) {
 				self._unerwarteteAntwort(event);

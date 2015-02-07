@@ -6,9 +6,9 @@ my $JSON = JSON->new();
 
 # VOID
 sub _erhoeheTimeoutzaehler {
-	my ($class, $spielerName, $tischDatenFunc, $tischName) = @_;
+	my ($class, $spielerName, $gibTischeFunc, $tischName) = @_;
 	
-	my $tischDaten = &$tischDatenFunc();
+	my $tischDaten = &$gibTischeFunc();
 	foreach my $spieler (@{$tischDaten->{$tischName}->{'spieler'}}) {
 		if($spieler->{'name'} eq $spielerName) {
 			$spieler->{'timeoutDaten'}->{'timeoutsInFolge'}++;
@@ -16,17 +16,12 @@ sub _erhoeheTimeoutzaehler {
 		}
 	}
 	warn "Kann Timeoutzaehler nicht finden $spielerName";
-	#TODO das passiert wohn noch! Warum?
-	use Data::Dumper;
-	$Data::Dumper::Maxdepth = 4;
-	die Dumper($tischDaten);
 	return;
 }
 # VOID
 sub _warteAufSpielerantwort {
-	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout, $tischDaten, $tischName) = @_;
+	my ($class, $gibSpielerAntwortenFunc, $croupierVerbindung, $spielerName, $timeout, $gibTischeFunc, $tischName) = @_;
 	
-	my $tischDatenFunc = sub { return $tischDaten };
 	my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
 	$SIG{'ALRM'} ||= sub {
 		my $spielerAntwortDaten = &$gibSpielerAntwortenFunc();
@@ -34,7 +29,7 @@ sub _warteAufSpielerantwort {
 			my $erwarteteAntwort = $spielerAntwortDaten->{$spielerName};
 			if($erwarteteAntwort->{'gueltigBis'} < Time::HiRes::time()) {
 				$erwarteteAntwort->{'croupierVerbindung'}->antworte('timeout');
-				$class->_erhoeheTimeoutzaehler($spielerName, $tischDatenFunc, $tischName);
+				$class->_erhoeheTimeoutzaehler($spielerName, $gibTischeFunc, $tischName);
 				delete($spielerAntwortDaten->{$spielerName});
 			}
 		}
@@ -124,7 +119,7 @@ sub eroeffneTisch {
 }
 # VOID
 sub frageDenSpieler {
-	my ($class, $gibSpielerAntwortenFunc, $tischDaten, $verbindung, $spielerName, $nachricht) = @_;
+	my ($class, $gibSpielerAntwortenFunc, $tischDaten, $verbindung, $spielerName, $nachricht, $gibTischeFunc) = @_;
 	
 	my $tisch = $class->_gibMeinenTisch($tischDaten, $verbindung);
 	my $spieler = $class->_gibSpielerAnhandName($tisch, $spielerName);
@@ -139,7 +134,7 @@ sub frageDenSpieler {
 		$class->_timeoutStrafzeitNeuStarten($spieler);
 	}
 	$spieler->{'verbindung'}->antworte('frageVonCroupier', $nachricht);
-	$class->_warteAufSpielerantwort($gibSpielerAntwortenFunc, $verbindung, $spielerName, $tisch->{'spielerTimeout'}, $tischDaten, $tisch->{'name'});
+	$class->_warteAufSpielerantwort($gibSpielerAntwortenFunc, $verbindung, $spielerName, $tisch->{'spielerTimeout'}, $gibTischeFunc, $tisch->{'name'});
 	return;
 }
 # BOOLEAN
