@@ -13,30 +13,34 @@
 			var SPIELNAME = 'Zaehlen';
 			var ZAHLEN_TOKEN = 0;
 			var MIN_SPIELER = 2;
-			var TIMEOUT = 50;
 			var TIMEOUT_NEU_SETZEN = false;
 			var AKTUELLE_SPIELERLISTE = [];
 			var DERZEIT_AKTIVER_SPIELER = -1;
 			var SPIELRUNDENZAEHLER = 0;
-			var TIMEOUTZAEHLER = 0;
 			var croupier = null;
 			
 			$(function() {
 				init();
 			});
 			function timeout(diff) {
-				TIMEOUT += diff;
-				if(TIMEOUT <= 4) TIMEOUT = 2;
+				top.window.timeout += diff;
+				if(top.window.timeout < 1) top.window.timeout = 1;
 				TIMEOUT_NEU_SETZEN = true;
 			}
 			function init() {
+				logge('maxAnzahlFuerAuswertungen', top.window.maxAnzahlFuerAuswertungen);
+				logge('spielname', SPIELNAME);
 				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
 				croupier.betrete(top.window.casinoUrl, function() {
 					starteTisch();
 				});
 			}
+			function maxAnzahlFuerAuswertungen(multiplier) {
+				top.window.maxAnzahlFuerAuswertungen *= multiplier;
+				logge('maxAnzahlFuerAuswertungen', top.window.maxAnzahlFuerAuswertungen);
+			}
 			function starteTisch() {
-				var timeout = TIMEOUT;
+				var timeout = top.window.timeout;
 				croupier.eroeffneTisch(top.window.tischName, SPIELNAME, timeout, function(daten) {
 					logge("timeout", timeout);
 					if(daten.status == 'ok') {
@@ -93,9 +97,12 @@
 				}
 				var rangliste = {};
 				var punkteListe = [];
+				logge('timeoutzaehler', gibGesamtWert('timeout'));
 				for(var i = 0; i < spielerListe.length; i++) {
 					var spieler = (i + 1);
-					var punkte = gibLog('spielerPunkte' + spieler);
+					logge('spielerTimeouts' + spieler, gibSpielerWert(spieler, 'timeout'));
+					var punkte = gibSpielerWert(spieler, 'punkte');
+					logge("spielerPunkte" + spieler, punkte);
 					if(!punkte) punkte = 0;
 					punkte *= 1;
 					if(!rangliste[punkte]) rangliste[punkte] = [];
@@ -125,12 +132,16 @@
 				var aktuelleSpielerName = AKTUELLE_SPIELERLISTE[DERZEIT_AKTIVER_SPIELER];
 				croupier.frageDenSpieler(aktuelleSpielerName, ZAHLEN_TOKEN, function(antwort) {
 					ZAHLEN_TOKEN++;
+					var art = 'punkte';
+					var wert = 0;
 					if(antwort.status == 'timeout') {
-						logge('spielerTimeouts' + aktuelleSpielerName, 'PLUS');
-						logge('timeoutzaehler', ++TIMEOUTZAEHLER);
+						art = 'timeout';
+						wert = 1;
+						fuegeSpielerWertEin('timeout', aktuelleSpielerName, 1);
 					} else if(antwort.status == 'ok' && ZAHLEN_TOKEN == antwort.details) {
-						logge('spielerPunkte' + aktuelleSpielerName, 'PLUS');
+						wert = 1;
 					}
+					fuegeSpielerWertEin(aktuelleSpielerName, art, wert);
 					naechsterSpieler();
 				});
 			}
@@ -182,7 +193,13 @@
 					<th>gespielte Runden:</th><td id="spielrunde">0</td>
 				</tr>
 				<tr>
-					<th>Status:</th><td colspan="5" id="status">starte...</td>
+					<th>Status:</th><td id="status">starte...</td>
+					<th>Bewertungsgrenze:</th><td>
+						<button onclick="return maxAnzahlFuerAuswertungen(0.5)" id="minus">/2</button>
+						<span id="maxAnzahlFuerAuswertungen">0</span>
+						<button onclick="return maxAnzahlFuerAuswertungen(2)" id="minus">*2</button>
+					</td>
+					<th>Spiel:</th><td id="spielname">-</td>
 				</tr>
 			</thead>
 			<tbody>

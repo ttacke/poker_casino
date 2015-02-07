@@ -70,7 +70,7 @@
 			window.aktuelleSpielerNummer = 0;
 			window.casinoUrl = '';
 			window.maxAnzahlFuerAuswertungen = 10000;
-			
+			window.timeout = 30;
 			function _casinoReset() {
 				var verbindung = new WebSocket(window.casinoUrl);
 				verbindung.onopen = function(event) {
