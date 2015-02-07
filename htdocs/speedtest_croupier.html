@@ -21,6 +21,7 @@
 			
 			$(function() {
 				init();
+				setInterval("erstelleSpielerLog()", 1000);
 			});
 			function timeout(diff) {
 				top.window.timeout += diff;
@@ -80,10 +81,10 @@
 				SPIELRUNDENZAEHLER++;
 				logge('spielrunde', SPIELRUNDENZAEHLER);
 				DERZEIT_AKTIVER_SPIELER = -1;
-				erstelleSpielerLog(liste);
 				naechsterSpieler();
 			}
-			function erstelleSpielerLog(spielerListe) {
+			function erstelleSpielerLog() {
+				var spielerListe = AKTUELLE_SPIELERLISTE;
 				var bereitsAngelegt = $('table tbody').find('tr').length;
 				while(spielerListe.length > bereitsAngelegt) {
 					bereitsAngelegt++;
