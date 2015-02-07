@@ -11,34 +11,37 @@
 				font-size: 2rem;
 			}
 			#croupier,
-			.spieler {
-				height: 50%;
+			#spielerListe .spieler {
 				padding: 0;
 				margin: 0;
-				border: solid 5px green;
-				display: inline-block;
 			}
-			.spieler {
-				height: 1.8em;
+			#croupier {
+				height: 80%;
+				border: solid 3px #9F9;
+				background-color: #EFE;
+			}
+			#spielerListe .spieler {
+				height: 0.8em;
 				width: 10%;
 				display: inline-block;
-				border: solid 1px red;
 				float: left;
-				border: solid 5px green;
+				border: solid 1px #F99;
+				background-color: #FCC;
 			}
-			#plusSpieler {
+			#spielerListe #plusSpieler {
 				border: none;
-				padding-top: 0.6rem;
-				padding-left: 0.7rem;
+				background: none;
+				height: 1.6em;
+			}
+			#spielerListe #plusSpieler button {
+				margin: 0.3rem 2.3rem;
 			}
 			#spielerListe,
 			#croupier {
 				display: none;
-				border-color: red;
-				width: 97.5%;
 			}
 			#croupier iframe,
-			.spieler iframe {
+			#spielerListe .spieler iframe {
 				display: block;
 				width: 100%;
 				height: 100%;
@@ -63,8 +66,10 @@
 		</style>
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 		<script>
+			window.tischName = 'GrafZahl';
 			window.aktuelleSpielerNummer = 0;
 			window.casinoUrl = '';
+			window.maxAnzahlFuerAuswertungen = 10000;
 			
 			function _casinoReset() {
 				var verbindung = new WebSocket(window.casinoUrl);
@@ -72,8 +77,11 @@
 					verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
 				};
 			}
-			function starten() {
-				window.casinoUrl = 'ws://' + $('#start .ip').val() + '/';
+			function starten(ip) {
+				if(!ip) {
+					ip = $('#start .ip').val();
+				}
+				window.casinoUrl = 'ws://' + ip + '/';
 				$('#start').hide();
 				_casinoReset();
 				_erzeugeCroupier();
@@ -82,25 +90,24 @@
 			}
 			function erzeugeSpieler() {
 				window.aktuelleSpielerNummer++;
-				var $b = $('#spielerListe #plusSpieler').remove();
 				$('#spielerListe').append(
 					'<div class="spieler">'
 					+	'<iframe src="speedtest_spieler.html?noCache=' + new Date().getTime() + '"></iframe>'
 					+ '</div>'
-				).append($b);
+				);
 			}
 			function _erzeugeCroupier() {
 				$('#croupier').html(
 					'<iframe src="speedtest_croupier.html?noCache=' + new Date().getTime() + '"></iframe>'
 				).show();
 			}
-			/* zum Entwickeln
+			/* zum Entwickeln */
 			$(function() {
-				starten();
+				starten('192.168.1.5:8080');
 				setTimeout("erzeugeSpieler()", 200);
 				setTimeout("erzeugeSpieler()", 400);
 			});
-			*/
+			/**/
 		</script>
 	</head>
 	<body>

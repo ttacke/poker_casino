@@ -6,53 +6,35 @@
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script language="javascript" type="text/javascript">
-			var SPIELER_NAME = top.window.aktuelleSpielerNummer;
-			var SPIELER_PASSWORT = top.window.aktuelleSpielerNummer;
-			var TISCH_NAME = 'GrafZahl';
-			var CASINO_URL = top.window.casinoUrl;
-			var LOG = {};
 			var spieler = null;
-			var pingpong = [];
 			
 			$(function() {
 				init();
-				setInterval('schreibeLog()', 1000);
 			});
-			
-			function ermittleGeschwindigkeit() {
-				var MAX = 100000;
-				var jetzt = new Date().getTime();
-				pingpong.push(jetzt);
-				while(pingpong.length > MAX) {
-					pingpong.shift();
-				}
-				var frueher = pingpong[0] || 0;
-				return Math.floor(pingpong.length / (jetzt - frueher) * 1000);
-			}
 			function init() {
-				spieler = new CasinoSpieler(SPIELER_NAME, SPIELER_PASSWORT);
+				logge('spieler', top.window.aktuelleSpielerNummer);
+				spieler = new CasinoSpieler(top.window.aktuelleSpielerNummer, top.window.aktuelleSpielerNummer);
 				spieler.derCroupierFragt = function(frage) {
-					logge('geschwindigkeit', ermittleGeschwindigkeit());
 					logge('status', 'spiele...');
 					this._antworteDemCroupier((frage * 1) + 1);
 				};
-				spieler.betrete(CASINO_URL, function() {
+				spieler.betrete(top.window.casinoUrl, function() {
 					warteAufTisch();
 				});
 			}
 			function warteAufTisch() {
-				logge('status', 'warte auf Tisch "' + TISCH_NAME + '"...');
+				logge('status', 'warte auf Tisch "' + top.window.tischName + '"...');
 				spieler.zeigeOffeneTische(function(antwort) {
 					var liste = antwort.details;
 					for(var i = 0; i < liste.length;i++) {
-						if(liste[i].tischName == TISCH_NAME) {
+						if(liste[i].tischName == top.window.tischName) {
 							logge('status', "Tisch betreten...");
-							spieler.spieleAnTisch(TISCH_NAME, function(antwort) {
+							spieler.spieleAnTisch(top.window.tischName, function(antwort) {
 								if(antwort.status == 'ok') {
 									logge('status', "Sitze am Tisch");
 									return;
-									
 								} else {
 									setTimeout('warteAufTisch()', 1000);
 								}
@@ -63,18 +45,16 @@
 					setTimeout('warteAufTisch()', 1000);
 				});
 			}
-			function logge(key, val) {
-				LOG[key] = val;
-			}
-			function schreibeLog() {
-				for(key in LOG) {
-					$('#' + key).html(LOG[key]);
-				}
-			}
 		</script>
+		<style>
+			body {
+				font-size: 0.7rem;
+				padding: 0.2rem 0.3rem;
+				margin: 0;
+			}
+		</style>
 	</head>
 	<body>
-		<div><strong>v = <span id="geschwindigkeit">0</span>/s</strong></div>
-		<div id="status">starte...</div>
+		#<span id="spieler">-</span>:<span id="status">starte...</span>
 	</body>
 </html>

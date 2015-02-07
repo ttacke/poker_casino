@@ -6,22 +6,23 @@
 		<script type="text/javascript" src="src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script type="text/javascript">
 			var CROUPIER_NAME = 'SpieleMeister';
 			var CROUPIER_PASSWORT = '12345';
-			var TISCH_NAME = 'GrafZahl';
 			var SPIELNAME = 'Zaehlen';
+			var ZAHLEN_TOKEN = 0;
 			var MIN_SPIELER = 2;
 			var TIMEOUT = 50;
-			var CASINO_URL = top.window.casinoUrl;
-			var LOG = {};
 			var TIMEOUT_NEU_SETZEN = false;
+			var AKTUELLE_SPIELERLISTE = [];
+			var DERZEIT_AKTIVER_SPIELER = -1;
+			var SPIELRUNDENZAEHLER = 0;
+			var TIMEOUTZAEHLER = 0;
 			var croupier = null;
-			var pingpong = [];
 			
 			$(function() {
 				init();
-				setInterval('schreibeLog()', 1000);
 			});
 			function timeout(diff) {
 				TIMEOUT += diff;
@@ -29,21 +30,17 @@
 				TIMEOUT_NEU_SETZEN = true;
 			}
 			function init() {
-				window.sollAntwort = 0;
-				window.aktuelleSpielerliste = [];
-				window.aktuellerSpieler = -1;
-				window.rundenzaehler = 0;
-				window.timeoutzaehler = 0;
-				
 				croupier = new CasinoCroupier(CROUPIER_NAME, CROUPIER_PASSWORT);
-				croupier.betrete(CASINO_URL, function() {
+				croupier.betrete(top.window.casinoUrl, function() {
 					starteTisch();
 				});
 			}
 			function starteTisch() {
-				croupier.eroeffneTisch(TISCH_NAME, SPIELNAME, TIMEOUT, function(daten) {
+				var timeout = TIMEOUT;
+				croupier.eroeffneTisch(top.window.tischName, SPIELNAME, timeout, function(daten) {
+					logge("timeout", timeout);
 					if(daten.status == 'ok') {
-						logge('status', 'Tisch "' + TISCH_NAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
+						logge('status', 'Tisch "' + top.window.tischName + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
 						warteAufSpieler();
 					} else {
 						logge('status', "Tisch anlegen ist fehlgeschlagen");
@@ -52,7 +49,7 @@
 				});
 			}
 			function warteAufSpieler() {
-				if(window.rundenzaehler % 666 == 0) {
+				if(SPIELRUNDENZAEHLER % 666 == 0) {
 					croupier.zeigeSpielerDesTisches(function(antwort) {
 						var liste = antwort.details;
 						if(liste.length < MIN_SPIELER) {
@@ -62,11 +59,12 @@
 						}
 						logge('status', 'Aktualisiere Spielrunde');
 						logge('spieleranzahl', liste.length);
-						spiele_runde(liste);
+						AKTUELLE_SPIELERLISTE = liste;
+						spiele_runde(AKTUELLE_SPIELERLISTE);
 					});
 				} else {
 					logge('status', 'spiele...');
-					spiele_runde(window.aktuelleSpielerliste);
+					spiele_runde(AKTUELLE_SPIELERLISTE);
 				}
 			}
 			function spiele_runde(liste) {
@@ -75,11 +73,10 @@
 					TIMEOUT_NEU_SETZEN = false;
 					return;
 				}
-				window.rundenzaehler++;
-				logge('spielrunde', window.rundenzaehler);
-				window.aktuellerSpieler = -1;
-				window.aktuelleSpielerliste = liste;
-				erstelleSpielerLog(window.aktuelleSpielerliste);
+				SPIELRUNDENZAEHLER++;
+				logge('spielrunde', SPIELRUNDENZAEHLER);
+				DERZEIT_AKTIVER_SPIELER = -1;
+				erstelleSpielerLog(liste);
 				naechsterSpieler();
 			}
 			function erstelleSpielerLog(spielerListe) {
@@ -98,7 +95,7 @@
 				var punkteListe = [];
 				for(var i = 0; i < spielerListe.length; i++) {
 					var spieler = (i + 1);
-					var punkte = LOG['spielerPunkte' + spieler];
+					var punkte = gibLog('spielerPunkte' + spieler);
 					if(!punkte) punkte = 0;
 					punkte *= 1;
 					if(!rangliste[punkte]) rangliste[punkte] = [];
@@ -115,52 +112,27 @@
 					}
 				}
 			}
-			function ermittleGeschwindigkeit() {
-				var MAX = 100000;
-				var jetzt = new Date().getTime();
-				pingpong.push(jetzt);
-				while(pingpong.length > MAX) {
-					pingpong.shift();
-				}
-				var frueher = pingpong[0] || 0;
-				return Math.floor(pingpong.length / (jetzt - frueher) * 1000);
-			}
 			function naechsterSpieler() {
-				window.aktuellerSpieler++;
-				var liste = window.aktuelleSpielerliste;
-				if(window.aktuellerSpieler >= liste.length) {
+				DERZEIT_AKTIVER_SPIELER++;
+				if(DERZEIT_AKTIVER_SPIELER >= AKTUELLE_SPIELERLISTE.length) {
 					warteAufSpieler();
 					return;
 				}
+				var v = ermittleGeschwindigkeit();
+				logge('geschwindigkeit', v);
+				logge('spielergeschwindigkeit', Math.floor(v / AKTUELLE_SPIELERLISTE.length));
 				
-				logge('geschwindigkeit', ermittleGeschwindigkeit());
-				
-				var aktuelleSpielerName = liste[window.aktuellerSpieler];
-				croupier.frageDenSpieler(aktuelleSpielerName, window.sollAntwort, function(antwort) {
-					window.sollAntwort++;
+				var aktuelleSpielerName = AKTUELLE_SPIELERLISTE[DERZEIT_AKTIVER_SPIELER];
+				croupier.frageDenSpieler(aktuelleSpielerName, ZAHLEN_TOKEN, function(antwort) {
+					ZAHLEN_TOKEN++;
 					if(antwort.status == 'timeout') {
 						logge('spielerTimeouts' + aktuelleSpielerName, 'PLUS');
-						logge('timeoutzaehler', ++window.timeoutzaehler);
-					} else if(antwort.status == 'ok' && window.sollAntwort == antwort.details) {
+						logge('timeoutzaehler', ++TIMEOUTZAEHLER);
+					} else if(antwort.status == 'ok' && ZAHLEN_TOKEN == antwort.details) {
 						logge('spielerPunkte' + aktuelleSpielerName, 'PLUS');
 					}
 					naechsterSpieler();
 				});
-			}
-			function logge(key, val) {
-			//TODO Punkte und Timeouts auch auf einen Zeitraum beziehen /MAX)
-				if(val == 'PLUS') {
-					if(!LOG[key]) LOG[key] = 0;
-					LOG[key]++;
-					return;
-				}
-				LOG[key] = val;
-			}
-			function schreibeLog() {
-				logge("timeout", TIMEOUT);
-				for(key in LOG) {
-					$('#' + key).html(LOG[key]);
-				}
 			}
 		</script>
 		<style>
@@ -175,15 +147,16 @@
 			th, td {
 				padding: 0.2rem 0.5rem;
 				border: 1px solid #000;
-				width: 10%;
 			}
 			th {
 				border-right: none;
 				text-align: right;
+				width: 11rem;
 			}
 			td {
 				border-left: none;
 				overflow: hidden;
+				width: 18%;
 			}
 			tbody th, tbody td {
 				border-color: #CCC;
@@ -195,18 +168,21 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Spielrunde:</th><td id="spielrunde">0</td>
-					<th>PingPong</th><td><span id="geschwindigkeit">0</span>/s</td>
-					<th>benutzte Spieler:</th><td id="spieleranzahl">0</td>
+					<th>Abfragen gesamt</th><td><span id="geschwindigkeit">0</span>/s</td>
+					<th>Abfragen/Spieler:</th><td><span id="spielergeschwindigkeit">0</span>/s</td>
+					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
 				</tr>
 				<tr>
-					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
 					<th>Timeout</th><td>
 						<button onclick="return timeout(-1)" id="minus">-</button>
 						<span id="timeout">0</span> ms
 						<button onclick="return timeout(+1)" id="plus">+</button>
 					</td>
-					<th>letzter Status:</th><td id="status">starte...</td>
+					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
+					<th>gespielte Runden:</th><td id="spielrunde">0</td>
+				</tr>
+				<tr>
+					<th>Status:</th><td colspan="5" id="status">starte...</td>
 				</tr>
 			</thead>
 			<tbody>
