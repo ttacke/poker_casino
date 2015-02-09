@@ -48,6 +48,8 @@ sub _gibMeinenTisch {
 	
 	foreach my $tischName (keys(%{$tischDaten})) {
 		my $tisch = $tischDaten->{$tischName};
+		next if(!$tisch->{'croupier'}->{'verbindung'});
+		
 		if($tisch->{'croupier'}->{'verbindung'} == $croupierVerbindung) {
 			return $tisch;
 		}
