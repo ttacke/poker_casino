@@ -4,20 +4,21 @@
 		<meta charset="utf-8" />
 		<script type="text/javascript">
 			var GESTARTET = false;
-			var serverUrl = 'ws:10.1.1.198:8080';
+			var casinoUrl = 'ws:10.1.1.198:8080';
 			var tischName = 'GrafZahl';
 			var spielerName = '2';
 			var spielerPasswort = 'password';
 			
-			var ws = new WebSocket(serverUrl);
+			var ws = new WebSocket(casinoUrl);
 			ws.onopen = function(event) {
 				ws.onmessage = function(event) {
 					if(event.data != 'o') {
-						console.log('Betreten fehlgeschlagen');
+						throw new Error('Betreten fehlgeschlagen');
 					}
 					ws.onmessage = function(event) {
-						var frage = event.data.substr(1, event.data.length) * 1;
-						ws.send('r' + (frage + 1));
+						var frage = event.data.substr(1, event.data.length);
+						var antwort = ((frage * 1) + 1);
+						ws.send('r' + antwort);
 					}
 				};
 				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);
