@@ -17,6 +17,7 @@
 			var AKTUELLE_SPIELERLISTE = [];
 			var DERZEIT_AKTIVER_SPIELER = -1;
 			var SPIELRUNDENZAEHLER = 0;
+			var ANZAHL_HERZSTILLSTAENDE = 0;
 			var croupier = null;
 			
 			$(function() {
@@ -34,6 +35,9 @@
 				croupier.betrete(top.window.casinoUrl, function() {
 					starteTisch();
 				});
+				croupier.herzschrittmacherLog = function() {
+					logge("herzstillstand", ++ANZAHL_HERZSTILLSTAENDE);
+				};
 			}
 			function maxAnzahlFuerAuswertungen(multiplier) {
 				top.window.maxAnzahlFuerAuswertungen *= multiplier;
@@ -199,7 +203,10 @@
 						<span id="maxAnzahlFuerAuswertungen">0</span>
 						<button onclick="return maxAnzahlFuerAuswertungen(2)" id="minus">*2</button>
 					</td>
-					<th>gespielte Runden:</th><td id="spielrunde">0</td>
+					<th>Spielrunden/Herztot:</th><td>
+						<span id="spielrunde">0</span> /
+						<span id="herzstillstand">0</span>
+					</td>
 				</tr>
 			</thead>
 			<tbody>

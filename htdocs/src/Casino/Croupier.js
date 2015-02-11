@@ -8,7 +8,6 @@ function CasinoCroupierHerzschrittmacher(instanzId) {
 		throw new Error("Herztot! Croupier-Instanz nicht gefunden.");
 	}
 }
-
 // CLASS DEFINITION
 CasinoCroupier.prototype = new CasinoBesucher();
 function CasinoCroupier(name, passwort) {
@@ -16,20 +15,20 @@ function CasinoCroupier(name, passwort) {
 	this.passwort = passwort;
 	this.instanzId = -1;
 	this.spielerTimeout = 100;
-	this.letzteFrage = null;
+	this.aktuelleFrage = null;
 	
+	// VOID
+	this.herzschrittmacherLog = function() {
+		console.log("Herzstillstand! Reanimierung durchgefuehrt.");
+	}
+	// VOID
 	this.wiederholeLetzteSpielerfrage = function() {
-		if(!this.letzteFrage || !this.warteAufAntwort) {
+		if(!this.aktuelleFrage || !this.warteAufAntwort) {
 			throw new Error("Herztot! Die letzte Frage konnte nicht wiederholt werden.");
 		}
-		
-		console.log("Herzstillstand! Reanimierung durchgefuehrt.");
+		this.herzschrittmacherLog();
 		this.warteAufAntwort = false;
-		this.frageDenSpieler(
-			this.letzteFrage.spielerName,
-			this.letzteFrage.nachricht,
-			this.letzteFrage.antwortFunktion
-		);
+		this.aktuelleFrage();
 	};
 	this.eroeffneTisch = function(tischName, nameDesSpiels, spielerTimeout, antwortFunktion) {
 		var self = this;
@@ -64,25 +63,24 @@ function CasinoCroupier(name, passwort) {
 	};
 	// VOID
 	this.frageDenSpieler = function(spielerName, nachricht, antwortFunktion) {
-		this.letzteFrage = {
-			spielerName: spielerName,
-			nachricht: nachricht,
-			antwortFunktion: antwortFunktion
-		};
-		var timeout = this.spielerTimeout * 2;
-		if(timeout < 100) timeout = 100;
-		var herzschrittmacher = setTimeout("CasinoCroupierHerzschrittmacher(" + this.instanzId + ")", timeout);
-		this._sende(
-			{
-				"aktion":"frageDenSpieler",
-				"spielerName":spielerName,
-				"nachricht":nachricht,
-			},
-			function(daten) {
-				self.letzteFrage = null;
-				clearTimeout(herzschrittmacher);
-				antwortFunktion(daten);
-			}
-		);
+		var self = this;
+		this.aktuelleFrage = function() {
+			var timeout = this.spielerTimeout * 2;
+			if(timeout < 50) timeout = 50;
+			var herzschrittmacher = setTimeout("CasinoCroupierHerzschrittmacher(" + this.instanzId + ")", timeout);
+			this._sende(
+				{
+					"aktion": "frageDenSpieler",
+					"spielerName": spielerName,
+					"nachricht": nachricht,
+				},
+				function(daten) {
+					self.aktuelleFrage = null;
+					clearTimeout(herzschrittmacher);
+					antwortFunktion(daten);
+				}
+			);
+		}
+		this.aktuelleFrage();
 	};
 }
