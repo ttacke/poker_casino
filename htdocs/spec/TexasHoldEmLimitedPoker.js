@@ -48,11 +48,13 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		it("Blatt-Bewertung", function() {
+		//TODO Bewertungen lesbar an der Oberfläche
+		//TODO Punktebewertung pro Blatt als vergleichbarer String (...Straight13Drilling02Paar0406High1312100908)
 			expect(true).toBe(true);
 			//http://de.wikipedia.org/wiki/Hand_%28Poker%29
 			blatt("HighCard A♦ 10♦ 9♠ 5♣ 4♣").schlaegt("HighCard K♣ Q♦ J♣ 8♥ 7♥");
 			blatt("HighCard A♦ 10♦ 9♠ 5♣ 4♣").schlaegt("HighCard A♣ 9♦ 8♥ 5♠ 4♠");
-			blatt("HighCard Q♣ J♣ 5♣").unterliegt("HighCard K♦ 10♦ 5♣");
+			blatt("HighCard Q♣ J♣ 5♦").unterliegt("HighCard K♦ 10♦ 5♣");
 			
 			blatt("EinPaar 9♥ 9♣ 2♥ Q♦ 10♦").schlaegt("HighCard A♦ Q♦ 9♠ 10♣ 4♣");
 			
@@ -76,8 +78,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			blatt("Straight 8♠ 7♠ 6♥ 5♥ 4♠").schlaegt("Straight 6♦ 5♠ 4♦ 3♥ 2♣");
 			blatt("Straight 8♠ 7♠ 6♥ 5♥ 4♠").splitted("Straight 8♥ 7♦ 6♣ 5♣ 4♥");
 			
-			return;//TODO
-			
 			blatt("Flush K♠ Q♠ J♠ 9♠ 6♠").schlaegt("Straight 8♠ 7♠ 6♥ 5♥ 4♠");
 			
 			blatt("Flush A♥ Q♥ 10♥ 5♥ 3♥").schlaegt("Flush K♠ Q♠ J♠ 9♠ 6♠");
@@ -97,6 +97,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			blatt("Vierling 10♣ 10♦ 10♥ 10♠ Q♣").splitted("Vierling 10♣ 10♦ 10♥ 10♠ Q♦");
 			
 			blatt("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠").schlaegt("Vierling 10♣ 10♦ 10♥ 10♠ Q♣");
+			return;//TODO
 			
 			blatt("StraightFlush 7♥ 6♥ 5♥ 4♥ 3♥").schlaegt("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠");
 			blatt("StraightFlush J♣ 10♣ 9♣ 8♣ 7♣").splitted("StraightFlush J♦ 10♦ 9♦ 8♦ 7♦");

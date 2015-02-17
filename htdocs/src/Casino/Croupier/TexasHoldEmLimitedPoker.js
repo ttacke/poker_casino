@@ -35,14 +35,52 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this._ermittlePunkteFuerBlattA = function(A, B) {
 		//RoyalFlush
 		//StraightFlush
-		//if(this._fullHouseAschlaegtB(A, B)) return 4;
-		//if(this._flushAschlaegtB(A, B)) return 5;
+		if(this._vierlingAschlaegtB(A, B)) return 7;
+		if(this._fullHouseAschlaegtB(A, B)) return 6;
+		if(this._flushAschlaegtB(A, B)) return 5;
 		if(this._straightAschlaegtB(A, B)) return 4;
 		if(this._drillingAschlaegtB(A, B)) return 3;
 		if(this._paerchenAschlaegtB(A, B)) return 2;
 		if(this._highCardAschlaegtB(A, B)) return 1;
 		return 0;
 	}
+	// BOOLEAN
+	this._fullHouseAschlaegtB = function(a, b) {
+		var punkteA = this._gibFlullhousePunkte(a);
+		var punkteB = this._gibFlullhousePunkte(b);
+		if(punkteA > punkteB) return true;
+		return false;
+	};
+	// INT
+	this._gibFlullhousePunkte = function(blatt) {
+		var drilling = this._gibWertMehrlingKarten(blatt, 3);
+		if(drilling.length == 0) return 0;
+		var paar = this._gibWertMehrlingKarten(blatt, 2);
+		if(paar.length == 0) return 0;
+		return (drilling[0].zahlwert * 15) + (paar[0].zahlwert * 1);
+	};
+	// BOOLEAN
+	this._flushAschlaegtB = function(a, b) {
+		var punkteA = this._gibFlushPunkte(a);
+		var punkteB = this._gibFlushPunkte(b);
+		if(punkteA > punkteB) return true;
+		return false;
+	};
+	// INT
+	this._gibFlushPunkte = function(blatt) {
+		blatt = this._sortiereKartenHoechsteZuerst(blatt);
+		var letzteKarte = null;
+		for(var i = 1; i < blatt.length; i++) {
+			if(letzteKarte == null) {
+				letzteKarte = blatt[i];
+				continue;
+			}
+			if(letzteKarte.farbe != blatt[i].farbe) {
+				return 0;
+			}
+		}
+		return blatt[0].zahlwert;
+	};
 	// BOOLEAN
 	this._straightAschlaegtB = function(a, b) {
 		var punkteA = this._gibStraightPunkte(a);
@@ -79,6 +117,10 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 		return blatt[0].zahlwert * 1;
 	}
+	// BOOLEAN
+	this._vierlingAschlaegtB = function(a, b) {
+		return this._mehrlingAschlaegtB(a, b, 4);
+	};
 	// BOOLEAN
 	this._drillingAschlaegtB = function(a, b) {
 		return this._mehrlingAschlaegtB(a, b, 3);
