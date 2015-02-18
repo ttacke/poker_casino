@@ -33,8 +33,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// INT
 	this._ermittlePunkteFuerBlattA = function(A, B) {
-		//RoyalFlush
-		//StraightFlush
+		if(this._royalFlushAschlaegtB(A, B)) return 9;
+		if(this._straightFlushAschlaegtB(A, B)) return 8;
 		if(this._vierlingAschlaegtB(A, B)) return 7;
 		if(this._fullHouseAschlaegtB(A, B)) return 6;
 		if(this._flushAschlaegtB(A, B)) return 5;
@@ -58,6 +58,34 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		var paar = this._gibWertMehrlingKarten(blatt, 2);
 		if(paar.length == 0) return 0;
 		return (drilling[0].zahlwert * 15) + (paar[0].zahlwert * 1);
+	};
+	// BOOLEAN
+	this._royalFlushAschlaegtB = function(a, b) {
+		var punkteA = this._gibRoyalFlushPunkte(a);
+		var punkteB = this._gibRoyalFlushPunkte(b);
+		if(punkteA > punkteB) return true;
+		return false;
+	}
+	// INT
+	this._gibRoyalFlushPunkte = function(blatt) {
+		var punkte = this._gibStraightFlushPunkte(blatt);
+		if(punkte != 14) return 0;
+		return 14;
+	}
+	// BOOLEAN
+	this._straightFlushAschlaegtB = function(a, b) {
+		var punkteA = this._gibStraightFlushPunkte(a);
+		var punkteB = this._gibStraightFlushPunkte(b);
+		if(punkteA > punkteB) return true;
+		return false;
+	};
+	// INT
+	this._gibStraightFlushPunkte = function(blatt) {
+		var straightPunkte = this._gibStraightPunkte(blatt);
+		var flushPunkte = this._gibFlushPunkte(blatt);
+		if(straightPunkte == 0 || flushPunkte == 0) return 0;
+		
+		return straightPunkte;// Wegen assStraight
 	};
 	// BOOLEAN
 	this._flushAschlaegtB = function(a, b) {
@@ -93,17 +121,21 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this._gibStraightPunkte = function(blatt) {
 		blatt = this._sortiereKartenHoechsteZuerst(blatt);
 		var punkte = this._gibNormaleStraightPunkte(blatt);
-		if(!punkte && blatt[0].bezeichnung == 'A') {
-			var assStraightBlatt = [];
-			for(var i = 1; i < blatt.length; i++) {
-				assStraightBlatt.push(blatt[i]);
-			}
-			assStraightBlatt.push(new Spielkarte('1', '?'));
-			punkte = this._gibNormaleStraightPunkte(assStraightBlatt);
-		}
+		if(!punkte) punkte = this._gibAssStraightPunkte(blatt);
 		return punkte;
 	}
-	
+	// INT
+	this._gibAssStraightPunkte = function(blatt) {
+		if(blatt[0].bezeichnung != 'A') return 0;
+		
+		var assStraightBlatt = [];
+		for(var i = 1; i < blatt.length; i++) {
+			assStraightBlatt.push(blatt[i]);
+		}
+		assStraightBlatt.push(new Spielkarte('1', '?'));
+		return this._gibNormaleStraightPunkte(assStraightBlatt);
+	}
+	// INT
 	this._gibNormaleStraightPunkte = function(blatt) {
 		var vorherigeKarte = null;
 		for(var i = 0; i < blatt.length; i++) {

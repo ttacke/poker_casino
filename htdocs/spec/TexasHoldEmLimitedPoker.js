@@ -97,14 +97,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			blatt("Vierling 10♣ 10♦ 10♥ 10♠ Q♣").splitted("Vierling 10♣ 10♦ 10♥ 10♠ Q♦");
 			
 			blatt("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠").schlaegt("Vierling 10♣ 10♦ 10♥ 10♠ Q♣");
-			return;//TODO
 			
+			blatt("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠").splitted("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠");
 			blatt("StraightFlush 7♥ 6♥ 5♥ 4♥ 3♥").schlaegt("StraightFlush 5♠ 4♠ 3♠ 2♠ A♠");
 			blatt("StraightFlush J♣ 10♣ 9♣ 8♣ 7♣").splitted("StraightFlush J♦ 10♦ 9♦ 8♦ 7♦");
 			
 			blatt("RoyalFlush A♣ K♣ Q♣ J♣ 10♣").schlaegt("StraightFlush K♠ Q♠ J♠ 10♠ 9♠");
 			
-			blatt("RoyalFlush A♣ K♣ Q♣ J♣ 10♣").splitted("StraightFlush A♠ K♠ Q♠ J♠ 10♠")
+			blatt("RoyalFlush A♣ K♣ Q♣ J♣ 10♣").splitted("RoyalFlush A♠ K♠ Q♠ J♠ 10♠");
 		});
 	});
 });
