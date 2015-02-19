@@ -23,10 +23,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		var A = this.parseKarten(a);
 		var B = this.parseKarten(b);
 		
-		//console.log(a + " - " + b);
 		var punkteA = new Gewinnermittlung(A).gibPunkte();
 		var punkteB = new Gewinnermittlung(B).gibPunkte();
-		
 		if(punkteA > punkteB) return true;
 		return false;
 	};
