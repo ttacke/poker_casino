@@ -57,9 +57,11 @@ describe("Szenario: das Casino ist geöffnet", function() {
 		beforeEach(function() {
 			c = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
 		});
-		describe("UNITTESTS", function() {
-			it("String in Karten konvertieren", function() {
-				var k = c.parseKarten("K♥ 10♣");
+		describe("und ich bekomme einen String mit Kartendaten", function() {
+			//TODO API besser gestalten
+			var kartenString = "K♥ 10♣";
+			it("dann kann ich daraus einen echten Kartenstapel machen", function() {
+				var k = c.parseKarten(kartenString);
 				expect(k.length).toBe(2);
 				expect(k[0].bezeichnung).toBe("K");
 				expect(k[0].farbe).toBe("♥");
