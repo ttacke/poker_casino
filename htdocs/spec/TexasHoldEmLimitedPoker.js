@@ -1,7 +1,7 @@
 "use strict";
 
 describe("Szenario: das Casino ist geöffnet", function() {
-	describe("Angenommen ich bin ein Poker-Croupier für Texas", function() {
+	describe("Angenommen ich bin ein Poker-Croupier für TexasHoldEmLimited-Poker", function() {
 		var c = null;
 		function blatt(a) {
 			var gibBlattPunkte = function(string) {
