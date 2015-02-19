@@ -63,6 +63,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			blatt("EinPaar 10♥ 10♦ J♦ 4♥ 3♣").schlaegt("EinPaar 10♣ 10♠ J♠ 4♦ 2♥");
 			
 			blatt("ZweiPaare  7♦ 7♠ 10♠ 10♣ 9♠").schlaegt("EinPaar 10♥ 10♦ J♦ 4♥ 3♣");
+			
 			blatt("ZweiPaare K♥ K♦ 2♣ 2♦ J♥").schlaegt("ZweiPaare  J♦ J♠ 10♠ 10♣ 9♠");
 			blatt("ZweiPaare 4♠ 4♣ 3♠ 3♥ K♦").schlaegt("ZweiPaare 4♥ 4♦ 3♦ 3♣ 10♠");
 			
@@ -105,6 +106,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			blatt("RoyalFlush A♣ K♣ Q♣ J♣ 10♣").schlaegt("StraightFlush K♠ Q♠ J♠ 10♠ 9♠");
 			
 			blatt("RoyalFlush A♣ K♣ Q♣ J♣ 10♣").splitted("RoyalFlush A♠ K♠ Q♠ J♠ 10♠");
+			
 		});
 	});
 });
