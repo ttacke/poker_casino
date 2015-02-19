@@ -18,16 +18,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this.name = name;
 	this.passwort = passwort;
 	
-	// BOOLEAN
-	this.blattAschlaegtB = function(a, b) {
-		var A = this.parseKarten(a);
-		var B = this.parseKarten(b);
-		
-		var punkteA = new Gewinnermittlung(A).gibPunkte();
-		var punkteB = new Gewinnermittlung(B).gibPunkte();
-		if(punkteA > punkteB) return true;
-		return false;
-	};
 	// ARRAY
 	this.parseKarten = function(string) {
 		var stapel = [];
