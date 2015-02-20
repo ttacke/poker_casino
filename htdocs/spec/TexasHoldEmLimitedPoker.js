@@ -1,64 +1,35 @@
 "use strict";
 
 describe("Szenario: das Casino ist geöffnet", function() {
-	describe("Angenommen ich bin ein Poker-Croupier für TexasHoldEmLimited-Poker", function() {
+	describe("Angenommen ich bin ein Poker-Croupier für TexasHoldEm mit FixedLimit", function() {
 		var c = null;
-		function blatt(a) {
-			var gibBlattPunkte = function(string) {
-				var name = string.substr(0, string.indexOf(" "));
-				var blatt = string.substr(string.indexOf(" ") + 1, string.length);
-				var punkte = new Gewinnermittlung(
-					c.parseKarten(blatt)
-				).gibPunkte();
-				return [name, punkte];
-			};
-			var e = gibBlattPunkte(a);
-			var nameA = e[0];
-			var punkteA = e[1];
-			return {
-				schlaegt: function(b) {
-					var e = gibBlattPunkte(b);
-					var nameB = e[0];
-					var punkteB = e[1];
-					if(punkteA <= punkteB) {
-						expect(nameA + " > " + nameB).toBe(a + " schlaegt " + b);
-					}
-				},
-				unterliegt: function(b) {
-					var e = gibBlattPunkte(b);
-					var nameB = e[0];
-					var punkteB = e[1];
-					if(punkteA >= punkteB) {
-						expect(nameA + " < " + nameB).toBe(a + " unterliegt " + b);
-					}
-				},
-				splitted: function(b) {
-					var e = gibBlattPunkte(b);
-					var nameB = e[0];
-					var punkteB = e[1];
-					if(punkteA != punkteB) {
-						expect(nameA + " == " + nameB).toBe(a + " splitted " + b);
-					}
-				}
-			}
-		}
-		function generateCardSpec(blattA, werGewinnt, blattB) {
-			it(blattA + ' ' + werGewinnt + ' ' + blattB, function() {
-				if(werGewinnt == 'schlaegt') {
-					blatt(blattA).schlaegt(blattB);
-				} else if(werGewinnt == 'splitted') {
-					blatt(blattA).splitted(blattB);
-				} else {
-					blatt(blattA).unterliegt(blattB);
-				}
-				expect(true).toBe(true);
+		// INT
+		function gibBlattPunkte(string) {
+			var blatt = string.substr(string.indexOf(" ") + 1, string.length);
+			var punkte = new Gewinnermittlung(
+				c.parseKarten(blatt)
+			).gibPunkte();
+			return punkte;
+		};
+		// VOID
+		function generateCardSpec(blattA, soll, blattB) {
+			it(blattA + ' ' + soll + ' ' + blattB, function() {
+				var punkteA = gibBlattPunkte(blattA);
+				var punkteB = gibBlattPunkte(blattB);
+				
+				var ist = '?';
+				if(punkteA > punkteB) ist = 'schlaegt';
+				if(punkteA == punkteB) ist = 'splitted';
+				if(punkteA < punkteB) ist = 'unterliegt';
+				
+				expect(blattA + " " + ist + " " + blattB)
+					.toBe(blattA + " " + soll + " " + blattB);
 			});
 		}
 		beforeEach(function() {
 			c = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
 		});
 		describe("und ich bekomme einen String mit Kartendaten", function() {
-			//TODO API besser gestalten
 			var kartenString = "K♥ 10♣";
 			it("dann kann ich daraus einen echten Kartenstapel machen", function() {
 				var k = c.parseKarten(kartenString);
@@ -72,6 +43,83 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				expect(k[1].zahlwert).toBe(10);
 			});
 		});
+	describe("und ich Spiele mit 2 Spielern", function() {
+		xit("dann wird das Spiel nicht begonnen", function() {
+		});
+	});
+	describe("und ich Spiele mit 24 Spielern", function() {
+		xit("dann wird der 24. Spieler nicht beachtet", function() {
+		});
+	});
+	describe("und ich Spiele mit den 3 Spielern A, B und C und alle Karten sind 2♦", function() {
+		describe("und jeder Spieler antwortet immer nur mit 'check'", function() {
+			describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+				xit("beginnend bei Spieler C", function() {
+				});
+				describe("und je ein mal zum Flop gefragt", function() {
+					xit("beginnend bei Spieler A", function() {
+					});
+					describe("und je ein mal zur TurnCard gefragt", function() {
+						xit("beginnend bei Spieler A", function() {
+						});
+						describe("und je ein mal zum River gefragt", function() {
+							xit("beginnend bei Spieler A", function() {
+							});
+							describe("und beim Showdown je ein mal darüber informiert", function() {
+								xit("dass er genau so viel gewonnen hat, wie er gesetzt hat", function() {});
+								xit("welche Karten Spieler A, B und C hatten", function() {});
+								xit("welches Blatt gewonnen hat", function() {});
+								describe("und dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+									xit("beginnend bei Spieler A", function() {
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+	
+	/* Noch als Test erfassen
+	
+	1. Runde: Preflop
+	-einer bekommt den Geber-Token
+	-jeder kriegt 2 Handkarten
+	-blind wird direkt gesetzt (links vom Geber = small, 2links = big)
+	-3 x links neben dem Geber beginnt
+	-jeder, der ab jetzt mitspielen will, muss auf das aktuellen höchstgebot gehen (call)
+	-raise = 1 x bigBlind
+	-wettregeln
+		-wenn A raised und die Runde ohne weiteres raise wieder bei A ist, ist die wettrunde beendet
+		-haben alle ihre 3x Raise verbraucht, ist die Wettrunde beendet
+		-sind alle, außer einer, ausgestiegen, ist das Spiel beendet
+	
+	2. Runde FLop
+	-3 Tischkarten
+	-der spieler Links vom Geber beginnt
+	-raise = 1 x bigBlind
+	-wettregeln wie vorher
+	
+	3.Runde turn Card
+	-1 Tischkarte
+	-der spieler Links vom Geber beginnt
+	-raise = 2 x bigBlind
+	-wettregeln wie vorher
+	
+	4. Runde River
+	-wie Runde TurnCard
+	
+	5. Runde Showdown
+	-für den allen Kombinationen
+		(nur tisch,
+		je eine Tisch durch je eine hand ersetzen,
+		je 2 Tisch durch 2 hand ersetzen)
+		wird für jeden Spieler die Beste ermittelt
+	-der Spieler mit der Besten Kombi gewinnt den Pot
+	-bei gleichstand wird der Pot geteilt
+	*/
+
 		describe("und will den Gewinner aus 2 Blättern ermitteln, dann gilt:", function() {
 			//http://de.wikipedia.org/wiki/Hand_%28Poker%29
 			generateCardSpec("HighCard A♦ 10♦ 9♠ 5♣ 4♣", 'schlaegt', "HighCard K♣ Q♦ J♣ 8♥ 7♥");
