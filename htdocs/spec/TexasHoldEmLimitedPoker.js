@@ -43,83 +43,174 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				expect(k[1].zahlwert).toBe(10);
 			});
 		});
-	describe("und ich Spiele mit 2 Spielern", function() {
-		xit("dann wird das Spiel nicht begonnen", function() {
+		describe("und ich Spiele mit 2 Spielern", function() {
+			xit("dann wird das Spiel nicht begonnen", function() {
+			});
 		});
-	});
-	describe("und ich Spiele mit 24 Spielern", function() {
-		xit("dann wird der 24. Spieler nicht beachtet", function() {
+		describe("und ich Spiele mit 24 Spielern", function() {
+			xit("dann wird der 24. Spieler nicht beachtet", function() {
+			});
 		});
-	});
-	describe("und ich Spiele mit den 3 Spielern A, B und C und alle Karten sind 2♦", function() {
-		describe("und jeder Spieler antwortet immer nur mit 'check'", function() {
-			describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
-				xit("beginnend bei Spieler C", function() {
-				});
-				describe("und je ein mal zum Flop gefragt", function() {
-					xit("beginnend bei Spieler A", function() {
+		describe("und ich Spiele mit den 3 Spielern A, B und C, bigBlind ist '2' und SmallBlind ist '1' und alle Karten sind 2♦", function() {
+			describe("und jeder Spieler antwortet immer nur mit 'check'", function() {
+				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+					xit("beginnend bei Spieler C", function() {
 					});
-					describe("und je ein mal zur TurnCard gefragt", function() {
+					describe("und je ein mal zum Flop gefragt", function() {
 						xit("beginnend bei Spieler A", function() {
 						});
-						describe("und je ein mal zum River gefragt", function() {
+						describe("und je ein mal zur TurnCard gefragt", function() {
 							xit("beginnend bei Spieler A", function() {
 							});
-							describe("und beim Showdown je ein mal darüber informiert", function() {
-								xit("dass er genau so viel gewonnen hat, wie er gesetzt hat", function() {});
-								xit("welche Karten Spieler A, B und C hatten", function() {});
-								xit("welches Blatt gewonnen hat", function() {});
-								describe("und dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
-									xit("beginnend bei Spieler A", function() {
+							describe("und je ein mal zum River gefragt", function() {
+								xit("beginnend bei Spieler A", function() {
+								});
+								describe("und beim Showdown je ein mal darüber informiert", function() {
+									xit("dass er genau so viel gewonnen hat, wie er gesetzt hat", function() {});
+									xit("welche Karten Spieler A, B und C hatten", function() {});
+									xit("welches Blatt gewonnen hat", function() {});
+									describe("und dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+										xit("beginnend bei Spieler A", function() {
+										});
 									});
 								});
 							});
 						});
 					});
 				});
+				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchstgebot von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten, die Info über das aktuelle Höchstgebot '2' und wird nach seinem Gebot gefragt", function() {
+						describe("beginnend mit Spieler C, der noch kein Gebot abgegeben hat", function() {
+							describe("dann Spieler A, dessen bisheriges Gebot dem SmallBlind entspricht", function() {
+								describe("dann Spieler B, dessen bisheriges Gebot dem BigBlind entspricht", function() {
+									xit("und dann ist das Gebot jedes Spielers '2' und die Runde Flop beginnt", function() {});
+								});
+							});
+						});
+					});
+				});
+				describe("und ich spiele eine Flop-Runde mit einem Start-Höchstgebot von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 3 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+						describe("beginnend mit Spieler A", function() {
+							describe("dann Spieler B", function() {
+								describe("dann Spieler C", function() {
+									xit("und dann ist das Gebot jedes Spielers '0' und die Runde TurnCard beginnt", function() {});
+								});
+							});
+						});
+					});
+				});
+				describe("und ich spiele eine TurnCard-Runde mit einem Start-Höchstgebot von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 4 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+						describe("beginnend mit Spieler A", function() {
+							describe("dann Spieler B", function() {
+								describe("dann Spieler C", function() {
+									xit("und dann ist das Gebot jedes Spielers '0' und die Runde River beginnt", function() {});
+								});
+							});
+						});
+					});
+				});
+				describe("und ich spiele eine River-Runde mit einem Start-Höchstgebot von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 5 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+						describe("beginnend mit Spieler A", function() {
+							describe("dann Spieler B", function() {
+								describe("dann Spieler C", function() {
+									xit("und dann ist das Gebot jedes Spielers '0' und der Showdown beginnt", function() {});
+								});
+							});
+						});
+					});
+				});
+				describe("und ich spiele eine Showdown-Runde mit einem Pot von '5'", function() {
+					describe("dann bekommt jeder Spieler die Info, dass Spieler A, B und C je '1' via SplitPot gewonnen haben", function() {
+						xit("und dann steigt der Stack jedes Spielers um '2' und der PreFlop beginnt", function() {});
+					});
+				});
+			});
+			describe("und ich spiele mit einem Start-Höchstgebot von '0', einem Spielerstack von '10', einem SmallBlind von '1' und einem BigBlind von '2'", function() {
+				var smallBlind = 1;
+				var bigBlind = 2;
+				beforeEach(function() {
+				});
+				// VOID
+				function erstelleWettregelTests(xBigBlindRaise, blindEinsatzEnthalten) {
+					var automatischerEinsatz = 0;
+					if(blindEinsatzEnthalten) {
+						automatischerEinsatz = bigBlind;
+						console.log(automatischerEinsatz);
+					}
+					
+					it("dann gilt die implizite Wettregel 'wer nicht auf das aktuelle Gebot erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuelles Höchstgebot bedeutet", function() {
+						expect(true).toBe(true);
+					});
+					describe("und der erste Spieler raised", function() {
+						describe("und der zweite Spieler checked", function() {
+							describe("und der dritte Spieler checked", function() {
+								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht 2x hintereinander raisen", function() {});
+							});
+						});
+					});
+					describe("und alle Spieler immer raisen", function() {
+						describe("und die Wettrunde ist beendet", function() {
+							var anzahlSpieler = 3;
+							var maxRaisesProSpieler = 3; 
+							xit("dann ist das Höchstgebot " + (automatischerEinsatz + (bigBlind * xBigBlindRaise * anzahlSpieler * maxRaisesProSpieler)) + ", weil jeder Spieler in dieser Runde je nur " + maxRaisesProSpieler + "x raisen darf", function() {});
+						});
+					});
+					describe("und der erste Spieler foldet", function() {
+						describe("und der zweite Spieler foldet", function() {
+							describe("dann folgt der Showdown und jeder Spieler bekommt", function() { 
+								xit("keine Handkarten von niemandem gezeigt", function() {});
+								xit("keine beste Kombination gezeigt", function() {});
+								xit("die Info, dass der dritte Spieler Pot gewonnen hat", function() {});
+							});
+						});
+					});
+				}
+				// VOID
+				function erstelleNichtPreFlopWettregelTests(xBigBlindRaise) {
+					xit("dann ist der Stack von A '10', von B '10' und von C '10', der Pot '0' und das Höchstgebot '0' weil nichts automatisch gesetzt wird", function() {});
+					describe("und der erste Spieler A raised", function() {
+						xit("dann ist der Stack von A '" + (10 - 2 * xBigBlindRaise) + "', von B '10' und von C '10', der Pot '" + (2 * xBigBlindRaise) + "' und das Höchstgebot '" + (2 * xBigBlindRaise) + "' weil bei Raise das Höchstgebot um den " + xBigBlindRaise + "xBigBlind erhöht wird", function() {});
+					});
+					erstelleWettregelTests(xBigBlindRaise, false);
+				}
+				describe("und spiele eine PreFlop-Runde", function() {
+					xit("dann ist der Stack von A '9', von B '8' und von C '10', der Pot '3' und das Höchstgebot '2' weil Small- und BigBlind automatisch gesetzt sind", function() {});
+					describe("und der erste Spieler C checked", function() {
+						xit("dann ist der Stack von A '9', von B '8' und von C '8', der Pot '5' und das Höchstgebot '2' weil beim Check auf das Höchstgebot gegangen wird", function() {});
+					});
+					erstelleWettregelTests(1, true);
+					describe("und der erste Spieler C raised", function() {
+						xit("dann ist der Stack von A '9', von B '8' und von C '6', der Pot '7' und das Höchstgebot '4' weil im PreFlop bei Raise das Höchstgebot um den 1xBigBlind erhöht wird", function() {});
+					});
+				});
+				describe("und spiele eine Flop-Runde", function() {
+					erstelleNichtPreFlopWettregelTests(1);
+				});
+				describe("und spiele eine TurnCard-Runde", function() {
+					erstelleNichtPreFlopWettregelTests(2);
+				});
+				describe("und spiele eine River-Runde", function() {
+					erstelleNichtPreFlopWettregelTests(2);
+				});
 			});
 		});
-	});
-	
-	/* Noch als Test erfassen
-	
-	1. Runde: Preflop
-	-einer bekommt den Geber-Token
-	-jeder kriegt 2 Handkarten
-	-blind wird direkt gesetzt (links vom Geber = small, 2links = big)
-	-3 x links neben dem Geber beginnt
-	-jeder, der ab jetzt mitspielen will, muss auf das aktuellen höchstgebot gehen (call)
-	-raise = 1 x bigBlind
-	-wettregeln
-		-wenn A raised und die Runde ohne weiteres raise wieder bei A ist, ist die wettrunde beendet
-		-haben alle ihre 3x Raise verbraucht, ist die Wettrunde beendet
-		-sind alle, außer einer, ausgestiegen, ist das Spiel beendet
-	
-	2. Runde FLop
-	-3 Tischkarten
-	-der spieler Links vom Geber beginnt
-	-raise = 1 x bigBlind
-	-wettregeln wie vorher
-	
-	3.Runde turn Card
-	-1 Tischkarte
-	-der spieler Links vom Geber beginnt
-	-raise = 2 x bigBlind
-	-wettregeln wie vorher
-	
-	4. Runde River
-	-wie Runde TurnCard
-	
-	5. Runde Showdown
-	-für den allen Kombinationen
-		(nur tisch,
-		je eine Tisch durch je eine hand ersetzen,
-		je 2 Tisch durch 2 hand ersetzen)
-		wird für jeden Spieler die Beste ermittelt
-	-der Spieler mit der Besten Kombi gewinnt den Pot
-	-bei gleichstand wird der Pot geteilt
-	*/
-
+		describe("und ich Spiele mit den Spielern A (A♦ 10♦) und B (J♦ J♠) und C (K♣ Q♦) und den Tischkarten 10♣ 10♠ 6♠ 4♥ J♥", function() {
+			describe("und ich spiele eine Showdown-Runde mit einem Pot von '2'", function() {
+				describe("dann bekommt jeder Spieler", function() {
+					xit("die Handkarten aller Spieler gezeigt", function() {});
+					xit("die beste Kombination für Spieler A (A♦ 10♦ 10♣ 10♠ J♥) [= Drilling] gezeigt", function() {});
+					xit("die beste Kombination für Spieler B (J♦ J♠ J♥ 10♣ 10♠) [= FullHouse] gezeigt", function() {});
+					xit("die beste Kombination für Spieler C (K♣ Q♦ J♥ 10♣ 10♠) [=ein Paar] gezeigt", function() {});
+					xit("die Info, dass Spieler B den Pot von '2' gewonnen hat", function() {});
+				});
+				xit("dann sinkt der Stack von Spieler A um '2'", function() {});
+				xit("dann steigt der Stack von Spieler B um '2'", function() {});
+				xit("dann sinkt der Stack von Spieler C um '2'", function() {});
+			});
+		});
 		describe("und will den Gewinner aus 2 Blättern ermitteln, dann gilt:", function() {
 			//http://de.wikipedia.org/wiki/Hand_%28Poker%29
 			generateCardSpec("HighCard A♦ 10♦ 9♠ 5♣ 4♣", 'schlaegt', "HighCard K♣ Q♦ J♣ 8♥ 7♥");
