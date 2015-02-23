@@ -147,7 +147,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					describe("und der erste Spieler raised", function() {
 						describe("und der zweite Spieler checked", function() {
 							describe("und der dritte Spieler checked", function() {
-								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht 2x hintereinander raisen", function() {});
+								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht als einziger 2x hintereinander raisen", function() {});
+							});
+						});
+					});
+					describe("und der erste Spieler raised", function() {
+						describe("und der zweite Spieler folded", function() {
+							describe("und der dritte Spieler checked", function() {
+								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht als einziger 2x hintereinander raisen", function() {});
 							});
 						});
 					});
