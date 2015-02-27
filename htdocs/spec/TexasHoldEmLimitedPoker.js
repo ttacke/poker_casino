@@ -1,38 +1,30 @@
 "use strict";
 
+var ich = null;
 describe("Szenario: das Casino ist geöffnet", function() {
 	describe("Angenommen ich bin ein Poker-Croupier für TexasHoldEm mit FixedLimit", function() {
-		var c = null;
-		// INT
-		function gibBlattPunkte(string) {
-			var blatt = string.substr(string.indexOf(" ") + 1, string.length);
-			var punkte = new Gewinnermittlung(
-				c.parseKarten(blatt)
-			).gibPunkte();
-			return punkte;
-		};
-		// VOID
-		function generateCardSpec(blattA, soll, blattB) {
-			it(blattA + ' ' + soll + ' ' + blattB, function() {
-				var punkteA = gibBlattPunkte(blattA);
-				var punkteB = gibBlattPunkte(blattB);
-				
-				var ist = '?';
-				if(punkteA > punkteB) ist = 'schlaegt';
-				if(punkteA == punkteB) ist = 'splitted';
-				if(punkteA < punkteB) ist = 'unterliegt';
-				
-				expect(blattA + " " + ist + " " + blattB)
-					.toBe(blattA + " " + soll + " " + blattB);
-			});
-		}
 		beforeEach(function() {
-			c = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
+			ich = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
+			entferneSpielerVerbindungen(ich);
+			/*erzeugeSpieler('A', ich, function(frage) {
+				console.log(frage);
+				return 'eins';
+			});
+			erzeugeSpieler('B', ich, function(frage) {
+				return 'zwei';
+			});
+			
+			ich.frageDenSpieler('A', 'bla', function(antwort) {
+				console.log('antwort:' + antwort);
+			});
+			ich.frageDenSpieler('B', 'blu', function(antwort) {
+				console.log('antwort:' + antwort);
+			});*/
 		});
 		describe("und ich bekomme einen String mit Kartendaten", function() {
 			var kartenString = "K♥ 10♣";
 			it("dann kann ich daraus einen echten Kartenstapel machen", function() {
-				var k = c.parseKarten(kartenString);
+				var k = ich.parseKarten(kartenString);
 				expect(k.length).toBe(2);
 				expect(k[0].bezeichnung).toBe("K");
 				expect(k[0].farbe).toBe("♥");
@@ -44,11 +36,32 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		describe("und ich Spiele mit 2 Spielern", function() {
-			xit("dann wird das Spiel nicht begonnen", function() {
+			beforeEach(function() {
+				erzeugeSpieler('Nr1', ich, function(frage) {});
+				erzeugeSpieler('Nr2', ich, function(frage) {});
+			});
+			it("dann wird das Spiel nicht begonnen", function(done) {
+				ich.spieleEinSpiel(function(erfolg) {
+					expect(erfolg).toBe(false);
+					done();
+				});
 			});
 		});
 		describe("und ich Spiele mit 24 Spielern", function() {
-			xit("dann wird der 24. Spieler nicht beachtet", function() {
+			var spy = null;
+			beforeEach(function() {
+				for(var i = 1; i <= 23; i++) {
+					erzeugeSpieler('Nr' + i, ich, function() {});
+				}
+				spy = jasmine.createSpy('Nr24');
+				erzeugeSpieler('Nr24', ich, spy);
+			});
+			it("dann wird das Spiel begonnen und der 24. Spieler nicht beachtet", function(done) {
+				ich.spieleEinSpiel(function(erfolg) {
+					expect(erfolg).toBe(true);
+					expect(spy).not.toHaveBeenCalled();
+					done();
+				});
 			});
 		});
 		describe("und ich Spiele mit den 3 Spielern A, B und C, bigBlind ist '2' und SmallBlind ist '1' und alle Karten sind 2♦", function() {
@@ -138,7 +151,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					var automatischerEinsatz = 0;
 					if(blindEinsatzEnthalten) {
 						automatischerEinsatz = bigBlind;
-						console.log(automatischerEinsatz);
 					}
 					
 					it("dann gilt die implizite Wettregel 'wer nicht auf das aktuelle Gebot erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuelles Höchstgebot bedeutet", function() {

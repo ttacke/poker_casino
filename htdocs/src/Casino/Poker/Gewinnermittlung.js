@@ -1,7 +1,7 @@
 "use strict";
 
 // CLASS DEFINITION
-function Gewinnermittlung(blatt) {
+function CasinoPokerGewinnermittlung(blatt) {
 	// VOID
 	this._init = function(blatt) {
 		this.blatt = this._sortiereKartenHoechsteZuerst(blatt);
@@ -78,7 +78,7 @@ function Gewinnermittlung(blatt) {
 		for(var i = 1; i < blatt.length; i++) {
 			assStraightBlatt.push(blatt[i]);
 		}
-		assStraightBlatt.push(new Spielkarte('1', '?'));
+		assStraightBlatt.push(new CasinoPokerSpielkarte('1', '?'));
 		return this._gibNormaleStraightPunkte(assStraightBlatt);
 	}
 	// INT

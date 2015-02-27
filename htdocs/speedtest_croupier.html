@@ -68,14 +68,14 @@
 						logge('status', 'Aktualisiere Spielrunde');
 						logge('spieleranzahl', liste.length);
 						AKTUELLE_SPIELERLISTE = liste;
-						spiele_runde(AKTUELLE_SPIELERLISTE);
+						spiele_runde();
 					});
 				} else {
 					logge('status', 'spiele...');
-					spiele_runde(AKTUELLE_SPIELERLISTE);
+					spiele_runde();
 				}
 			}
-			function spiele_runde(liste) {
+			function spiele_runde() {
 				if(TIMEOUT_NEU_SETZEN) {
 					starteTisch();
 					TIMEOUT_NEU_SETZEN = false;
