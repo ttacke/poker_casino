@@ -2,7 +2,7 @@
 function gibBlattPunkte(string) {
 	var blatt = string.substr(string.indexOf(" ") + 1, string.length);
 	var punkte = new CasinoPokerGewinnermittlung(
-		ich.parseKarten(blatt)
+		ich._parseKarten(blatt)
 	).gibPunkte();
 	return punkte;
 };

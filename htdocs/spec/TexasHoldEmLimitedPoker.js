@@ -6,25 +6,11 @@ describe("Szenario: das Casino ist geöffnet", function() {
 		beforeEach(function() {
 			ich = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
 			entferneSpielerVerbindungen(ich);
-			/*erzeugeSpieler('A', ich, function(frage) {
-				console.log(frage);
-				return 'eins';
-			});
-			erzeugeSpieler('B', ich, function(frage) {
-				return 'zwei';
-			});
-			
-			ich.frageDenSpieler('A', 'bla', function(antwort) {
-				console.log('antwort:' + antwort);
-			});
-			ich.frageDenSpieler('B', 'blu', function(antwort) {
-				console.log('antwort:' + antwort);
-			});*/
 		});
-		describe("und ich bekomme einen String mit Kartendaten", function() {
+		describe("und ich bekomme Karten 'angesagt'", function() {
 			var kartenString = "K♥ 10♣";
 			it("dann kann ich daraus einen echten Kartenstapel machen", function() {
-				var k = ich.parseKarten(kartenString);
+				var k = ich._parseKarten(kartenString);
 				expect(k.length).toBe(2);
 				expect(k[0].bezeichnung).toBe("K");
 				expect(k[0].farbe).toBe("♥");
@@ -64,26 +50,152 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 		});
-		describe("und ich Spiele mit den 3 Spielern A, B und C, bigBlind ist '2' und SmallBlind ist '1' und alle Karten sind 2♦", function() {
-			describe("und jeder Spieler antwortet immer nur mit 'check'", function() {
+		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
+			var spieler_liste = [];
+			var naechste_3_spieler = [];
+			var fragen_liste = [];
+			var naechste_3_fragen = [];
+			var fragen_hook = function(spieler, frage) {
+				spieler_liste.push(spieler);
+				fragen_liste.push(frage);
+			};
+			function pruefeNaechste3SpielerFragen(frage) {
+				for(var i = 0; i < 3; i++) {
+					expect(naechste_3_fragen[i]).toBe(frage);
+				}
+			}
+			function pruefeNaechste3SpielerFragenEnthaelt(key, value) {
+				for(var i = 0; i < 3; i++) {
+					expect(naechste_3_fragen[i]).toContain(key + ':' + value);
+				}
+			}
+			function speichereNachste3Aufrufe() {
+				naechste_3_spieler = [];
+				naechste_3_fragen = [];
+				for(var i = 0; i < 3; i++) {
+					if(spieler_liste.length > 0) {
+						naechste_3_spieler.push(spieler_liste.shift());
+						naechste_3_fragen.push(fragen_liste.shift());
+					}
+				}
+			}
+			function pruefeNaechste3SpielerAufrufe(a, b, c) {
+				var list = [a, b, c];
+				for(var i = 0; i < 3; i++) {
+					expect(naechste_3_spieler[i]).toBe(list[i]);
+				}
+			}
+			beforeEach(function() {
+				var antwort = function(spieler, frage) {
+					fragen_hook(spieler, frage);
+					return 'check';
+				};
+				erzeugeSpieler('A', ich, function(frage) {
+					fragen_hook('A', frage);
+					return 'check';
+				});
+				erzeugeSpieler('B', ich, function(frage) {
+					fragen_hook('B', frage);
+					return 'check';
+				});
+				erzeugeSpieler('C', ich, function(frage) {
+					fragen_hook('C', frage);
+					return 'check';
+				});
+			});
+			describe("mit einem bigBlind von '2', einem SmallBlind von '1' und 11 Karten (jeweils die 2♦)", function() {
+				var spieleEineRunde = function(done) {
+					//TODO interne Funktionen durch optionen
+					ich._bereiteSpielVor({
+						smallBlind: 1,
+						bigBlind: 2,
+						kartenFarben: ["♦"],
+						kartenWerte: ["2","2","2","2","2","2","2","2","2","2","2"]
+					});
+					
+					spieler_liste = [];
+					naechste_3_spieler = [];
+					fragen_liste = [];
+					
+					ich.spieleEinSpiel(function(success) {
+						expect(success).toBe(true);
+						done();
+					});
+				};
+				beforeEach(spieleEineRunde);
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
-					xit("beginnend bei Spieler C", function() {
+					beforeEach(function() {
+						speichereNachste3Aufrufe();
+						pruefeNaechste3SpielerFragen('2♦ 2♦');
+					});
+					it("beginnend bei Spieler C", function() {
+						pruefeNaechste3SpielerAufrufe('C', 'A', 'B');
 					});
 					describe("und je ein mal zum Flop gefragt", function() {
-						xit("beginnend bei Spieler A", function() {
+						beforeEach(function() {
+							speichereNachste3Aufrufe();
+							pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦');
+						});
+						it("beginnend bei Spieler A", function() {
+							pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
 						});
 						describe("und je ein mal zur TurnCard gefragt", function() {
-							xit("beginnend bei Spieler A", function() {
+							beforeEach(function() {
+								speichereNachste3Aufrufe();
+								pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦');
+							});
+							it("beginnend bei Spieler A", function() {
+								pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
 							});
 							describe("und je ein mal zum River gefragt", function() {
-								xit("beginnend bei Spieler A", function() {
+								beforeEach(function() {
+									speichereNachste3Aufrufe();
+									pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦ 2♦');
+								});
+								it("beginnend bei Spieler A", function() {
+									pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
 								});
 								describe("und beim Showdown je ein mal darüber informiert", function() {
-									xit("dass er genau so viel gewonnen hat, wie er gesetzt hat", function() {});
-									xit("welche Karten Spieler A, B und C hatten", function() {});
-									xit("welches Blatt gewonnen hat", function() {});
-									describe("und dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
-										xit("beginnend bei Spieler A", function() {
+									beforeEach(function() {
+										speichereNachste3Aufrufe();
+										pruefeNaechste3SpielerFragenEnthaelt('Runde', 'Showdown');
+									});
+									it("dass der Pot 6 enthält", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('Pot', 6);
+									});
+									it("dass er 2 gesetzt und 2 gewonnen hat", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('Einsatz', 2);
+										pruefeNaechste3SpielerFragenEnthaelt('Gewinn', 2);
+									});
+									it("welche Karten Spieler A, B und C hatten", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('A', '2♦ 2♦');
+										pruefeNaechste3SpielerFragenEnthaelt('B', '2♦ 2♦');
+										pruefeNaechste3SpielerFragenEnthaelt('C', '2♦ 2♦');
+									});
+									it("welche Tischkarten es gab", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('Tisch', '2♦ 2♦ 2♦ 2♦ 2♦');
+									});
+									it("welche Spieler gewonnen haben", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('Gewinner', 'A,B,C');
+									});
+									it("welches Blatt gewonnen hat", function() {
+										pruefeNaechste3SpielerFragenEnthaelt('Gewinnerblatt', '2♦ 2♦ 2♦ 2♦ 2♦');
+									});
+									describe("und dann ist das Spiel beendet.", function() {
+										beforeEach(function() {
+											speichereNachste3Aufrufe();
+											expect(naechste_3_spieler.length).toBe(0);
+										});
+										describe("Wird ein neues Spiel gestartet, dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+											beforeEach(spieleEineRunde);
+											beforeEach(function() {
+												speichereNachste3Aufrufe();
+												pruefeNaechste3SpielerFragen('2♦ 2♦');
+											});
+											it("beginnend bei Spieler A", function() {
+												//TODO Token weiterreichen
+//												pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+											});
 										});
 									});
 								});
