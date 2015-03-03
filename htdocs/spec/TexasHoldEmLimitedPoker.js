@@ -194,7 +194,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 											});
 											it("beginnend bei Spieler A", function() {
 												//TODO Token weiterreichen
-//												pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+												//pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
 											});
 										});
 									});
