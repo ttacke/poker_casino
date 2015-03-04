@@ -6,7 +6,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this.name = name;
 	this.passwort = passwort;
 	
-	this.spielerliste = null;
+	this.spielerliste = new CasinoCroupierTexasHoldEmLimitedPokerSpielerliste();
 	// ARRAY
 	this._parseKarten = function(string) {
 		var stapel = [];
@@ -63,26 +63,25 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this.spieleEinSpiel = function(doneFunc) {
-		this.spielerliste = new CasinoCroupierTexasHoldEmLimitedPokerSpielerliste();
 		var self = this;
+		
 		this.zeigeSpielerDesTisches(function(liste) {
 			for(var i = 0; i < liste.length; i++) {
 				if(self.spielerliste.length() + 1 == 24) break;
 				
-				self.spielerliste.push(liste[i]);
+				self.spielerliste.add(liste[i]);
 			}
 			if(self.spielerliste.length() < 3) {
 				doneFunc(false);
 				return;
 			}
-			
-			
 			self._spielePreflop();
 			self._spieleFlop();
 			self._spieleTurnCard();
 			self._spieleRiver();
 			self._spieleShowdown();
 			
+			self.spielerliste.gibGeberTokenWeiterUndStarteNeueRunde();
 			doneFunc(true);
 		});
 	};
@@ -90,18 +89,32 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 //TODO
 function CasinoCroupierTexasHoldEmLimitedPokerSpielerliste() {
 	this.list = [];
-	this.pointer = -1;
+	this.pointer = 0;
+	this.geberPointer = 0;
+	// VOID
+	this.gibGeberTokenWeiterUndStarteNeueRunde = function() {
+		if(this.geberPointer + 1 >= this.list.length) {
+			this.geberPointer = 0;
+		} else {
+			this.geberPointer++;
+		}
+		this.pointer = this.geberPointer;
+	};
 	// STRING
 	this.getNext = function() {
+		var spieler = this.list[this.pointer];
 		if(this.pointer + 1 >= this.list.length) {
 			this.pointer = 0;
 		} else {
 			this.pointer++;
 		}
-		return this.list[this.pointer];
+		return spieler;
 	};
 	// VOID
-	this.push = function(spieler) {
+	this.add = function(spieler) {
+		for(var i = 0; i < this.list.length; i++) {
+			if(this.list[i] == spieler) return;
+		}
 		this.list.push(spieler);
 	};
 	// INT
