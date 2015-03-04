@@ -28,20 +28,53 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this._spielePreflop = function() {
 		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
 		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this._spieleRunde('2♦ 2♦');
+		this._spieleRunde({
+			'Hand': ['2♦','2♦'],
+			'Tisch': [],
+			'Pot': '6',
+			'Spieler': [
+				{'Name':'A','letzteAktion':'check','Stack':'-2'},
+				{'Name':'B','letzteAktion':'check','Stack':'-2'},
+				{'Name':'C','letzteAktion':'check','Stack':'-2'}
+			]
+		});
 		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
 	};
 	// VOID
 	this._spieleFlop = function() {
-		this._spieleRunde('2♦ 2♦ - 2♦ 2♦ 2♦');
+		this._spieleRunde({'Hand': ['2♦','2♦'],
+			'Tisch': ['2♦','2♦','2♦'],
+			'Pot': '6',
+			'Spieler': [
+				{'Name':'A','letzteAktion':'check','Stack':'-2'},
+				{'Name':'B','letzteAktion':'check','Stack':'-2'},
+				{'Name':'C','letzteAktion':'check','Stack':'-2'}
+			]
+		});
 	};
 	// VOID
 	this._spieleTurnCard = function() {
-		this._spieleRunde('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦');
+		this._spieleRunde({'Hand': ['2♦','2♦'],
+			'Tisch': ['2♦','2♦','2♦','2♦'],
+			'Pot': '6',
+			'Spieler': [
+				{'Name':'A','letzteAktion':'check','Stack':'-2'},
+				{'Name':'B','letzteAktion':'check','Stack':'-2'},
+				{'Name':'C','letzteAktion':'check','Stack':'-2'}
+			]
+		});
 	};
 	// VOID
 	this._spieleRiver = function() {
-		this._spieleRunde('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦ 2♦');
+		this._spieleRunde({'Hand': ['2♦','2♦'],
+			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],
+			'Pot': '6',
+			'Spieler': [
+				{'Name':'A','letzteAktion':'check','Stack':'-2'},
+				{'Name':'B','letzteAktion':'check','Stack':'-2'},
+				{'Name':'C','letzteAktion':'check','Stack':'-2'}
+			]
+		});
 	};
 	// VOID
 	this._spieleRunde = function(frage) {
@@ -51,12 +84,20 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spieleShowdown = function() {
-		this._spieleRunde(
-			'Runde:Showdown,A:2♦ 2♦,B:2♦ 2♦,C:2♦ 2♦,Tisch:2♦ 2♦ 2♦ 2♦ 2♦,'
-			+ 'Gewinner:A,B,C,Gewinnerblatt:2♦ 2♦ 2♦ 2♦ 2♦,'
-			+ 'Einsatz:2,Pot:6,Gewinn:2',
-			['A', 'B', 'C']
-		);
+		this._spieleRunde({
+			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],
+			'Pot': '6',
+			'Gewinner':[
+				{'Name':'A','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
+				{'Name':'B','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
+				{'Name':'C','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']}
+			],
+			'Spieler': [
+				{'Name':'A','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
+				{'Name':'B','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
+				{'Name':'C','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']}
+			]
+		});
 	};
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {

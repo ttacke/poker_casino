@@ -89,7 +89,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
 					beforeEach(function() {
 						waechter.holeDieNachsten3Anfragen();
-						waechter.aktuelleSpielerFragenSind('2♦ 2♦');
+						waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], []);
 					});
 					it("beginnend bei Spieler C", function() {
 						waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
@@ -97,7 +97,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					describe("und je ein mal zum Flop gefragt", function() {
 						beforeEach(function() {
 							waechter.holeDieNachsten3Anfragen();
-							waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦');
+							waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], ['2♦','2♦','2♦']);
 						});
 						it("beginnend bei Spieler A", function() {
 							waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
@@ -105,7 +105,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						describe("und je ein mal zur TurnCard gefragt", function() {
 							beforeEach(function() {
 								waechter.holeDieNachsten3Anfragen();
-								waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦');
+								waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], ['2♦','2♦','2♦','2♦']);
 							});
 							it("beginnend bei Spieler A", function() {
 								waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
@@ -113,7 +113,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 							describe("und je ein mal zum River gefragt", function() {
 								beforeEach(function() {
 									waechter.holeDieNachsten3Anfragen();
-									waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦ 2♦');
+									waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], ['2♦','2♦','2♦','2♦','2♦']);
 								});
 								it("beginnend bei Spieler A", function() {
 									waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
@@ -121,28 +121,26 @@ describe("Szenario: das Casino ist geöffnet", function() {
 								describe("und beim Showdown je ein mal darüber informiert", function() {
 									beforeEach(function() {
 										waechter.holeDieNachsten3Anfragen();
-										waechter.aktuelleSpielerFragenEnthalten('Runde', 'Showdown');
 									});
 									it("dass der Pot 6 enthält", function() {
-										waechter.aktuelleSpielerFragenEnthalten('Pot', 6);
-									});
-									it("dass er 2 gesetzt und 2 gewonnen hat", function() {
-										waechter.aktuelleSpielerFragenEnthalten('Einsatz', 2);
-										waechter.aktuelleSpielerFragenEnthalten('Gewinn', 2);
-									});
-									it("welche Karten Spieler A, B und C hatten", function() {
-										waechter.aktuelleSpielerFragenEnthalten('A', '2♦ 2♦');
-										waechter.aktuelleSpielerFragenEnthalten('B', '2♦ 2♦');
-										waechter.aktuelleSpielerFragenEnthalten('C', '2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('Pot', '6');
 									});
 									it("welche Tischkarten es gab", function() {
-										waechter.aktuelleSpielerFragenEnthalten('Tisch', '2♦ 2♦ 2♦ 2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('Tisch', ['2♦','2♦','2♦','2♦','2♦']);
 									});
-									it("welche Spieler gewonnen haben", function() {
-										waechter.aktuelleSpielerFragenEnthalten('Gewinner', 'A,B,C');
+									it("welchen Stack und welche Handkarten alle Spieler hatten und was ihre letzte Aktion war", function() {
+										waechter.aktuelleSpielerFragenEnthalten('Spieler', [
+											{'Name':'A','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
+											{'Name':'B','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
+											{'Name':'C','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']}
+										]);
 									});
-									it("welches Blatt gewonnen hat", function() {
-										waechter.aktuelleSpielerFragenEnthalten('Gewinnerblatt', '2♦ 2♦ 2♦ 2♦ 2♦');
+									it("welche Spieler mit welchem Blatt wie viel gewonnen haben", function() {
+										waechter.aktuelleSpielerFragenEnthalten('Gewinner', [
+											{'Name':'A','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
+											{'Name':'B','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
+											{'Name':'C','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']}
+										]);
 									});
 									describe("und dann ist das Spiel beendet.", function() {
 										beforeEach(function() {
@@ -152,7 +150,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 											beforeEach(spieleEineRunde);
 											beforeEach(function() {
 												waechter.holeDieNachsten3Anfragen();
-												waechter.aktuelleSpielerFragenSind('2♦ 2♦');
+												waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], []);
 											});
 											it("beginnend bei Spieler A", function() {
 												waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');

@@ -65,17 +65,22 @@ function spielerKommunikationsWaechter() {
 		this.fragen_liste.push(frage);
 	};
 	// VOID
-	this.aktuelleSpielerFragenSind = function(frage) {
+	this.aktuelleSpielerFragenEnthalten = function(key, val) {
 		for(var i = 0; i < 3; i++) {
-			expect(this.naechste_3_fragen[i]).toBe(frage);
+			expect(this.naechste_3_fragen[i][key]).toEqual(val);
 		}
-	}
+	};
 	// VOID
-	this.aktuelleSpielerFragenEnthalten = function(key, value) {
-		for(var i = 0; i < 3; i++) {
-			expect(this.naechste_3_fragen[i]).toContain(key + ':' + value);
-		}
-	}
+	this.aktuelleSpielerFragenEnthaltenBieterinfos = function(hand, tisch) {
+		this.aktuelleSpielerFragenEnthalten('Hand', hand);
+		this.aktuelleSpielerFragenEnthalten('Tisch', tisch);
+		this.aktuelleSpielerFragenEnthalten('Pot', '6');
+		this.aktuelleSpielerFragenEnthalten('Spieler', [
+			{'Name':'A','letzteAktion':'check','Stack':'-2'},
+			{'Name':'B','letzteAktion':'check','Stack':'-2'},
+			{'Name':'C','letzteAktion':'check','Stack':'-2'}
+		]);
+	};
 	// BOOLEAN
 	this.esGibtKeineNeuenAnfragen= function() {
 		if(this.spieler_liste.length == 0) return true;
