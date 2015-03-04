@@ -22,9 +22,10 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		describe("und ich Spiele mit 2 Spielern", function() {
-			beforeEach(function() {
+			beforeEach(function(done) {
 				erzeugeSpieler('Nr1', ich, function(frage) {});
 				erzeugeSpieler('Nr2', ich, function(frage) {});
+				ich.nimmMitspielerAuf(done);
 			});
 			it("dann wird das Spiel nicht begonnen", function(done) {
 				ich.spieleEinSpiel(function(erfolg) {
@@ -34,89 +35,51 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		describe("und ich Spiele mit 24 Spielern", function() {
-			var spy = null;
-			beforeEach(function() {
-				for(var i = 1; i <= 23; i++) {
+			var spy23 = null;
+			var spy24 = null;
+			beforeEach(function(done) {
+				for(var i = 1; i <= 22; i++) {
 					erzeugeSpieler('Nr' + i, ich, function() {});
 				}
-				spy = jasmine.createSpy('Nr24');
-				erzeugeSpieler('Nr24', ich, spy);
+				spy23 = jasmine.createSpy('Nr23');
+				erzeugeSpieler('Nr23', ich, spy23);
+				
+				spy24 = jasmine.createSpy('Nr24');
+				erzeugeSpieler('Nr24', ich, spy24);
+				
+				ich.nimmMitspielerAuf(done);
 			});
 			it("dann wird das Spiel begonnen und der 24. Spieler nicht beachtet", function(done) {
 				ich.spieleEinSpiel(function(erfolg) {
 					expect(erfolg).toBe(true);
-					expect(spy).not.toHaveBeenCalled();
+					expect(spy23).toHaveBeenCalled();
+					expect(spy24).not.toHaveBeenCalled();
 					done();
 				});
 			});
 		});
 		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
-			var spieler_liste = [];
-			var naechste_3_spieler = [];
-			var fragen_liste = [];
-			var naechste_3_fragen = [];
-			var fragen_hook = function(spieler, frage) {
-				spieler_liste.push(spieler);
-				fragen_liste.push(frage);
-			};
-			function pruefeNaechste3SpielerFragen(frage) {
-				for(var i = 0; i < 3; i++) {
-					expect(naechste_3_fragen[i]).toBe(frage);
-				}
-			}
-			function pruefeNaechste3SpielerFragenEnthaelt(key, value) {
-				for(var i = 0; i < 3; i++) {
-					expect(naechste_3_fragen[i]).toContain(key + ':' + value);
-				}
-			}
-			function speichereNachste3Aufrufe() {
-				naechste_3_spieler = [];
-				naechste_3_fragen = [];
-				for(var i = 0; i < 3; i++) {
-					if(spieler_liste.length > 0) {
-						naechste_3_spieler.push(spieler_liste.shift());
-						naechste_3_fragen.push(fragen_liste.shift());
-					}
-				}
-			}
-			function pruefeNaechste3SpielerAufrufe(a, b, c) {
-				var list = [a, b, c];
-				for(var i = 0; i < 3; i++) {
-					expect(naechste_3_spieler[i]).toBe(list[i]);
-				}
-			}
+			var waechter = new spielerKommunikationsWaechter();
 			beforeEach(function() {
-				var antwort = function(spieler, frage) {
-					fragen_hook(spieler, frage);
-					return 'check';
-				};
 				erzeugeSpieler('A', ich, function(frage) {
-					fragen_hook('A', frage);
+					waechter.fragen_hook('A', frage);
 					return 'check';
 				});
 				erzeugeSpieler('B', ich, function(frage) {
-					fragen_hook('B', frage);
+					waechter.fragen_hook('B', frage);
 					return 'check';
 				});
 				erzeugeSpieler('C', ich, function(frage) {
-					fragen_hook('C', frage);
+					waechter.fragen_hook('C', frage);
 					return 'check';
 				});
 			});
 			describe("mit einem bigBlind von '2', einem SmallBlind von '1' und 11 Karten (jeweils die 2♦)", function() {
+				beforeEach(function(done) {
+					ich.nimmMitspielerAuf(done);
+				});
 				var spieleEineRunde = function(done) {
-					//TODO interne Funktionen durch optionen
-					ich._bereiteSpielVor({
-						smallBlind: 1,
-						bigBlind: 2,
-						kartenFarben: ["♦"],
-						kartenWerte: ["2","2","2","2","2","2","2","2","2","2","2"]
-					});
-					
-					spieler_liste = [];
-					naechste_3_spieler = [];
-					fragen_liste = [];
-					
+					waechter.reset();
 					ich.spieleEinSpiel(function(success) {
 						expect(success).toBe(true);
 						done();
@@ -125,75 +88,74 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				beforeEach(spieleEineRunde);
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
 					beforeEach(function() {
-						speichereNachste3Aufrufe();
-						pruefeNaechste3SpielerFragen('2♦ 2♦');
+						waechter.holeDieNachsten3Anfragen();
+						waechter.aktuelleSpielerFragenSind('2♦ 2♦');
 					});
 					it("beginnend bei Spieler C", function() {
-						pruefeNaechste3SpielerAufrufe('C', 'A', 'B');
+						waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
 					});
 					describe("und je ein mal zum Flop gefragt", function() {
 						beforeEach(function() {
-							speichereNachste3Aufrufe();
-							pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦');
+							waechter.holeDieNachsten3Anfragen();
+							waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦');
 						});
 						it("beginnend bei Spieler A", function() {
-							pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+							waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
 						});
 						describe("und je ein mal zur TurnCard gefragt", function() {
 							beforeEach(function() {
-								speichereNachste3Aufrufe();
-								pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦');
+								waechter.holeDieNachsten3Anfragen();
+								waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦');
 							});
 							it("beginnend bei Spieler A", function() {
-								pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+								waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
 							});
 							describe("und je ein mal zum River gefragt", function() {
 								beforeEach(function() {
-									speichereNachste3Aufrufe();
-									pruefeNaechste3SpielerFragen('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦ 2♦');
+									waechter.holeDieNachsten3Anfragen();
+									waechter.aktuelleSpielerFragenSind('2♦ 2♦ - 2♦ 2♦ 2♦ 2♦ 2♦');
 								});
 								it("beginnend bei Spieler A", function() {
-									pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+									waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
 								});
 								describe("und beim Showdown je ein mal darüber informiert", function() {
 									beforeEach(function() {
-										speichereNachste3Aufrufe();
-										pruefeNaechste3SpielerFragenEnthaelt('Runde', 'Showdown');
+										waechter.holeDieNachsten3Anfragen();
+										waechter.aktuelleSpielerFragenEnthalten('Runde', 'Showdown');
 									});
 									it("dass der Pot 6 enthält", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('Pot', 6);
+										waechter.aktuelleSpielerFragenEnthalten('Pot', 6);
 									});
 									it("dass er 2 gesetzt und 2 gewonnen hat", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('Einsatz', 2);
-										pruefeNaechste3SpielerFragenEnthaelt('Gewinn', 2);
+										waechter.aktuelleSpielerFragenEnthalten('Einsatz', 2);
+										waechter.aktuelleSpielerFragenEnthalten('Gewinn', 2);
 									});
 									it("welche Karten Spieler A, B und C hatten", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('A', '2♦ 2♦');
-										pruefeNaechste3SpielerFragenEnthaelt('B', '2♦ 2♦');
-										pruefeNaechste3SpielerFragenEnthaelt('C', '2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('A', '2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('B', '2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('C', '2♦ 2♦');
 									});
 									it("welche Tischkarten es gab", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('Tisch', '2♦ 2♦ 2♦ 2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('Tisch', '2♦ 2♦ 2♦ 2♦ 2♦');
 									});
 									it("welche Spieler gewonnen haben", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('Gewinner', 'A,B,C');
+										waechter.aktuelleSpielerFragenEnthalten('Gewinner', 'A,B,C');
 									});
 									it("welches Blatt gewonnen hat", function() {
-										pruefeNaechste3SpielerFragenEnthaelt('Gewinnerblatt', '2♦ 2♦ 2♦ 2♦ 2♦');
+										waechter.aktuelleSpielerFragenEnthalten('Gewinnerblatt', '2♦ 2♦ 2♦ 2♦ 2♦');
 									});
 									describe("und dann ist das Spiel beendet.", function() {
 										beforeEach(function() {
-											speichereNachste3Aufrufe();
-											expect(naechste_3_spieler.length).toBe(0);
+											expect(waechter.esGibtKeineNeuenAnfragen()).toBe(true);
 										});
 										describe("Wird ein neues Spiel gestartet, dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
 											beforeEach(spieleEineRunde);
 											beforeEach(function() {
-												speichereNachste3Aufrufe();
-												pruefeNaechste3SpielerFragen('2♦ 2♦');
+												waechter.holeDieNachsten3Anfragen();
+												waechter.aktuelleSpielerFragenSind('2♦ 2♦');
 											});
 											it("beginnend bei Spieler A", function() {
-												pruefeNaechste3SpielerAufrufe('A', 'B', 'C');
+												waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
 											});
 										});
 									});
