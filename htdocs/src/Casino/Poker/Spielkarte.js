@@ -12,4 +12,8 @@ function CasinoPokerSpielkarte(bezeichnung, farbe) {
 	this.bezeichnung = bezeichnung;
 	this.farbe = farbe;
 	this.zahlwert = this._berechne_zahlwert(bezeichnung);
+	// STRING
+	this.toString = function() {
+		return this.bezeichnung + this.farbe;
+	};
 }

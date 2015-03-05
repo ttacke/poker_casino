@@ -4,18 +4,22 @@
 function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.spielerListe = [];
 	this.pointer = 0;
-	this.geberTokenPointer = 0;
+	this.geberTokenPointer = -1;
 	this.maximaleSpieleranzahl = maximaleSpieleranzahl;
 	this.minimaleSpieleranzahl = minimaleSpieleranzahl;
 	
-	// VOID
+	// BOOLEAN
 	this.starteNeuesSpielUndSchiebeGeberTokenWeiter = function() {
+		if(this.spielerListe.length < this.minimaleSpieleranzahl) {
+			return false;
+		}
 		if(this.geberTokenPointer + 1 >= this.spielerListe.length) {
 			this.geberTokenPointer = 0;
 		} else {
 			this.geberTokenPointer++;
 		}
 		this.pointer = this.geberTokenPointer;
+		return true;
 	};
 	// STRING
 	this.gibDenSpielerDerAnDerReiheIst = function() {
@@ -38,8 +42,14 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		
 		return true;
 	};
+	// ARRAY
+	this.gibListe = function() {
+		return this.spielerListe;
+	};
+	
 	// INT
 	this.anzahlDerSpieler = function() {
 		return this.spielerListe.length;
 	};
+	
 }

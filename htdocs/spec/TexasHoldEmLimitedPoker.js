@@ -80,6 +80,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 				var spieleEineRunde = function(done) {
 					waechter.reset();
+					ich._erstelleKartenstapelString = function() {
+						return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
+					};
 					ich.spieleEinSpiel(function(success) {
 						expect(success).toBe(true);
 						done();
