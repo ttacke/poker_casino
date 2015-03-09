@@ -53,7 +53,7 @@ function CasinoPokerGewinnermittlung(blatt) {
 	// INT
 	this._gibFlushPunkte = function() {
 		var letzteKarte = null;
-		for(var i = 1; i < this.blatt.length; i++) {
+		for(var i = 0; i < this.blatt.length; i++) {
 			if(letzteKarte == null) {
 				letzteKarte = this.blatt[i];
 				continue;

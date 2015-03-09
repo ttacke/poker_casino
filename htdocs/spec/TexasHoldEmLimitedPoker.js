@@ -360,6 +360,8 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			generateCardSpec("RoyalFlush A♣ K♣ Q♣ J♣ 10♣", 'schlaegt', "StraightFlush K♠ Q♠ J♠ 10♠ 9♠");
 			
 			generateCardSpec("RoyalFlush A♣ K♣ Q♣ J♣ 10♣", 'splitted', "RoyalFlush A♠ K♠ Q♠ J♠ 10♠");
+			
+			generateCardSpec("FakeFlush 6♣ J♣ Q♥ 4♣ 7♣", 'unterliegt', "Flush Q♥ 10♥ 9♥ 5♥ 2♥");
 		});
 	});
 });
