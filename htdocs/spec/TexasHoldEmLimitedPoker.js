@@ -363,5 +363,36 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			
 			generateCardSpec("FakeFlush 6♣ J♣ Q♥ 4♣ 7♣", 'unterliegt', "Flush Q♥ 10♥ 9♥ 5♥ 2♥");
 		});
+		describe("und will das beste Blatt aus 2 Handkarten und den 5 Boardkarten ermitteln, dann ergibt es '8♦ 8♥ 8♠ A♠ A♣'", function() {
+			var soll = "8♦ 8♥ 8♠ A♠ A♣";
+			
+			generateCombinationSpec(soll, "wenn man '2♦ 3♥' und '8♠ 8♥ 8♦ A♣ A♠' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man '2♦ 8♠' und '3♥ 8♥ 8♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '2♦ 8♥' und '8♠ 3♥ 8♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '2♦ 8♦' und '8♠ 8♥ 3♥ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '2♦ A♣' und '8♠ 8♥ 8♦ 3♥ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '2♦ A♠' und '8♠ 8♥ 8♦ A♣ 3♥' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man '8♠ 3♥' und '2♦ 8♥ 8♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♥ 3♥' und '8♠ 2♦ 8♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♦ 3♥' und '8♠ 8♥ 2♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man 'A♣ 3♥' und '8♠ 8♥ 8♦ 2♦ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man 'A♠ 3♥' und '8♠ 8♥ 8♦ A♣ 2♦' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man '8♠ 8♥' und '2♦ 3♥ 8♦ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♠ 8♦' und '2♦ 8♥ 3♥ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♠ A♣' und '2♦ 8♥ 8♦ 3♥ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♠ A♠' und '2♦ 8♥ 8♦ A♣ 3♥' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man '8♥ 8♦' und '8♠ 2♦ 3♥ A♣ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♥ A♣' und '8♠ 2♦ 8♦ 3♥ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♥ A♠' und '8♠ 2♦ 8♦ A♣ 3♥' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man '8♦ A♣' und '8♠ 8♥ 2♦ 3♥ A♠' hat", function() {});
+			generateCombinationSpec(soll, "wenn man '8♦ A♠' und '8♠ 8♥ 2♦ A♣ 3♥' hat", function() {});
+			
+			generateCombinationSpec(soll, "wenn man 'A♣ A♠' und '8♠ 8♥ 8♦ 2♦ 3♥' hat", function() {});
+		});
 	});
 });

@@ -112,8 +112,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 						'Stack':'-2'
 					});
 					//TODO das gemerkte letzte, wird nicht benutzt???
-					console.log(frage['Spieler']);
-					console.log(self._gibSpielerdaten(alle_spieler[ii])['letzteAktion']);
+//					console.log(frage['Spieler']);
+//					console.log(self._gibSpielerdaten(alle_spieler[ii])['letzteAktion']);
 				}
 			}
 			ich.frageDenSpieler(
@@ -125,7 +125,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				}
 			);
 		}
-		console.log(self.spielerdaten);
+//		console.log(self.spielerdaten);
 	};
 	// STRING
 	this._uebersetzeAntwort = function(antwort) {

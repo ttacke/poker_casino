@@ -1,10 +1,18 @@
 // INT
 function gibBlattPunkte(string) {
 	var blatt = string.substr(string.indexOf(" ") + 1, string.length);
-	var punkte = new CasinoPokerGewinnermittlung(
+	var punkte = new CasinoPokerGewinnermittlung().gibPunkte(
 		ich._parseKarten(blatt)
-	).gibPunkte();
+	);
 	return punkte;
+};
+// INT
+function gibBesteKombination(hand, board) {
+	var blatt = new CasinoPokerGewinnermittlung().gibBestesBlatt(
+		ich._parseKarten(hand),
+		ich._parseKarten(board)
+	);
+	return blatt;
 };
 // VOID
 function generateCardSpec(blattA, soll, blattB) {
@@ -19,6 +27,23 @@ function generateCardSpec(blattA, soll, blattB) {
 		
 		expect(blattA + " " + ist + " " + blattB)
 			.toBe(blattA + " " + soll + " " + blattB);
+	});
+}
+// VOID
+function generateCombinationSpec(soll, text) {
+	var match = text.match(".*'([^']*)'.*'([^']*)'.*");
+	var hand = match[1];
+	var board = match[2];
+	it(text, function() {
+		var istBlatt = gibBesteKombination(hand, board);
+		istBlatt.sort(function(a, b) {
+			return (a.zahlwert + (a.farbwert / 10)) - (b.zahlwert + (b.farbwert / 10))
+		});
+		var ist = [];
+		for(var i = 0; i < istBlatt.length; i++) {
+			ist.push(istBlatt[i].toString());
+		}
+		expect(ist.join(" ")).toBe(soll);
 	});
 }
 // VOID
