@@ -95,16 +95,37 @@ function spielerKommunikationsWaechter() {
 			expect(this.naechste_3_fragen[i][key]).toEqual(val);
 		}
 	};
+	// STRING
+	this.spieler = function(i) {
+		return this.naechste_3_spieler[i];
+	};
+	// VOID
+	this.frageFuerSpielerEnthaelt = function(spieler, key, val) {
+		for(var i = 0; i < this.naechste_3_spieler.length; i++) {
+			if(this.naechste_3_spieler[i] == spieler) {
+				expect(this.naechste_3_fragen[i][key]).toEqual(val);
+				return;
+			}
+		}
+		expect(true).toBe(false);
+	};
 	// VOID
 	this.aktuelleSpielerFragenEnthaltenBieterinfos = function(hand, tisch) {
 		this.aktuelleSpielerFragenEnthalten('Hand', hand);
 		this.aktuelleSpielerFragenEnthalten('Tisch', tisch);
 		this.aktuelleSpielerFragenEnthalten('Pot', '6');
-		this.aktuelleSpielerFragenEnthalten('Spieler', [
-			{'Name':'A','letzteAktion':'check','Stack':'-2'},
-			{'Name':'B','letzteAktion':'check','Stack':'-2'},
-			{'Name':'C','letzteAktion':'check','Stack':'-2'}
-		]);
+		
+		for(var i = 0; i < this.naechste_3_fragen.length; i++) {
+			var frage = this.naechste_3_fragen[i];
+			expect(frage.Spieler[0].Name).toBe('A');
+			expect(frage.Spieler[1].Name).toBe('B');
+			expect(frage.Spieler[2].Name).toBe('C');
+			for(var ii = 0; ii < frage.Spieler.length; ii++) {
+				expect(frage.Spieler[ii].Stack).toBe('-2');
+				expect(frage.Spieler[ii].Einsatz).toBe('2');
+				expect(frage.Spieler[ii].letzteAktion).toBe('check');
+			}
+		}
 	};
 	// BOOLEAN
 	this.esGibtKeineNeuenAnfragen= function() {

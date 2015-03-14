@@ -37,31 +37,53 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		return stapel;
 	};
 	// VOID
-	this._spielePreflop = function(kartenstapel) {
-		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		
+	this._setzeSpielerdatenFuerNeuesSpiel = function(kartenstapel) {
 		var alle_spieler = this.spielerrunde.gibListe();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var spieler = alle_spieler[i];
-			var daten = this._gibSpielerdaten(spieler);
-			
-			daten['Hand'] = [
-				kartenstapel.pop().toString(),
-				kartenstapel.pop().toString()
-			];
+			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			daten['Hand'] = [];
 			daten['Tisch'] = [];
 			daten['letzteAktion'] = '-';
+			daten['Einsatz'] = '0';
 			daten['Pot'] = '6';
-			
+			daten['Stack'] = '0';
 		}
-		//TODO
-
+		return;
+	};
+	// VOID
+	this._gibKartenAnAlleSpieler = function(key, anzahl, kartenstapel) {
+		var alle_spieler = this.spielerrunde.gibListe();
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			for(var ii = 0; ii < anzahl; ii++) {
+				daten[key].push(kartenstapel.pop().toString());
+			}
+		}
+		return;
+	};
+	// VOID
+	this._spielePreflop = function(kartenstapel) {
+		this.spielerrunde.starteWiederAbGeberToken();
+		this._setzeSpielerdatenFuerNeuesSpiel(kartenstapel);
+		
+		var smallBlindSpieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		var smallBlindDaten = this._gibSpielerdaten(smallBlindSpieler);
+		smallBlindDaten['Einsatz'] = '1';
+		smallBlindDaten['Stack'] = '-1';
+		
+		var bigBlindSpieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		var bigBlindDaten = this._gibSpielerdaten(bigBlindSpieler);
+		bigBlindDaten['Einsatz'] = '2';
+		bigBlindDaten['Stack'] = '-2';
+		
+		this._gibKartenAnAlleSpieler('Hand', 2, kartenstapel);
+		
 		this._spieleRunde();
-		this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel) {
+		this.spielerrunde.starteWiederAbGeberToken();
+		
 		var karteA = kartenstapel.pop().toString();
 		var karteB = kartenstapel.pop().toString();
 		var karteC = kartenstapel.pop().toString();
@@ -97,23 +119,23 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		this._spieleRunde();
 	};
 	// VOID
-	this._spieleRunde = function(frage) {
+	this._spieleRunde = function(fragenVorlage) {
 		var self = this;
 		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
 			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-			if(!frage) {
-				frage = eval(uneval(this._gibSpielerdaten(spieler)));
+			var frage = eval(uneval(this._gibSpielerdaten(spieler)));
+			if(fragenVorlage) {
+				frage = eval(uneval(fragenVorlage));
+			} else {
 				var alle_spieler = self.spielerrunde.gibListe();
 				frage['Spieler'] = [];
 				for(var ii = 0; ii < alle_spieler.length; ii++) {
 					frage['Spieler'].push({
 						'Name':alle_spieler[ii],
 						'letzteAktion':'check',//TODO this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
-						'Stack':'-2'
+						'Stack':'-2',//TODO this._gibSpielerdaten(alle_spieler[ii])['Stack'],
+						'Einsatz':'2'//TODO this._gibSpielerdaten(alle_spieler[ii])['Einsatz'],
 					});
-					//TODO das gemerkte letzte, wird nicht benutzt???
-//					console.log(frage['Spieler']);
-//					console.log(self._gibSpielerdaten(alle_spieler[ii])['letzteAktion']);
 				}
 			}
 			ich.frageDenSpieler(
@@ -125,7 +147,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				}
 			);
 		}
-//		console.log(self.spielerdaten);
 	};
 	// STRING
 	this._uebersetzeAntwort = function(antwort) {
@@ -145,9 +166,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				{'Name':'C','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']}
 			],
 			'Spieler': [
-				{'Name':'A','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
-				{'Name':'B','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
-				{'Name':'C','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']}
+				{'Name':'A','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
+				{'Name':'B','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
+				{'Name':'C','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']}
 			]
 		});
 	};

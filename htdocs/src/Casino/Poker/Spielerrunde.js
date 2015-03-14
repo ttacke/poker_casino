@@ -8,6 +8,10 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.maximaleSpieleranzahl = maximaleSpieleranzahl;
 	this.minimaleSpieleranzahl = minimaleSpieleranzahl;
 	
+	// VOID
+	this.starteWiederAbGeberToken = function() {
+		this.pointer = this.geberTokenPointer;
+	};
 	// BOOLEAN
 	this.starteNeuesSpielUndSchiebeGeberTokenWeiter = function() {
 		if(this.spielerListe.length < this.minimaleSpieleranzahl) {
@@ -18,7 +22,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		} else {
 			this.geberTokenPointer++;
 		}
-		this.pointer = this.geberTokenPointer;
+		this.starteWiederAbGeberToken();
 		return true;
 	};
 	// STRING

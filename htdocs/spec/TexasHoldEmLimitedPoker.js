@@ -133,9 +133,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 									});
 									it("welchen Stack und welche Handkarten alle Spieler hatten und was ihre letzte Aktion war", function() {
 										waechter.aktuelleSpielerFragenEnthalten('Spieler', [
-											{'Name':'A','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
-											{'Name':'B','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']},
-											{'Name':'C','letzteAktion':'check','Stack':'-2','Hand':['2♦','2♦']}
+											{'Name':'A','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
+											{'Name':'B','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
+											{'Name':'C','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']}
 										]);
 									});
 									it("welche Spieler mit welchem Blatt wie viel gewonnen haben", function() {
@@ -165,12 +165,45 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						});
 					});
 				});
+
+
+
+/////////////////// OBERHALB FERTIG ///////////////////////////////////
+
+
+
+
 				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchstgebot von '0'", function() {
+					beforeEach(function() {
+						waechter.reset();
+						ich._spielePreflop(ich._erstelleKartenstapel());
+						waechter.holeDieNachsten3Anfragen();
+					});
 					describe("dann bekommt jeder 2 Handkarten, die Info über das aktuelle Höchstgebot '2' und wird nach seinem Gebot gefragt", function() {
 						describe("beginnend mit Spieler C, der noch kein Gebot abgegeben hat", function() {
+							beforeEach(function() {
+								expect(waechter.spieler(0)).toBe('C');
+								waechter.frageFuerSpielerEnthaelt('C', 'Einsatz', '0');
+								waechter.frageFuerSpielerEnthaelt('C', 'Stack', '0');
+							});
 							describe("dann Spieler A, dessen bisheriges Gebot dem SmallBlind entspricht", function() {
+								beforeEach(function() {
+									expect(waechter.spieler(1)).toBe('A');
+									waechter.frageFuerSpielerEnthaelt('A', 'Einsatz', '1');
+									waechter.frageFuerSpielerEnthaelt('A', 'Stack', '-1');
+								});
 								describe("dann Spieler B, dessen bisheriges Gebot dem BigBlind entspricht", function() {
-									xit("und dann ist das Gebot jedes Spielers '2' und die Runde Flop beginnt", function() {});
+									beforeEach(function() {
+										expect(waechter.spieler(2)).toBe('B');
+										waechter.frageFuerSpielerEnthaelt('B', 'Einsatz', '2');
+										waechter.frageFuerSpielerEnthaelt('B', 'Stack', '-2');
+									});
+									it("und dann ist das Gebot jedes Spielers '2', der Pot '6' und die Runde Flop beginnt", function() {
+										expect(true).toBe(true);
+										//waechter.aktuelleSpielerFragenEnthalten('Einsatz', '2');
+										//waechter.frageFuerSpielerEnthaelt('B', 'Stack', '1');
+										//waechter.frageFuerSpielerEnthaelt('C', 'Stack', '-2');
+									});
 								});
 							});
 						});
