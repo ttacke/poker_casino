@@ -78,18 +78,18 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				beforeEach(function(done) {
 					ich.nimmMitspielerAuf(done);
 				});
-				var spieleEineRunde = function(done) {
-					waechter.reset();
-					ich._erstelleKartenstapelString = function() {
-						return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
-					};
-					ich.spieleEinSpiel(function(success) {
-						expect(success).toBe(true);
-						done();
-					});
-				};
-				beforeEach(spieleEineRunde);
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
+					var spieleEineRunde = function(done) {
+						waechter.reset();
+						ich._erstelleKartenstapelString = function() {
+							return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
+						};
+						ich.spieleEinSpiel(function(success) {
+							expect(success).toBe(true);
+							done();
+						});
+					};
+					beforeEach(spieleEineRunde);
 					beforeEach(function() {
 						waechter.holeDieNachsten3Anfragen();
 						waechter.aktuelleSpielerFragenEnthaltenBieterinfos(['2♦','2♦'], []);
@@ -176,7 +176,8 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchstgebot von '0'", function() {
 					beforeEach(function() {
 						waechter.reset();
-						ich._spielePreflop(ich._erstelleKartenstapel());
+						ich._bereiteNeuesSpielVor();
+						ich._spielePreflop(ich._erstelleKartenstapel(), function() {});
 						waechter.holeDieNachsten3Anfragen();
 					});
 					describe("dann bekommt jeder 2 Handkarten, die Info über das aktuelle Höchstgebot '2' und wird nach seinem Gebot gefragt", function() {
@@ -185,6 +186,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 								expect(waechter.spieler(0)).toBe('C');
 								waechter.frageFuerSpielerEnthaelt('C', 'Einsatz', '0');
 								waechter.frageFuerSpielerEnthaelt('C', 'Stack', '0');
+								waechter.frageFuerSpielerEnthaelt('C', 'Pot', '3');
 							});
 							describe("dann Spieler A, dessen bisheriges Gebot dem SmallBlind entspricht", function() {
 								beforeEach(function() {
@@ -198,11 +200,10 @@ describe("Szenario: das Casino ist geöffnet", function() {
 										waechter.frageFuerSpielerEnthaelt('B', 'Einsatz', '2');
 										waechter.frageFuerSpielerEnthaelt('B', 'Stack', '-2');
 									});
-									it("und dann ist das Gebot jedes Spielers '2', der Pot '6' und die Runde Flop beginnt", function() {
-										expect(true).toBe(true);
-										//waechter.aktuelleSpielerFragenEnthalten('Einsatz', '2');
-										//waechter.frageFuerSpielerEnthaelt('B', 'Stack', '1');
-										//waechter.frageFuerSpielerEnthaelt('C', 'Stack', '-2');
+									it("und dann ist das Gebot jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
+										derAktuellePotIst(ich, 6);
+										aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '2');
+										waechter.esGibtKeineNeuenAnfragen();
 									});
 								});
 							});
@@ -249,7 +250,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 			describe("und ich spiele mit einem Start-Höchstgebot von '0', einem Spielerstack von '10', einem SmallBlind von '1' und einem BigBlind von '2'", function() {
-				var smallBlind = 1;
 				var bigBlind = 2;
 				beforeEach(function() {
 				});

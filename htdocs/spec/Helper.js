@@ -113,18 +113,12 @@ function spielerKommunikationsWaechter() {
 	this.aktuelleSpielerFragenEnthaltenBieterinfos = function(hand, tisch) {
 		this.aktuelleSpielerFragenEnthalten('Hand', hand);
 		this.aktuelleSpielerFragenEnthalten('Tisch', tisch);
-		this.aktuelleSpielerFragenEnthalten('Pot', '6');
 		
 		for(var i = 0; i < this.naechste_3_fragen.length; i++) {
 			var frage = this.naechste_3_fragen[i];
 			expect(frage.Spieler[0].Name).toBe('A');
 			expect(frage.Spieler[1].Name).toBe('B');
 			expect(frage.Spieler[2].Name).toBe('C');
-			for(var ii = 0; ii < frage.Spieler.length; ii++) {
-				expect(frage.Spieler[ii].Stack).toBe('-2');
-				expect(frage.Spieler[ii].Einsatz).toBe('2');
-				expect(frage.Spieler[ii].letzteAktion).toBe('check');
-			}
 		}
 	};
 	// BOOLEAN
@@ -151,4 +145,16 @@ function spielerKommunikationsWaechter() {
 			expect(this.naechste_3_spieler[i]).toBe(list[i]);
 		}
 	}
+}
+// VOID
+function aktuelleSpielerDatenEnthalten(croupier, key, val) {
+	var spieler = ['A', 'B', 'C'];
+	for(var i = 0; i < spieler.length; i++) {
+		var daten = croupier._gibSpielerdaten(spieler[i]);
+		expect(daten[key]).toBe(val);
+	}
+}
+// VOID
+function derAktuellePotIst(croupier, pot) {
+	expect(croupier.pot).toBe(pot);
 }
