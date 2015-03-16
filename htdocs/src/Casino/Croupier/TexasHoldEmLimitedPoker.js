@@ -57,12 +57,28 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		return true;
 	};
 	// VOID
-	this._gibKartenAnAlleSpieler = function(key, anzahl, kartenstapel) {
+	this._gibHandkartenAnAlleSpieler = function(anzahl, kartenstapel) {
 		var alle_spieler = this.spielerrunde.gibListe();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);
 			for(var ii = 0; ii < anzahl; ii++) {
-				daten[key].push(kartenstapel.pop().toString());
+				daten['Hand'].push(kartenstapel.pop().toString());
+			}
+		}
+		return;
+	};
+	// VOID
+	this._gibTischkartenAnAlleSpieler = function(anzahl, kartenstapel) {
+		var tischkarten = [];
+		for(var i = 0; i < anzahl; i++) {
+			tischkarten.push(kartenstapel.pop().toString());
+		}
+		
+		var alle_spieler = this.spielerrunde.gibListe();
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			for(var ii = 0; ii < tischkarten.length; ii++) {
+				daten['Tisch'].push(tischkarten[ii]);
 			}
 		}
 		return;
@@ -77,72 +93,51 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		var bigBlindSpieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
 		this._erhoeheAuf(bigBlindSpieler, '2');
 		
-		this._gibKartenAnAlleSpieler('Hand', 2, kartenstapel);
+		this._gibHandkartenAnAlleSpieler(2, kartenstapel);
 		
-		this._spieleRunde(null, naechsteRunde);
+		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel, naechsteRunde) {
 		this.spielerrunde.starteWiederAbGeberToken();
 		
-		var karteA = kartenstapel.pop().toString();
-		var karteB = kartenstapel.pop().toString();
-		var karteC = kartenstapel.pop().toString();
-		
-		var alle_spieler = this.spielerrunde.gibListe();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var spieler = alle_spieler[i];
-			var daten = this._gibSpielerdaten(spieler);
-			daten['Tisch'].push(karteA, karteB, karteC);
-		}
-		this._spieleRunde(null, naechsteRunde);
+		this._gibTischkartenAnAlleSpieler(3, kartenstapel);
+		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
 	this._spieleTurnCard = function(kartenstapel, naechsteRunde) {
-		var neueTischkarte = kartenstapel.pop().toString();
-		var alle_spieler = this.spielerrunde.gibListe();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var spieler = alle_spieler[i];
-			var daten = this._gibSpielerdaten(spieler);
-			daten['Tisch'].push(neueTischkarte);
-		}
-		this._spieleRunde(null, naechsteRunde);
+		this.spielerrunde.starteWiederAbGeberToken();
+		
+		this._gibTischkartenAnAlleSpieler(1, kartenstapel);
+		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
 	this._spieleRiver = function(kartenstapel, naechsteRunde) {
-		var neueTischkarte = kartenstapel.pop().toString();
-		var alle_spieler = this.spielerrunde.gibListe();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var spieler = alle_spieler[i];
-			var daten = this._gibSpielerdaten(spieler);
-			daten['Tisch'].push(neueTischkarte);
-		}
-		this._spieleRunde(null, naechsteRunde);
+		this.spielerrunde.starteWiederAbGeberToken();
+		
+		this._gibTischkartenAnAlleSpieler(1, kartenstapel);
+		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
-	this._spieleRunde = function(fragenVorlage, doneFunc) {
+	this._ermittleEinsaetzeVonAllen = function(doneFunc) {
 		var self = this;
 		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
 			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-			var frage;
-			if(fragenVorlage) {
-				frage = eval(uneval(fragenVorlage));
-			} else {
-				frage = eval(uneval(this._gibSpielerdaten(spieler)));
-				frage['Pot'] = this.pot + '';
-				frage['Stack'] = this.stack[spieler] + '';
-				var alle_spieler = self.spielerrunde.gibListe();
-				frage['Spieler'] = [];
-				frage['Hoechsteinsatz'] = self._gibAktuellenHoechsteinsatz() + '';
-				for(var ii = 0; ii < alle_spieler.length; ii++) {
-					var einsatz = this._gibSpielerdaten(alle_spieler[ii])['Einsatz'];
-					frage['Spieler'].push({
-						'Name':alle_spieler[ii],
-						'letzteAktion':this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
-						'Stack':this.stack[alle_spieler[ii]] + '',
-						'Einsatz':einsatz,
-					});
-				}
+			var frage = eval(uneval(this._gibSpielerdaten(spieler)));
+			frage['Pot'] = this.pot + '';
+			frage['Stack'] = this.stack[spieler] + '';
+			frage['Hoechsteinsatz'] = self._gibAktuellenHoechsteinsatz() + '';
+			
+			var alle_spieler = self.spielerrunde.gibListe();
+			frage['Spieler'] = [];
+			for(var ii = 0; ii < alle_spieler.length; ii++) {
+				var einsatz = this._gibSpielerdaten(alle_spieler[ii])['Einsatz'];
+				frage['Spieler'].push({
+					'Name':alle_spieler[ii],
+					'letzteAktion':this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
+					'Stack':this.stack[alle_spieler[ii]] + '',
+					'Einsatz':einsatz,
+				});
 			}
 			ich.frageDenSpieler(
 				spieler,
@@ -194,7 +189,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spieleShowdown = function(doneFunc) {
-		this._spieleRunde({
+		var daten = {
 			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],
 			'Pot': this.pot + '',
 			'Gewinner':[
@@ -207,7 +202,20 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				{'Name':'B','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
 				{'Name':'C','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']}
 			]
-		}, doneFunc);
+		};
+		
+		var self = this;
+		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
+			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
+			ich.frageDenSpieler(
+				spieler,
+				eval(uneval(daten)),
+				function() {
+					// TODO: hier rekursiv vorgehen (innerhalb dieser Funktion)!
+				}
+			);
+		}
+		doneFunc(true);
 	};
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {

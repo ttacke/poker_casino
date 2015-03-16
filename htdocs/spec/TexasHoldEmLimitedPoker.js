@@ -76,14 +76,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 			describe("mit einem bigBlind von '2', einem SmallBlind von '1' und 11 Karten (jeweils die 2♦)", function() {
 				beforeEach(function(done) {
+					waechter.reset();
+					ich._erstelleKartenstapelString = function() {
+						return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
+					};
 					ich.nimmMitspielerAuf(done);
 				});
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
 					var spieleEineRunde = function(done) {
-						waechter.reset();
-						ich._erstelleKartenstapelString = function() {
-							return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
-						};
 						ich.spieleEinSpiel(function(success) {
 							expect(success).toBe(true);
 							done();
@@ -165,51 +165,38 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						});
 					});
 				});
-
-
-
-/////////////////// OBERHALB FERTIG ///////////////////////////////////
-
-
-
-
 				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchsteinsatz von '0'", function() {
-					beforeEach(function() {
-						waechter.reset();
+					beforeEach(function(done) {
 						ich._bereiteNeuesSpielVor();
-						ich._erstelleKartenstapelString = function() {
-							return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
-						};
-						ich._spielePreflop(ich._erstelleKartenstapel(), function() {});
-						waechter.holeDieNachsten3Anfragen();
+						ich._spielePreflop(ich._erstelleKartenstapel(), function() {
+							waechter.holeDieNachsten3Anfragen();
+							done();
+						});
 					});
-					describe("dann bekommt jeder 2 Handkarten, die Info über den aktuellen Höchsteinsatz '2' und wird nach seinem Einsatz gefragt", function() {
+					describe("dann bekommt jeder 2 Hand- und 0 Tischkarten, die Info über den aktuellen Höchsteinsatz '2' und wird nach seinem Einsatz gefragt", function() {
 						beforeEach(function() {
 							waechter.aktuelleSpielerFragenEnthalten('Hand', ['2♦', '2♦']);
+							waechter.aktuelleSpielerFragenEnthalten('Tisch', []);
 							waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '2');
 						});
 						describe("beginnend mit Spieler C, der noch nichts gesetzt hat", function() {
 							beforeEach(function() {
-								expect(waechter.spieler(0)).toBe('C');
-								waechter.frageFuerSpielerEnthaelt('C', 'Einsatz', '0');
-								waechter.frageFuerSpielerEnthaelt('C', 'Stack', '0');
-								waechter.frageFuerSpielerEnthaelt('C', 'Pot', '3');
+								waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'C', '0', '0', '3');
 							});
 							describe("dann Spieler A, dessen bisheriger Einsatz dem SmallBlind entspricht", function() {
 								beforeEach(function() {
-									expect(waechter.spieler(1)).toBe('A');
-									waechter.frageFuerSpielerEnthaelt('A', 'Einsatz', '1');
-									waechter.frageFuerSpielerEnthaelt('A', 'Stack', '-1');
+									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'A', '1', '-1', '5');
 								});
 								describe("dann Spieler B, dessen bisheriger Einsatz dem BigBlind entspricht", function() {
 									beforeEach(function() {
-										expect(waechter.spieler(2)).toBe('B');
-										waechter.frageFuerSpielerEnthaelt('B', 'Einsatz', '2');
-										waechter.frageFuerSpielerEnthaelt('B', 'Stack', '-2');
+										waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'B', '2', '-2', '6');
 									});
 									it("und dann ist der Einsatz jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
 										derAktuellePotIst(ich, 6);
 										aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '2');
+										derAktuelleStackVomSpielerIst(ich, 'A', -2);
+										derAktuelleStackVomSpielerIst(ich, 'B', -2);
+										derAktuelleStackVomSpielerIst(ich, 'C', -2);
 										waechter.esGibtKeineNeuenAnfragen();
 									});
 								});
@@ -217,42 +204,101 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						});
 					});
 				});
-				describe("und ich spiele eine Flop-Runde mit einem Start-Höchsteinsatz von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 3 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
-						describe("beginnend mit Spieler A", function() {
-							describe("dann Spieler B", function() {
-								describe("dann Spieler C", function() {
-									xit("und dann ist der Einsatz jedes Spielers '0' und die Runde TurnCard beginnt", function() {});
+				function erstelleRundenCheck(name, tischkarten) {
+					describe("und ich spiele eine " + name + "-Runde mit einem Start-Höchsteinsatz von '0' und ohne vorherige Karten", function() {
+						beforeEach(function(done) {
+							ich._bereiteNeuesSpielVor();
+							ich['_spiele' + name](ich._erstelleKartenstapel(), function() {
+								waechter.holeDieNachsten3Anfragen();
+								done();
+							});
+						});
+						describe("dann bekommt jeder 0 Hand- und " + tischkarten.length + " Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
+							beforeEach(function() {
+								waechter.aktuelleSpielerFragenEnthalten('Hand', []);
+								waechter.aktuelleSpielerFragenEnthalten('Tisch', tischkarten);
+								waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '0');
+							});
+							describe("beginnend mit Spieler A", function() {
+								beforeEach(function() {
+									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'A', '0', '0', '0');
+								});
+								describe("dann Spieler B", function() {
+									beforeEach(function() {
+										waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'B', '0', '0', '0');
+									});
+									describe("dann Spieler C", function() {
+										beforeEach(function() {
+											waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'C', '0', '0', '0');
+										});
+										it("und dann ist der Einsatz jedes Spielers '0' und die Runde ist beendet", function() {
+											derAktuellePotIst(ich, 0);
+											aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '0');
+											derAktuelleStackVomSpielerIst(ich, 'A', 0);
+											derAktuelleStackVomSpielerIst(ich, 'B', 0);
+											derAktuelleStackVomSpielerIst(ich, 'C', 0);
+											waechter.esGibtKeineNeuenAnfragen();
+										});
+									});
 								});
 							});
 						});
 					});
-				});
-				describe("und ich spiele eine TurnCard-Runde mit einem Start-Höchsteinsatz von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 4 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
-						describe("beginnend mit Spieler A", function() {
-							describe("dann Spieler B", function() {
-								describe("dann Spieler C", function() {
-									xit("und dann ist der Einsatz jedes Spielers '0' und die Runde River beginnt", function() {});
-								});
-							});
+				}
+				erstelleRundenCheck('Flop', ['2♦', '2♦', '2♦']);
+				erstelleRundenCheck('TurnCard', ['2♦']);
+				erstelleRundenCheck('River', ['2♦']);
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				describe("und ich spiele eine Showdown-Runde mit einem Pot von '5', den Tischkarten 2♦ 2♦ 2♦ 2♦ 2♦ und den Handkarten je 2♦ 2♦", function() {
+					beforeEach(function(done) {
+						ich._bereiteNeuesSpielVor();
+						//TODO Hier weiter: Hand und Tischkarten setzen
+						ich._spieleShowdown(function() {
+							waechter.holeDieNachsten3Anfragen();
+							done();
 						});
 					});
-				});
-				describe("und ich spiele eine River-Runde mit einem Start-Höchsteinsatz von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 5 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
-						describe("beginnend mit Spieler A", function() {
-							describe("dann Spieler B", function() {
-								describe("dann Spieler C", function() {
-									xit("und dann ist der Einsatz jedes Spielers '0' und der Showdown beginnt", function() {});
-								});
-							});
-						});
-					});
-				});
-				describe("und ich spiele eine Showdown-Runde mit einem Pot von '5'", function() {
 					describe("dann bekommt jeder Spieler die Info, dass Spieler A, B und C je '1' via SplitPot gewonnen haben", function() {
-						xit("und dann steigt der Stack jedes Spielers um '2' und der PreFlop beginnt", function() {});
+						beforeEach(function() {
+							//waechter.aktuelleSpielerFragenEnthalten('Hand', ['2♦', '2♦']);
+							//waechter.aktuelleSpielerFragenEnthalten('Tisch', []);
+							//waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '2');
+						});
+						it("und dann steigt der Stack jedes Spielers um '2' und die Runde ist beendet", function() {
+						/*	derAktuellePotIst(ich, 0);
+							aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '0');
+							derAktuelleStackVomSpielerIst(ich, 'A', 0);
+							derAktuelleStackVomSpielerIst(ich, 'B', 0);
+							derAktuelleStackVomSpielerIst(ich, 'C', 0);*/
+							waechter.esGibtKeineNeuenAnfragen();
+						});
 					});
 				});
 			});

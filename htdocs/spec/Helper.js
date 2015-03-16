@@ -145,6 +145,13 @@ function spielerKommunikationsWaechter() {
 			expect(this.naechste_3_spieler[i]).toBe(list[i]);
 		}
 	}
+	// VOID
+	this.frageFuerSpielerEnthaelt_EinsatzStackPot = function(position, spieler, einsatz, stack, pot) {
+		expect(this.spieler(position)).toBe(spieler);
+		this.frageFuerSpielerEnthaelt(spieler, 'Einsatz', einsatz);
+		this.frageFuerSpielerEnthaelt(spieler, 'Stack', stack);
+		this.frageFuerSpielerEnthaelt(spieler, 'Pot', pot);
+	};
 }
 // VOID
 function aktuelleSpielerDatenEnthalten(croupier, key, val) {
@@ -157,4 +164,8 @@ function aktuelleSpielerDatenEnthalten(croupier, key, val) {
 // VOID
 function derAktuellePotIst(croupier, pot) {
 	expect(croupier.pot).toBe(pot);
+}
+// VOID
+function derAktuelleStackVomSpielerIst(croupier, spieler, stack) {
+	expect(croupier.stack[spieler]).toBe(stack);
 }
