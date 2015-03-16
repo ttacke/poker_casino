@@ -133,12 +133,14 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				frage['Stack'] = this.stack[spieler] + '';
 				var alle_spieler = self.spielerrunde.gibListe();
 				frage['Spieler'] = [];
+				frage['Hoechsteinsatz'] = self._gibAktuellenHoechsteinsatz() + '';
 				for(var ii = 0; ii < alle_spieler.length; ii++) {
+					var einsatz = this._gibSpielerdaten(alle_spieler[ii])['Einsatz'];
 					frage['Spieler'].push({
 						'Name':alle_spieler[ii],
 						'letzteAktion':this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
 						'Stack':this.stack[alle_spieler[ii]] + '',
-						'Einsatz':this._gibSpielerdaten(alle_spieler[ii])['Einsatz'],
+						'Einsatz':einsatz,
 					});
 				}
 			}
@@ -147,9 +149,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				frage,
 				function(antwort) {
 					var aktion = self._uebersetzeAntwort(antwort);
-					var hoechstEinsatz = self._gibAktuellenHoechsteinsatz();
 					if(aktion == 'check') {
-						self._erhoeheAuf(spieler, hoechstEinsatz);
+						var hoechsteinsatz = self._gibAktuellenHoechsteinsatz();
+						self._erhoeheAuf(spieler, hoechsteinsatz);
 					}
 					self._speichereLetzteAktion(spieler, aktion);
 					// TODO: hier rekursiv vorgehen (innerhalb dieser Funktion)!
@@ -161,21 +163,21 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	// VOID
 	this._erhoeheAuf = function(spieler, geforderterEinsatz) {
 		var daten = this._gibSpielerdaten(spieler);
-		var gebotVeraenderung = geforderterEinsatz - daten['Einsatz'];
-		daten['Einsatz'] = parseInt(daten['Einsatz']) + gebotVeraenderung + '';
-		this.stack[spieler] -= gebotVeraenderung;
-		this.pot += gebotVeraenderung;
+		var einsatzVeraenderung = geforderterEinsatz - daten['Einsatz'];
+		daten['Einsatz'] = parseInt(daten['Einsatz']) + einsatzVeraenderung + '';
+		this.stack[spieler] -= einsatzVeraenderung;
+		this.pot += einsatzVeraenderung;
 	};
 	// INT
 	this._gibAktuellenHoechsteinsatz = function() {
 		var alle_spieler = this.spielerrunde.gibListe();
-		var hoechstEinsatz = 0;
+		var hoechsteinsatz = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);
 			var aktuellerEinsatz = parseInt(daten['Einsatz']);
-			if(aktuellerEinsatz > hoechstEinsatz) hoechstEinsatz = aktuellerEinsatz;
+			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
 		}
-		return hoechstEinsatz;
+		return hoechsteinsatz;
 	};
 	// VOID
 	this._speichereLetzteAktion = function(spieler, aktion) {

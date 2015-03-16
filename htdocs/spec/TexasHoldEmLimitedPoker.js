@@ -173,34 +173,41 @@ describe("Szenario: das Casino ist geöffnet", function() {
 
 
 
-				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchstgebot von '0'", function() {
+				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchsteinsatz von '0'", function() {
 					beforeEach(function() {
 						waechter.reset();
 						ich._bereiteNeuesSpielVor();
+						ich._erstelleKartenstapelString = function() {
+							return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
+						};
 						ich._spielePreflop(ich._erstelleKartenstapel(), function() {});
 						waechter.holeDieNachsten3Anfragen();
 					});
-					describe("dann bekommt jeder 2 Handkarten, die Info über das aktuelle Höchstgebot '2' und wird nach seinem Gebot gefragt", function() {
-						describe("beginnend mit Spieler C, der noch kein Gebot abgegeben hat", function() {
+					describe("dann bekommt jeder 2 Handkarten, die Info über den aktuellen Höchsteinsatz '2' und wird nach seinem Einsatz gefragt", function() {
+						beforeEach(function() {
+							waechter.aktuelleSpielerFragenEnthalten('Hand', ['2♦', '2♦']);
+							waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '2');
+						});
+						describe("beginnend mit Spieler C, der noch nichts gesetzt hat", function() {
 							beforeEach(function() {
 								expect(waechter.spieler(0)).toBe('C');
 								waechter.frageFuerSpielerEnthaelt('C', 'Einsatz', '0');
 								waechter.frageFuerSpielerEnthaelt('C', 'Stack', '0');
 								waechter.frageFuerSpielerEnthaelt('C', 'Pot', '3');
 							});
-							describe("dann Spieler A, dessen bisheriges Gebot dem SmallBlind entspricht", function() {
+							describe("dann Spieler A, dessen bisheriger Einsatz dem SmallBlind entspricht", function() {
 								beforeEach(function() {
 									expect(waechter.spieler(1)).toBe('A');
 									waechter.frageFuerSpielerEnthaelt('A', 'Einsatz', '1');
 									waechter.frageFuerSpielerEnthaelt('A', 'Stack', '-1');
 								});
-								describe("dann Spieler B, dessen bisheriges Gebot dem BigBlind entspricht", function() {
+								describe("dann Spieler B, dessen bisheriger Einsatz dem BigBlind entspricht", function() {
 									beforeEach(function() {
 										expect(waechter.spieler(2)).toBe('B');
 										waechter.frageFuerSpielerEnthaelt('B', 'Einsatz', '2');
 										waechter.frageFuerSpielerEnthaelt('B', 'Stack', '-2');
 									});
-									it("und dann ist das Gebot jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
+									it("und dann ist der Einsatz jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
 										derAktuellePotIst(ich, 6);
 										aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '2');
 										waechter.esGibtKeineNeuenAnfragen();
@@ -210,34 +217,34 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						});
 					});
 				});
-				describe("und ich spiele eine Flop-Runde mit einem Start-Höchstgebot von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 3 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+				describe("und ich spiele eine Flop-Runde mit einem Start-Höchsteinsatz von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 3 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
 						describe("beginnend mit Spieler A", function() {
 							describe("dann Spieler B", function() {
 								describe("dann Spieler C", function() {
-									xit("und dann ist das Gebot jedes Spielers '0' und die Runde TurnCard beginnt", function() {});
+									xit("und dann ist der Einsatz jedes Spielers '0' und die Runde TurnCard beginnt", function() {});
 								});
 							});
 						});
 					});
 				});
-				describe("und ich spiele eine TurnCard-Runde mit einem Start-Höchstgebot von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 4 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+				describe("und ich spiele eine TurnCard-Runde mit einem Start-Höchsteinsatz von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 4 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
 						describe("beginnend mit Spieler A", function() {
 							describe("dann Spieler B", function() {
 								describe("dann Spieler C", function() {
-									xit("und dann ist das Gebot jedes Spielers '0' und die Runde River beginnt", function() {});
+									xit("und dann ist der Einsatz jedes Spielers '0' und die Runde River beginnt", function() {});
 								});
 							});
 						});
 					});
 				});
-				describe("und ich spiele eine River-Runde mit einem Start-Höchstgebot von '0'", function() {
-					describe("dann bekommt jeder 2 Handkarten und 5 Tischkarten, die Info über das aktuelle Höchstgebot '0' und wird nach seinem Gebot gefragt", function() {
+				describe("und ich spiele eine River-Runde mit einem Start-Höchsteinsatz von '0'", function() {
+					describe("dann bekommt jeder 2 Handkarten und 5 Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
 						describe("beginnend mit Spieler A", function() {
 							describe("dann Spieler B", function() {
 								describe("dann Spieler C", function() {
-									xit("und dann ist das Gebot jedes Spielers '0' und der Showdown beginnt", function() {});
+									xit("und dann ist der Einsatz jedes Spielers '0' und der Showdown beginnt", function() {});
 								});
 							});
 						});
@@ -249,7 +256,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					});
 				});
 			});
-			describe("und ich spiele mit einem Start-Höchstgebot von '0', einem Spielerstack von '10', einem SmallBlind von '1' und einem BigBlind von '2'", function() {
+			describe("und ich spiele mit einem Start-Höchsteinsatz von '0', einem Spielerstack von '10', einem SmallBlind von '1' und einem BigBlind von '2'", function() {
 				var bigBlind = 2;
 				beforeEach(function() {
 				});
@@ -260,7 +267,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						automatischerEinsatz = bigBlind;
 					}
 					
-					it("dann gilt die implizite Wettregel 'wer nicht auf das aktuelle Gebot erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuelles Höchstgebot bedeutet", function() {
+					it("dann gilt die implizite Wettregel 'wer nicht auf den aktuellen Einsatz erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuellen Höchsteinsatz bedeutet", function() {
 						expect(true).toBe(true);
 					});
 					describe("und der erste Spieler raised", function() {
@@ -281,7 +288,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						describe("und die Wettrunde ist beendet", function() {
 							var anzahlSpieler = 3;
 							var maxRaisesProSpieler = 3; 
-							xit("dann ist das Höchstgebot " + (automatischerEinsatz + (bigBlind * xBigBlindRaise * anzahlSpieler * maxRaisesProSpieler)) + ", weil jeder Spieler in dieser Runde je nur " + maxRaisesProSpieler + "x raisen darf", function() {});
+							xit("dann ist der Höchsteinsatz " + (automatischerEinsatz + (bigBlind * xBigBlindRaise * anzahlSpieler * maxRaisesProSpieler)) + ", weil jeder Spieler in dieser Runde je nur " + maxRaisesProSpieler + "x raisen darf", function() {});
 						});
 					});
 					describe("und der erste Spieler foldet", function() {
@@ -296,20 +303,20 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				}
 				// VOID
 				function erstelleNichtPreFlopWettregelTests(xBigBlindRaise) {
-					xit("dann ist der Stack von A '10', von B '10' und von C '10', der Pot '0' und das Höchstgebot '0' weil nichts automatisch gesetzt wird", function() {});
+					xit("dann ist der Stack von A '10', von B '10' und von C '10', der Pot '0' und der Höchsteinsatz '0' weil nichts automatisch gesetzt wird", function() {});
 					describe("und der erste Spieler A raised", function() {
-						xit("dann ist der Stack von A '" + (10 - 2 * xBigBlindRaise) + "', von B '10' und von C '10', der Pot '" + (2 * xBigBlindRaise) + "' und das Höchstgebot '" + (2 * xBigBlindRaise) + "' weil bei Raise das Höchstgebot um den " + xBigBlindRaise + "xBigBlind erhöht wird", function() {});
+						xit("dann ist der Stack von A '" + (10 - 2 * xBigBlindRaise) + "', von B '10' und von C '10', der Pot '" + (2 * xBigBlindRaise) + "' und der Höchsteinsatz '" + (2 * xBigBlindRaise) + "' weil bei Raise der Höchsteinsatz um den " + xBigBlindRaise + "xBigBlind erhöht wird", function() {});
 					});
 					erstelleWettregelTests(xBigBlindRaise, false);
 				}
 				describe("und spiele eine PreFlop-Runde", function() {
-					xit("dann ist der Stack von A '9', von B '8' und von C '10', der Pot '3' und das Höchstgebot '2' weil Small- und BigBlind automatisch gesetzt sind", function() {});
+					xit("dann ist der Stack von A '9', von B '8' und von C '10', der Pot '3' und der Höchsteinsatz '2' weil Small- und BigBlind automatisch gesetzt sind", function() {});
 					describe("und der erste Spieler C checked", function() {
-						xit("dann ist der Stack von A '9', von B '8' und von C '8', der Pot '5' und das Höchstgebot '2' weil beim Check auf das Höchstgebot gegangen wird", function() {});
+						xit("dann ist der Stack von A '9', von B '8' und von C '8', der Pot '5' und der Höchsteinsatz '2' weil beim Check auf den Höchsteinsatz gegangen wird", function() {});
 					});
 					erstelleWettregelTests(1, true);
 					describe("und der erste Spieler C raised", function() {
-						xit("dann ist der Stack von A '9', von B '8' und von C '6', der Pot '7' und das Höchstgebot '4' weil im PreFlop bei Raise das Höchstgebot um den 1xBigBlind erhöht wird", function() {});
+						xit("dann ist der Stack von A '9', von B '8' und von C '6', der Pot '7' und den Höchsteinsatz '4' weil im PreFlop bei Raise den Höchsteinsatz um den 1xBigBlind erhöht wird", function() {});
 					});
 				});
 				describe("und spiele eine Flop-Runde", function() {
