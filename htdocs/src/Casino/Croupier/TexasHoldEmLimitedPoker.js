@@ -10,6 +10,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	var maxSpielerAnzahl = 23;
 	this.pot = 0;
 	this.stack = {};
+	this.gewinnErmittler = new CasinoPokerGewinnermittlung();
 	
 	this.spielerrunde = new CasinoPokerSpielerrunde(
 		minSpielerAnzahl, maxSpielerAnzahl
@@ -123,7 +124,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		var self = this;
 		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
 			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-			var frage = eval(uneval(this._gibSpielerdaten(spieler)));
+			var frage = this._clone(this._gibSpielerdaten(spieler));
 			frage['Pot'] = this.pot + '';
 			frage['Stack'] = this.stack[spieler] + '';
 			frage['Hoechsteinsatz'] = self._gibAktuellenHoechsteinsatz() + '';
@@ -139,7 +140,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 					'Einsatz':einsatz,
 				});
 			}
-			ich.frageDenSpieler(
+			self.frageDenSpieler(
 				spieler,
 				frage,
 				function(antwort) {
@@ -187,35 +188,110 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 		return antwort;
 	};
+	// ARRAY
+	this._ermittleGewinner = function() {
+		var alle = [];
+		var alle_spieler = this.spielerrunde.gibListe();
+		var maximalePunkte = 0;
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			var bestesBlatt = this.gewinnErmittler.gibBestesBlatt(
+				this._parseKarten(daten['Hand'].join(' ')),
+				this._parseKarten(daten['Tisch'].join(' '))
+			);
+			var punkte = this.gewinnErmittler.gibPunkte(bestesBlatt);
+			if(maximalePunkte < punkte) maximalePunkte = punkte;
+			
+			var blatt = [];
+			for(var ii = 0; ii < bestesBlatt.length; ii++) {
+				blatt.push(bestesBlatt[ii].toString());
+			}
+			alle.push({
+				'spieler': alle_spieler[i],
+				'punkte': punkte,
+				'bestesBlatt': blatt
+			});
+		}
+		var gewinner = [];
+		for(var i = 0; i < alle.length; i++) {
+			if(alle[i].punkte == maximalePunkte) {
+				gewinner.push(alle[i]);
+			}
+		}
+		return gewinner;
+	};
 	// VOID
 	this._spieleShowdown = function(doneFunc) {
+		var datenAllerSpieler = [];
+		var alle_spieler = this.spielerrunde.gibListe();
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			datenAllerSpieler.push({
+				'Name': alle_spieler[i],
+				'letzteAktion': daten.letzteAktion,
+				'Stack': this.stack[alle_spieler[i]] + '',
+				'Einsatz': daten.Einsatz,
+				'Hand': daten.Hand
+			});
+		}
+		
+		var pot = this.pot;
+		var gewinner = this._ermittleGewinner();
+		var gewinn = Math.floor(pot / gewinner.length);
+		var gewinnerDaten = [];
+		for(var i = 0; i < gewinner.length; i++) {
+			this.stack[gewinner[i].spieler] += gewinn;
+			gewinnerDaten.push({
+				'Name': gewinner[i].spieler,
+				'Gewinn': gewinn + '',
+				'Blatt': gewinner[i].bestesBlatt
+			});
+		}
+		this.pot = 0;
+		
 		var daten = {
 			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],
-			'Pot': this.pot + '',
-			'Gewinner':[
-				{'Name':'A','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
-				{'Name':'B','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']},
-				{'Name':'C','Gewinn':'2','Blatt':['2♦','2♦','2♦','2♦','2♦']}
-			],
-			'Spieler': [
-				{'Name':'A','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
-				{'Name':'B','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']},
-				{'Name':'C','letzteAktion':'check','Stack':'-2','Einsatz':'2','Hand':['2♦','2♦']}
-			]
+			'Pot': pot + '',
+			'Gewinner':gewinnerDaten,
+			'Spieler': datenAllerSpieler
 		};
-		
+		this._frageSpielerRekursiv(this._clone(alle_spieler), daten, doneFunc);
+	};
+	// ARRAY
+	this._clone = function(item) {
 		var self = this;
-		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
-			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-			ich.frageDenSpieler(
-				spieler,
-				eval(uneval(daten)),
-				function() {
-					// TODO: hier rekursiv vorgehen (innerhalb dieser Funktion)!
-				}
-			);
+		if (Object.prototype.toString.call( item ) === "[object Array]") {
+			var result = [];
+			item.forEach(function(child, index, array) { 
+				result[index] = self._clone( child );
+			});
+			return result;
+		} else if (typeof item == "object") {
+			var result = {};
+			for (var i in item) {
+				result[i] = self._clone( item[i] );
+			}
+			return result;
+		} else {
+			return item;
 		}
-		doneFunc(true);
+	};
+	// VOID
+	this._frageSpielerRekursiv = function(liste, daten, doneFunc) {
+		if(!liste.length) {
+			doneFunc(true);
+			return;
+		}
+		var spieler = liste.shift();
+		var self = this;
+		this.frageDenSpieler(
+			spieler,
+			self._clone(daten),
+			function() {
+				self._frageSpielerRekursiv(liste, daten, doneFunc);
+			}
+		);
+		return;
 	};
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {
@@ -260,7 +336,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this.spieleEinSpiel = function(doneFunc) {
-		if(!this._bereiteNeuesSpielVor(doneFunc)) {
+		if(!this._bereiteNeuesSpielVor()) {
 			doneFunc(false);
 			return;
 		}

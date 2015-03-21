@@ -1,7 +1,7 @@
 "use strict";
 
 // CLASS DEFINITION
-function CasinoPokerGewinnermittlung(blatt) {
+function CasinoPokerGewinnermittlung() {
 	// ARRAY
 	this._clone = function(array) {
 		var clone = [];
