@@ -34,7 +34,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 		});
-		/*TODO in FF kommt da "too much recursion irgendwo in den Tests raus :(
 		describe("und ich Spiele mit 24 Spielern", function() {
 			var spy23 = null;
 			var spy24 = null;
@@ -58,7 +57,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					done();
 				});
 			});
-		});*/
+		});
 		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 			var waechter = new spielerKommunikationsWaechter();
 			beforeEach(function() {
@@ -249,7 +248,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				erstelleRundenCheck('Flop', ['2♦', '2♦', '2♦']);
 				erstelleRundenCheck('TurnCard', ['2♦']);
 				erstelleRundenCheck('River', ['2♦']);
-				//TODO
 				describe("und ich spiele eine Showdown-Runde mit einem Pot von '5', den Tischkarten 2♦ 2♦ 2♦ 2♦ 2♦ und den Handkarten je 2♦ 2♦ und einem Spielerstack von je 0", function() {
 					beforeEach(function(done) {
 						ich._bereiteNeuesSpielVor();
@@ -283,7 +281,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					});
 				});
 			});
-//TODO test für: ein spieler steigt aus! + alle steigen aus (letzter gewinnt)
 			describe("und ich spiele mit einem Start-Höchsteinsatz von '0', einem Spielerstack von '10', einem SmallBlind von '1' und einem BigBlind von '2'", function() {
 				var bigBlind = 2;
 				beforeEach(function() {
@@ -297,6 +294,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					
 					it("dann gilt die implizite Wettregel 'wer nicht auf den aktuellen Einsatz erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuellen Höchsteinsatz bedeutet", function() {
 						expect(true).toBe(true);
+					});
+					
+					describe("und der erste Spieler folded", function() {
+						describe("und der zweite Spieler raised", function() {
+							describe("und der dritte Spieler raised", function() {
+								xit("dann werden anschließend noch der zweite und der dritte Spieler gefragt, da der erste aus dem Spiel ist", function() {});
+							});
+						});
 					});
 					describe("und der erste Spieler raised", function() {
 						describe("und der zweite Spieler checked", function() {
@@ -326,6 +331,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 								xit("keine beste Kombination gezeigt", function() {});
 								xit("die Info, dass der dritte Spieler Pot gewonnen hat", function() {});
 							});
+							xit("dann sinkt der Stack vom ersten Spieler um '2'", function() {});
+							xit("dann sinkt der Stack vom zweiten Spieler um '2'", function() {});
+							xit("dann steigt der Stack vom dritten Spieler um '2'", function() {});
 						});
 					});
 				}
@@ -370,6 +378,18 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				xit("dann sinkt der Stack von Spieler A um '2'", function() {});
 				xit("dann steigt der Stack von Spieler B um '2'", function() {});
 				xit("dann sinkt der Stack von Spieler C um '2'", function() {});
+				describe("und Spieler B hatte gefolded", function() {
+					describe("dann bekommt jeder Spieler", function() {
+						xit("die Handkarten der Spieler A und C gezeigt", function() {});
+						xit("die beste Kombination für Spieler A (A♦ 10♦ 10♣ 10♠ J♥) [= Drilling] gezeigt", function() {});
+						xit("keine Kombination für Spieler B gezeigt", function() {});
+						xit("die beste Kombination für Spieler C (K♣ Q♦ J♥ 10♣ 10♠) [=ein Paar] gezeigt", function() {});
+						xit("die Info, dass Spieler A den Pot von '2' gewonnen hat", function() {});
+					});
+					xit("dann steigt der Stack von Spieler A um '2'", function() {});
+					xit("dann sinkt der Stack von Spieler B um '2'", function() {});
+					xit("dann sinkt der Stack von Spieler C um '2'", function() {});
+				});
 			});
 		});
 		describe("und will den Gewinner aus 2 Blättern ermitteln, dann gilt:", function() {

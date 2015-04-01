@@ -255,7 +255,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			'Gewinner':gewinnerDaten,
 			'Spieler': datenAllerSpieler
 		};
-		this._frageSpielerRekursiv(this._clone(alle_spieler), daten, doneFunc);
+		this._frageAlleSpieler(this._clone(alle_spieler), daten, doneFunc);
 	};
 	// ARRAY
 	this._clone = function(item) {
@@ -277,7 +277,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 	};
 	// VOID
-	this._frageSpielerRekursiv = function(liste, daten, doneFunc) {
+	this._frageAlleSpieler = function(liste, daten, doneFunc) {
 		if(!liste.length) {
 			doneFunc(true);
 			return;
@@ -288,7 +288,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			spieler,
 			self._clone(daten),
 			function() {
-				self._frageSpielerRekursiv(liste, daten, doneFunc);
+				setTimeout(function() {// Rekursion fuer FF aufbrechen
+					self._frageAlleSpieler(liste, daten, doneFunc);
+				}, 0);
 			}
 		);
 		return;
