@@ -4,7 +4,7 @@ var ich = null;
 describe("Szenario: das Casino ist geöffnet", function() {
 	describe("Angenommen ich bin ein Poker-Croupier für TexasHoldEm mit FixedLimit", function() {
 		beforeEach(function() {
-			jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
+			jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 			ich = new CasinoCroupierTexasHoldEmLimitedPoker("name", "passwort");
 			entferneSpielerVerbindungen(ich);
 		});
@@ -39,7 +39,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			var spy23 = null;
 			var spy24 = null;
 			beforeEach(function(done) {
-				jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+				//TODO unnoetig jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 				
 				for(var i = 1; i <= 22; i++) {
 					erzeugeSpieler('Nr' + i, ich, function() {});
@@ -62,6 +62,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
+			//TODO ist es wirklich so, dass Preflop C-B-A gespielt wird und flop dann A-B-C?
 			var waechter = new spielerKommunikationsWaechter();
 			beforeEach(function() {
 				erzeugeSpieler('A', ich, function(frage) {
@@ -292,8 +293,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			beforeEach(function() {
 				erzeugeSpieler('A', ich, function(frage) {
 					waechter.fragen_hook('A', frage);
-					console.log(frage);
-					//return 'check';
+					return 'check';
 				});
 				erzeugeSpieler('B', ich, function(frage) {
 					waechter.fragen_hook('B', frage);

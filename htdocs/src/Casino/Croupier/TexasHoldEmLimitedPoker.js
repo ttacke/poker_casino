@@ -120,41 +120,48 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
-	this._ermittleEinsaetzeVonAllen = function(doneFunc) {
-		var self = this;
-		for(var i = 0; i < this.spielerrunde.anzahlDerSpieler(); i++) {
-			var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-			var frage = this._clone(this._gibSpielerdaten(spieler));
-			frage['Pot'] = this.pot + '';
-			frage['Stack'] = this.stack[spieler] + '';
-			frage['Hoechsteinsatz'] = self._gibAktuellenHoechsteinsatz() + '';
-			
-			var alle_spieler = self.spielerrunde.gibListe();
-			frage['Spieler'] = [];
-			for(var ii = 0; ii < alle_spieler.length; ii++) {
-				var einsatz = this._gibSpielerdaten(alle_spieler[ii])['Einsatz'];
-				frage['Spieler'].push({
-					'Name':alle_spieler[ii],
-					'letzteAktion':this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
-					'Stack':this.stack[alle_spieler[ii]] + '',
-					'Einsatz':einsatz,
-				});
-			}
-			self.frageDenSpieler(
-				spieler,
-				frage,
-				function(antwort) {
-					var aktion = self._uebersetzeAntwort(antwort);
-					if(aktion == 'check') {
-						var hoechsteinsatz = self._gibAktuellenHoechsteinsatz();
-						self._erhoeheAuf(spieler, hoechsteinsatz);
-					}
-					self._speichereLetzteAktion(spieler, aktion);
-					// TODO: hier rekursiv vorgehen (innerhalb dieser Funktion)!
-				}
-			);
+	this._ermittleDenEinsatz = function(doneFunc, temp) {
+		if(temp <= 0) {//TODO derzeit nur fake, da die Bieterrunde noch nicht existiert
+			doneFunc(true);
+			return;
 		}
-		doneFunc(true);
+			
+		var spieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		var frage = this._clone(this._gibSpielerdaten(spieler));
+		frage['Pot'] = this.pot + '';
+		frage['Stack'] = this.stack[spieler] + '';
+		frage['Hoechsteinsatz'] = this._gibAktuellenHoechsteinsatz() + '';
+		
+		var alle_spieler = this.spielerrunde.gibListe();
+		frage['Spieler'] = [];
+		for(var ii = 0; ii < alle_spieler.length; ii++) {
+			var einsatz = this._gibSpielerdaten(alle_spieler[ii])['Einsatz'];
+			frage['Spieler'].push({
+				'Name':alle_spieler[ii],
+				'letzteAktion':this._gibSpielerdaten(alle_spieler[ii])['letzteAktion'],
+				'Stack':this.stack[alle_spieler[ii]] + '',
+				'Einsatz':einsatz,
+			});
+		}
+		var self = this;
+		this.frageDenSpieler(
+			spieler,
+			frage,
+			function(antwort) {
+				var aktion = self._uebersetzeAntwort(antwort);
+				if(aktion == 'check') {
+					var hoechsteinsatz = self._gibAktuellenHoechsteinsatz();
+					self._erhoeheAuf(spieler, hoechsteinsatz);
+				}
+				self._speichereLetzteAktion(spieler, aktion);
+				self._ermittleDenEinsatz(doneFunc, temp - 1);
+			}
+		);
+	};
+	// VOID
+	this._ermittleEinsaetzeVonAllen = function(doneFunc) {
+		this._ermittleDenEinsatz(doneFunc, this.spielerrunde.anzahlDerSpieler());
+		
 	};
 	// VOID
 	this._erhoeheAuf = function(spieler, geforderterEinsatz) {
