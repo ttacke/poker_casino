@@ -50,7 +50,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			'Spieler': datenAllerSpieler
 		};
 		this._frageAlleSpieler(
-			this.croupier._clone(alle_spieler),
+			this._clone(alle_spieler),
 			daten,
 			doneFunc
 		);

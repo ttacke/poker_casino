@@ -180,25 +180,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		showdown.wetten(this.spielerrunde, kartenstapel, doneFunc);
 		showdown.abschluss(this.spielerrunde, doneFunc);
 	};
-	// ARRAY
-	this._clone = function(item) {
-		var self = this;
-		if (Object.prototype.toString.call( item ) === "[object Array]") {
-			var result = [];
-			item.forEach(function(child, index, array) { 
-				result[index] = self._clone( child );
-			});
-			return result;
-		} else if (typeof item == "object") {
-			var result = {};
-			for (var i in item) {
-				result[i] = self._clone( item[i] );
-			}
-			return result;
-		} else {
-			return item;
-		}
-	};
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {
 		var self = this;

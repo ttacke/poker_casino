@@ -23,7 +23,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		}
 			
 		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		var frage = this.croupier._clone(this.croupier._gibSpielerdaten(spieler));
+		var frage = this._clone(this.croupier._gibSpielerdaten(spieler));
 		frage['Pot'] = this.croupier.pot + '';
 		frage['Stack'] = this.croupier.stack[spieler] + '';
 		frage['Hoechsteinsatz'] = this.croupier._gibAktuellenHoechsteinsatz() + '';
@@ -64,7 +64,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		var self = this;
 		this.croupier.frageDenSpieler(
 			spieler,
-			self.croupier._clone(daten),
+			self._clone(daten),
 			function() {
 				setTimeout(function() {// Rekursion fuer FF aufbrechen
 					self._frageAlleSpieler(liste, daten, doneFunc);
@@ -72,5 +72,24 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			}
 		);
 		return;
+	};
+	// ARRAY
+	this._clone = function(item) {
+		var self = this;
+		if (Object.prototype.toString.call( item ) === "[object Array]") {
+			var result = [];
+			item.forEach(function(child, index, array) { 
+				result[index] = self._clone( child );
+			});
+			return result;
+		} else if (typeof item == "object") {
+			var result = {};
+			for (var i in item) {
+				result[i] = self._clone( item[i] );
+			}
+			return result;
+		} else {
+			return item;
+		}
 	};
 }
