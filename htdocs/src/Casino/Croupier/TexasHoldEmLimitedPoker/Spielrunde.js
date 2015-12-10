@@ -24,10 +24,10 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	};
 	// INT
 	this._gibAktuellenHoechsteinsatz = function() {
-		var alle_spieler = this.croupier.spielerrunde.gibListeDerNamen();
+		var alle_spieler = this.croupier.spielerrunde.gibAlleSpieler();
 		var hoechsteinsatz = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this.croupier._gibSpielerdaten(alle_spieler[i]);
+			var daten = alle_spieler[i].daten;
 			var aktuellerEinsatz = parseInt(daten['Einsatz']);
 			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
 		}
