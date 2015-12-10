@@ -1,6 +1,12 @@
 "use strict";
 
 // CLASS DEFINITION
+function CasinoPokerSpielerplatz(name, stack) {
+	this.name = name;
+	this.stack = stack;
+}
+
+// CLASS DEFINITION
 function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.spielerListe = [];
 	this.pointer = 0;
@@ -33,22 +39,30 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		} else {
 			this.pointer++;
 		}
-		return spieler;
+		return spieler.name;
 	};
 	// BOOLEAN
-	this.nimmSpielerAufWennNeu = function(spieler) {
+	this.nimmSpielerAufWennNeu = function(spielerName) {
+		var spieler = new CasinoPokerSpielerplatz(spielerName, 0);
 		if(this.spielerListe.length + 1 > this.maximaleSpieleranzahl) return false;
 		
 		for(var i = 0; i < this.spielerListe.length; i++) {
-			if(this.spielerListe[i] == spieler) return true;
+			if(this.spielerListe[i].name == spielerName) return true;
 		}
-		this.spielerListe.push(spieler);
+		this.spielerListe.push(
+			spieler
+		);
 		
 		return true;
 	};
 	// ARRAY
 	this.gibListe = function() {
-		return this.spielerListe;
+		//TODO
+		var namensListe = [];
+		for(var i = 0; i < this.spielerListe.length; i++) {
+			namensListe.push(this.spielerListe[i].name);
+		}
+		return namensListe;
 	};
 	
 	// INT
