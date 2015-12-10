@@ -22,7 +22,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 				'Name': alle_spieler[i].name,
 				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
 				'Stack': alle_spieler[i].stack + '',
-				'Einsatz': alle_spieler[i].gibEinsatz(),
+				'Einsatz': alle_spieler[i].gibEinsatz() + '',
 				'Hand': alle_spieler[i].gibHandkarten()
 			});
 		}

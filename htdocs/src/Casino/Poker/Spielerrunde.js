@@ -16,7 +16,7 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 			'Hand': [],
 			'Tisch': [],
 			'LetzteAktion': '-',
-			'Einsatz': '0',
+			'Einsatz': 0,
 		};
 	}
 	// VOID
@@ -45,7 +45,7 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	}
 	// STRING
 	this.erhoeheEinsatz = function(erhoehung) {
-		this._daten['Einsatz'] = parseInt(this._daten['Einsatz']) + erhoehung + '';
+		this._daten['Einsatz'] = this._daten['Einsatz'] + erhoehung;
 	}
 	// STRING
 	this.gibHandkarten = function() {

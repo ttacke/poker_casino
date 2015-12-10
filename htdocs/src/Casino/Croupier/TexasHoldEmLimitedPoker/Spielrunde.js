@@ -27,7 +27,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		var alle_spieler = this.croupier.spielerrunde.gibAlleSpieler();
 		var hoechsteinsatz = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var aktuellerEinsatz = parseInt(alle_spieler[i].gibEinsatz());
+			var aktuellerEinsatz = alle_spieler[i].gibEinsatz();
 			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
 		}
 		return hoechsteinsatz;
