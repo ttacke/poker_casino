@@ -37,9 +37,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this.gibHandkartenAnAlleSpieler = function(anzahl, kartenstapel) {
 		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = alle_spieler[i].daten;
 			for(var ii = 0; ii < anzahl; ii++) {
-				daten['Hand'].push(kartenstapel.pop().toString());
+				alle_spieler[i].merkeDirHandkarte(kartenstapel.pop().toString());
 			}
 		}
 		return;
@@ -53,9 +52,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		
 		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = alle_spieler[i].daten;
 			for(var ii = 0; ii < tischkarten.length; ii++) {
-				daten['Tisch'].push(tischkarten[ii]);
+				alle_spieler[i].merkeDirTischkarte(tischkarten[ii]);
 			}
 		}
 		return;

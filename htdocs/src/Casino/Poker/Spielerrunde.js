@@ -19,6 +19,14 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 			'Einsatz': '0',
 		};
 	}
+	// VOID
+	this.merkeDirHandkarte = function(karte) {
+		this.daten['Hand'].push(karte);
+	};
+	// VOID
+	this.merkeDirTischkarte = function(karte) {
+		this.daten['Tisch'].push(karte);
+	};
 }
 
 // CLASS DEFINITION
