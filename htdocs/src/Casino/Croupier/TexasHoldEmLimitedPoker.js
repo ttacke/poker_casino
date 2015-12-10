@@ -86,17 +86,11 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spielePreflop = function(kartenstapel, naechsteRunde) {
-		this.spielerrunde.starteWiederAbGeberToken();
 		
-		var smallBlindSpieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this._erhoeheAuf(smallBlindSpieler, '1');
+		var preflop = new CasinoCroupierRundePreflop(this, 1);
+		preflop.vorbereiten(this.spielerrunde, kartenstapel);
+		preflop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 		
-		var bigBlindSpieler = this.spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this._erhoeheAuf(bigBlindSpieler, '2');
-		
-		this._gibHandkartenAnAlleSpieler(2, kartenstapel);
-		
-		this._ermittleEinsaetzeVonAllen(naechsteRunde);
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel, naechsteRunde) {
@@ -121,7 +115,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._ermittleDenEinsatz = function(doneFunc, temp) {
-		if(temp <= 0) {//TODO derzeit nur fake, da die Bieterrunde noch nicht existiert
+		if(temp <= 0) {//TODO implementieren
 			doneFunc(true);
 			return;
 		}
@@ -257,7 +251,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		this.pot = 0;
 		
 		var daten = {
-			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],
+			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],//TODO implementieren!
 			'Pot': pot + '',
 			'Gewinner':gewinnerDaten,
 			'Spieler': datenAllerSpieler
