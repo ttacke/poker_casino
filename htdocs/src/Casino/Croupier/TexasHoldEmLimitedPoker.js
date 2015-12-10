@@ -73,6 +73,10 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 		return;
 	};
+	
+	
+	
+	
 	// VOID
 	this._spielePreflop = function(kartenstapel, naechsteRunde) {
 		var preflop = new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(this, 1);
@@ -105,6 +109,12 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		showdown.wetten(this.spielerrunde, kartenstapel, doneFunc);
 		showdown.abschluss(this.spielerrunde, doneFunc);
 	};
+	
+	
+	
+	
+	
+	
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {
 		var self = this;
