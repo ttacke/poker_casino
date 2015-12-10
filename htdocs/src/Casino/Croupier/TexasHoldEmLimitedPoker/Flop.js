@@ -1,8 +1,8 @@
 "use strict";
 
 // CLASS DEFINITION
-CasinoCroupierRundeFlop.prototype = new CasinoCroupierTexasHoldEmLimitedPokerSpielrunde();
-function CasinoCroupierRundeFlop(croupier, smallBlind) {
+CasinoCroupierTexasHoldEmLimitedPokerFlop.prototype = new CasinoCroupierTexasHoldEmLimitedPokerSpielrunde();
+function CasinoCroupierTexasHoldEmLimitedPokerFlop(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
 	
