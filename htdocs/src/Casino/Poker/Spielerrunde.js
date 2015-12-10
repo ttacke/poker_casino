@@ -39,8 +39,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		} else {
 			this.pointer++;
 		}
-		//TODO
-		return spieler.name;
+		return spieler;
 	};
 	// BOOLEAN
 	this.nimmSpielerAufWennNeu = function(spielerName) {
