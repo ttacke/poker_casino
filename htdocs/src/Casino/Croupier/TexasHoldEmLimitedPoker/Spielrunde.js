@@ -22,7 +22,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			'Tisch': this._clone(spieler.gibTischkarten()),
 			'LetzteAktion': spieler.gibLetzteAktion(),
 			'Einsatz': spieler.gibEinsatz() + '',
-			'Pot': spielerrunde.pot + '',
+			'Pot': spielerrunde.gibPot() + '',
 			'Stack': spieler.gibStack() + '',
 			'Hoechsteinsatz': this._gibAktuellenHoechsteinsatz() + '',
 		};

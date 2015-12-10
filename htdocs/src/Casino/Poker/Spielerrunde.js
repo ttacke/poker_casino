@@ -76,7 +76,12 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.geberTokenPointer = -1;
 	this.maximaleSpieleranzahl = maximaleSpieleranzahl;
 	this.minimaleSpieleranzahl = minimaleSpieleranzahl;
-	this.pot = 0;
+	this._pot = 0;
+	
+	// INT
+	this.gibPot = function() {
+		return this._pot;
+	};
 	
 	// VOID
 	this.starteWiederAbGeberToken = function() {
@@ -84,7 +89,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	};
 	// BOOLEAN
 	this.starteNeuesSpielUndSchiebeGeberTokenWeiter = function() {
-		this.pot = 0;
+		this._pot = 0;
 		if(this.spielerListe.length < this.minimaleSpieleranzahl) {
 			return false;
 		}
@@ -116,7 +121,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		var einsatzVeraenderung = geforderterEinsatz - spieler.gibEinsatz();
 		spieler.erhoeheEinsatz(einsatzVeraenderung);
 		spieler.verringereStack(einsatzVeraenderung);
-		this.pot += einsatzVeraenderung;
+		this._pot += einsatzVeraenderung;
 	};
 	// BOOLEAN
 	this.nimmSpielerAufWennNeu = function(spielerName) {

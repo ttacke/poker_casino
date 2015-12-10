@@ -168,7 +168,7 @@ function aktuelleSpielerDatenEnthalten(croupier, key, val) {
 }
 // VOID
 function derAktuellePotIst(croupier, pot) {
-	expect(croupier.spielerrunde.pot).toBe(pot);
+	expect(croupier.spielerrunde.gibPot()).toBe(pot);
 }
 // VOID
 function derAktuelleStackVomSpielerIst(croupier, spielername, stack) {

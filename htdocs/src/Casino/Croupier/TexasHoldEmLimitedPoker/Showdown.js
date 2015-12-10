@@ -31,7 +31,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			}
 		}
 		
-		var pot = spielerrunde.pot;
+		var pot = spielerrunde.gibPot();
 		var gewinner = this._ermittleGewinner(spielerrunde);
 		var gewinn = Math.floor(pot / gewinner.length);
 		var gewinnerDaten = [];
