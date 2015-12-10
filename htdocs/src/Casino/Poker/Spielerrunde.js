@@ -27,6 +27,18 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.merkeDirTischkarte = function(karte) {
 		this.daten['Tisch'].push(karte);
 	};
+	// STRING
+	this.gibLetzteAktion = function() {
+		return this.daten['letzteAktion'];
+	}
+	// STRING
+	this.gibEinsatz = function() {
+		return this.daten['Einsatz'];
+	}
+	// STRING
+	this.gibHandkarten = function() {
+		return this.daten['Hand'];
+	}
 }
 
 // CLASS DEFINITION

@@ -18,13 +18,12 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var datenAllerSpieler = [];
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = alle_spieler[i].daten;
 			datenAllerSpieler.push({
 				'Name': alle_spieler[i].name,
-				'letzteAktion': daten.letzteAktion,
+				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
 				'Stack': alle_spieler[i].stack + '',
-				'Einsatz': daten.Einsatz,
-				'Hand': daten.Hand
+				'Einsatz': alle_spieler[i].gibEinsatz(),
+				'Hand': alle_spieler[i].gibHandkarten()
 			});
 		}
 		
