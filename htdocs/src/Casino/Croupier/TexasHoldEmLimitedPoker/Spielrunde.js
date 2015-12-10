@@ -7,30 +7,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	
 	// VOID
 	this.wetten = function(spielerrunde, kartenstapel, naechsteRunde) {
-		
-		this._ermittleEinsaetzeVonAllen(spielerrunde, naechsteRunde);
-	};
-	// VOID
-	this._ermittleEinsaetzeVonAllen = function(spielerrunde, doneFunc) {
-		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
-		
-	};
-	// STRING
-	this._uebersetzeAntwort = function(antwort) {
-		if(antwort != 'check' && antwort != 'raise') {
-			return 'fold';
-		}
-		return antwort;
-	};
-	// INT
-	this._gibAktuellenHoechsteinsatz = function() {
-		var alle_spieler = this.croupier.spielerrunde.gibAlleSpieler();
-		var hoechsteinsatz = 0;
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var aktuellerEinsatz = alle_spieler[i].gibEinsatz();
-			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
-		}
-		return hoechsteinsatz;
+		this._ermittleDenEinsatz(naechsteRunde, spielerrunde, spielerrunde.anzahlDerSpieler());
 	};
 	// VOID
 	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
@@ -74,30 +51,22 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			}
 		);
 	};
-	// VOID
-	this._frageAlleSpieler = function(liste_aller_spieler, daten, doneFunc) {
-		if(!liste_aller_spieler.length) {
-			doneFunc(true);
-			return;
+	// STRING
+	this._uebersetzeAntwort = function(antwort) {
+		if(antwort != 'check' && antwort != 'raise') {
+			return 'fold';
 		}
-		
-		var neue_liste = [];
-		for(var i = 0; i < liste_aller_spieler.length; i++) {
-			neue_liste[i] = liste_aller_spieler[i];
+		return antwort;
+	};
+	// INT
+	this._gibAktuellenHoechsteinsatz = function() {
+		var alle_spieler = this.croupier.spielerrunde.gibAlleSpieler();
+		var hoechsteinsatz = 0;
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var aktuellerEinsatz = alle_spieler[i].gibEinsatz();
+			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
 		}
-		var spieler = neue_liste.shift();
-		
-		var self = this;
-		this.croupier.frageDenSpieler(
-			spieler.gibName(),
-			self._clone(daten),
-			function() {
-				setTimeout(function() {// Rekursion fuer FF aufbrechen
-					self._frageAlleSpieler(neue_liste, daten, doneFunc);
-				}, 0);
-			}
-		);
-		return;
+		return hoechsteinsatz;
 	};
 	// ARRAY
 	this._clone = function(item) {

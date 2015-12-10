@@ -53,11 +53,36 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			'Spieler': datenAllerSpieler
 		};
 		
-		this._frageAlleSpieler(
+		this._meldeAnAlleSpieler(
 			alle_spieler,
 			daten,
 			doneFunc
 		);
+	};
+	// VOID
+	this._meldeAnAlleSpieler = function(liste_aller_spieler, daten, doneFunc) {
+		if(!liste_aller_spieler.length) {
+			doneFunc(true);
+			return;
+		}
+		
+		var neue_liste = [];
+		for(var i = 0; i < liste_aller_spieler.length; i++) {
+			neue_liste[i] = liste_aller_spieler[i];
+		}
+		var spieler = neue_liste.shift();
+		
+		var self = this;
+		this.croupier.frageDenSpieler(
+			spieler.gibName(),
+			self._clone(daten),
+			function() {
+				setTimeout(function() {// Rekursion fuer FF aufbrechen
+					self._meldeAnAlleSpieler(neue_liste, daten, doneFunc);
+				}, 0);
+			}
+		);
+		return;
 	};
 	// ARRAY
 	this._ermittleGewinner = function(spielerrunde) {
