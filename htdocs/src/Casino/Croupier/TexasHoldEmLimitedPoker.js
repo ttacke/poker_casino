@@ -49,12 +49,12 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		this.pot = 0;
 		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			alle_spieler[i].daten = new Object();
-			var daten = this._gibSpielerdaten(alle_spieler[i].name);
-			daten['Hand'] = [];
-			daten['Tisch'] = [];
-			daten['letzteAktion'] = '-';
-			daten['Einsatz'] = '0';
+			alle_spieler[i].daten = {
+				'Hand': [],
+				'Tisch': [],
+				'LetzteAktion': '-',
+				'Einsatz': '0',
+			};
 		}
 		return true;
 	};
