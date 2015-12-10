@@ -30,7 +30,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		this.starteWiederAbGeberToken();
 		return true;
 	};
-	// STRING
+	// OBJ
 	this.gibDenSpielerDerAnDerReiheIst = function() {
 		var spieler = this.spielerListe[this.pointer];
 		if(this.pointer + 1 >= this.spielerListe.length) {
@@ -38,6 +38,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		} else {
 			this.pointer++;
 		}
+		//TODO
 		return spieler.name;
 	};
 	// BOOLEAN
@@ -54,7 +55,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		
 		return true;
 	};
-	// ARRAY
+	// ARRAY(OBJ)
 	this.gibListe = function() {
 		//TODO
 		var namensListe = [];
@@ -63,7 +64,6 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		}
 		return namensListe;
 	};
-	
 	// INT
 	this.anzahlDerSpieler = function() {
 		return this.spielerListe.length;
