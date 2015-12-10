@@ -5,6 +5,11 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.name = name;
 	this.daten = {};
 	this.stack = 0;
+	
+	// VOID
+	this.setzeLetzteAktion = function(aktion) {
+		this.daten['letzteAktion'] = aktion;
+	};
 }
 
 // CLASS DEFINITION

@@ -97,15 +97,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
 		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
-	// VOID
-	this._speichereLetzteAktion = function(spielername, aktion) {
-		var alle_spieler = this.spielerrunde.gibAlleSpieler();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			if(alle_spieler[i].name == spielername) {
-				alle_spieler[i].daten['letzteAktion'] = aktion;
-			}
-		}
-	};
 	// ARRAY
 	this._ermittleGewinner = function() {
 		var alle = [];
