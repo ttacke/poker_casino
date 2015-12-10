@@ -5,7 +5,6 @@ CasinoCroupierTexasHoldEmLimitedPoker.prototype = new CasinoCroupier();
 function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this.name = name;
 	this.passwort = passwort;
-	this.spielerdaten = [];
 	var minSpielerAnzahl = 3;
 	var maxSpielerAnzahl = 23;
 	this.pot = 0;
@@ -18,10 +17,12 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	
 	// OBJ
 	this._gibSpielerdaten = function(name) {
-		if(!this.spielerdaten[name]) {
-			this.spielerdaten[name] = {};
+		var liste = this.spielerrunde.gibAlleSpieler();
+		for(var i = 0; i < liste.length; i++) {
+			if(liste[i].name == name) {
+				return liste[i].daten;
+			}
 		}
-		return this.spielerdaten[name];
 	};
 	// ARRAY
 	this._parseKarten = function(string) {
@@ -46,10 +47,10 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 		
 		this.pot = 0;
-		this.spielerdaten = new Object();
-		var alle_spieler = this.spielerrunde.gibListeDerNamen();
+		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			alle_spieler[i].daten = new Object();
+			var daten = this._gibSpielerdaten(alle_spieler[i].name);
 			daten['Hand'] = [];
 			daten['Tisch'] = [];
 			daten['letzteAktion'] = '-';
