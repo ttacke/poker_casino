@@ -54,4 +54,23 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			}
 		);
 	};
+	// VOID
+	this._frageAlleSpieler = function(liste, daten, doneFunc) {
+		if(!liste.length) {
+			doneFunc(true);
+			return;
+		}
+		var spieler = liste.shift();
+		var self = this;
+		this.croupier.frageDenSpieler(
+			spieler,
+			self.croupier._clone(daten),
+			function() {
+				setTimeout(function() {// Rekursion fuer FF aufbrechen
+					self._frageAlleSpieler(liste, daten, doneFunc);
+				}, 0);
+			}
+		);
+		return;
+	};
 }

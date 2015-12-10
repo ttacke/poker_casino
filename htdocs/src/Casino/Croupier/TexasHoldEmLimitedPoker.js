@@ -200,25 +200,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		}
 	};
 	// VOID
-	this._frageAlleSpieler = function(liste, daten, doneFunc) {
-		if(!liste.length) {
-			doneFunc(true);
-			return;
-		}
-		var spieler = liste.shift();
-		var self = this;
-		this.frageDenSpieler(
-			spieler,
-			self._clone(daten),
-			function() {
-				setTimeout(function() {// Rekursion fuer FF aufbrechen
-					self._frageAlleSpieler(liste, daten, doneFunc);
-				}, 0);
-			}
-		);
-		return;
-	};
-	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {
 		var self = this;
 		this.zeigeSpielerDesTisches(function(liste) {
