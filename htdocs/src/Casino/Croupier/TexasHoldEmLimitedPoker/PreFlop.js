@@ -18,7 +18,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerPreFlop(croupier, smallBlind) {
 		this._erhoeheAuf(spielerrunde, bigBlindSpieler.name, (this.smallBlind * 2) + '');
 		//TODO intern!
 		
-		this.croupier._gibHandkartenAnAlleSpieler(2, kartenstapel);
+		this.croupier.gibHandkartenAnAlleSpieler(2, kartenstapel);
 		
 	};
 }

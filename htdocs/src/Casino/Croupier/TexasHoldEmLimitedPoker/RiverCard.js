@@ -10,6 +10,6 @@ function CasinoCroupierTexasHoldEmLimitedPokerRiverCard(croupier, smallBlind) {
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
 		spielerrunde.starteWiederAbGeberToken();
 		
-		this.croupier._gibTischkartenAnAlleSpieler(1, kartenstapel);
+		this.croupier.gibTischkartenAnAlleSpieler(1, kartenstapel);
 	};
 }
