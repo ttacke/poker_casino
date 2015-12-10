@@ -111,6 +111,13 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		}
 		return spieler;
 	};
+	// VOID
+	this.erhoeheEinsatzAuf = function(spieler, geforderterEinsatz) {
+		var einsatzVeraenderung = geforderterEinsatz - spieler.gibEinsatz();
+		spieler.erhoeheEinsatz(einsatzVeraenderung);
+		spieler.verringereStack(einsatzVeraenderung);
+		this.pot += einsatzVeraenderung;
+	};
 	// BOOLEAN
 	this.nimmSpielerAufWennNeu = function(spielerName) {
 		var spieler = new CasinoPokerPlatzDesSpielers(spielerName, 0);
