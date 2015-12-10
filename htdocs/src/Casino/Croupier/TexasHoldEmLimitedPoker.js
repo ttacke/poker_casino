@@ -47,7 +47,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		
 		this.pot = 0;
 		this.spielerdaten = new Object();
-		var alle_spieler = this.spielerrunde.gibListe();
+		var alle_spieler = this.spielerrunde.gibListeDerNamen();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);
 			daten['Hand'] = [];
@@ -59,7 +59,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._gibHandkartenAnAlleSpieler = function(anzahl, kartenstapel) {
-		var alle_spieler = this.spielerrunde.gibListe();
+		var alle_spieler = this.spielerrunde.gibListeDerNamen();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);
 			for(var ii = 0; ii < anzahl; ii++) {
@@ -75,7 +75,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			tischkarten.push(kartenstapel.pop().toString());
 		}
 		
-		var alle_spieler = this.spielerrunde.gibListe();
+		var alle_spieler = this.spielerrunde.gibListeDerNamen();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);
 			for(var ii = 0; ii < tischkarten.length; ii++) {
@@ -117,7 +117,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	// ARRAY
 	this._ermittleGewinner = function() {
 		var alle = [];
-		var alle_spieler = this.spielerrunde.gibListe();
+		var alle_spieler = this.spielerrunde.gibListeDerNamen();
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = this._gibSpielerdaten(alle_spieler[i]);

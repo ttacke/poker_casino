@@ -56,7 +56,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		return true;
 	};
 	// ARRAY(OBJ)
-	this.gibListe = function() {
+	this.gibListeDerNamen = function() {
 		//TODO
 		var namensListe = [];
 		for(var i = 0; i < this.spielerListe.length; i++) {
