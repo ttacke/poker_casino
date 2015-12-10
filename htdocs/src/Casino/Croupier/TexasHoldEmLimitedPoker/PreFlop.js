@@ -11,11 +11,11 @@ function CasinoCroupierTexasHoldEmLimitedPokerPreFlop(croupier, smallBlind) {
 		spielerrunde.starteWiederAbGeberToken();
 		
 		var smallBlindSpieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this._erhoeheAuf(smallBlindSpieler, this.smallBlind + '');
+		this._erhoeheAuf(spielerrunde, smallBlindSpieler, this.smallBlind + '');
 		//TODO intern!
 		
 		var bigBlindSpieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		this._erhoeheAuf(bigBlindSpieler, (this.smallBlind * 2) + '');
+		this._erhoeheAuf(spielerrunde, bigBlindSpieler, (this.smallBlind * 2) + '');
 		//TODO intern!
 		
 		this.croupier._gibHandkartenAnAlleSpieler(2, kartenstapel);
