@@ -62,7 +62,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 		});
 		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
-			//TODO ist es wirklich so, dass Preflop C-B-A gespielt wird und flop dann A-B-C?
 			var waechter = new spielerKommunikationsWaechter();
 			beforeEach(function() {
 				erzeugeSpieler('A', ich, function(frage) {
@@ -286,9 +285,8 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 		});
-		describe("und ich spiele mit den 3 Spielern A, B und C", function() {
+		describe("HIER-REGELN-TESTEN und ich spiele mit den 3 Spielern A, B und C", function() {
 			var waechter = new spielerKommunikationsWaechter();
-			//TODO spieler steuerbar machen - die muessen warten bis ein interrupt kommt
 			
 			beforeEach(function() {
 				erzeugeSpieler('A', ich, function(frage) {
@@ -322,109 +320,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						done();
 					});
 				});
-				// VOID
-				function erstelleWettregelTests(xBigBlindRaise, blindEinsatzEnthalten) {
-					var automatischerEinsatz = 0;
-					if(blindEinsatzEnthalten) {
-						automatischerEinsatz = bigBlind;
-					}
-					
-					it("dann gilt die implizite Wettregel 'wer nicht auf den aktuellen Einsatz erhöht, verlässt das Spiel', denn das geht hier gar nicht da 'check' immer erhöhen auf aktuellen Höchsteinsatz bedeutet", function() {
-						expect(true).toBe(true);
-					});
-					
-					describe("und der erste Spieler folded", function() {
-						describe("und der zweite Spieler raised", function() {
-							describe("und der dritte Spieler raised", function() {
-								xit("dann werden anschließend noch der zweite und der dritte Spieler gefragt, da der erste aus dem Spiel ist", function() {});
-							});
-						});
-					});
-					describe("und der erste Spieler raised", function() {
-						describe("und der zweite Spieler checked", function() {
-							describe("und der dritte Spieler checked", function() {
-								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht als einziger 2x hintereinander raisen", function() {});
-							});
-						});
-					});
-					describe("und der erste Spieler raised", function() {
-						describe("und der zweite Spieler folded", function() {
-							describe("und der dritte Spieler checked", function() {
-								xit("dann ist die Wettrunde beendet, denn der erste Spieler währe wieder an der Reihe und ein Spieler darf nicht als einziger 2x hintereinander raisen", function() {});
-							});
-						});
-					});
-					describe("und alle Spieler immer raisen", function() {
-						describe("und die Wettrunde ist beendet", function() {
-							var anzahlSpieler = 3;
-							var maxRaisesProSpieler = 3; 
-							xit("dann ist der Höchsteinsatz " + (automatischerEinsatz + (bigBlind * xBigBlindRaise * anzahlSpieler * maxRaisesProSpieler)) + ", weil jeder Spieler in dieser Runde je nur " + maxRaisesProSpieler + "x raisen darf", function() {});
-						});
-					});
-					describe("und der erste Spieler foldet", function() {
-						describe("und der zweite Spieler foldet", function() {
-							describe("dann folgt der Showdown und jeder Spieler bekommt", function() {
-								xit("keine Handkarten von niemandem gezeigt", function() {});
-								xit("keine beste Kombination gezeigt", function() {});
-								xit("die Info, dass der dritte Spieler Pot gewonnen hat", function() {});
-							});
-							xit("dann sinkt der Stack vom ersten Spieler um '2'", function() {});
-							xit("dann sinkt der Stack vom zweiten Spieler um '2'", function() {});
-							xit("dann steigt der Stack vom dritten Spieler um '2'", function() {});
-						});
-					});
-				}
-				// VOID
-				function erstelleNichtPreFlopWettregelTests(xBigBlindRaise) {
-					xit("dann ist der Stack von A '10', von B '10' und von C '10', der Pot '0' und der Höchsteinsatz '0' weil nichts automatisch gesetzt wird", function() {});
-					describe("und der erste Spieler A raised", function() {
-						xit("dann ist der Stack von A '" + (10 - 2 * xBigBlindRaise) + "', von B '10' und von C '10', der Pot '" + (2 * xBigBlindRaise) + "' und der Höchsteinsatz '" + (2 * xBigBlindRaise) + "' weil bei Raise der Höchsteinsatz um den " + xBigBlindRaise + "xBigBlind erhöht wird", function() {});
-					});
-					erstelleWettregelTests(xBigBlindRaise, false);
-				}
-				describe("und starte eine PreFlop-Runde", function() {
-					beforeEach(function(done) {
-						ich._spielePreflop(kartenstapel, function() {
-							//TODO hier das Ende der Runde abrufbar machen
-							
-							//dazu waehre speep noetig
-							//oder im dekorierer alle x Sekunden einen Wert abfragen und dann erst reagieren
-							//http://stackoverflow.com/questions/951021/what-do-i-do-if-i-want-a-javascript-version-of-sleep
-							//waechter.holeDieNachsten3Anfragen();
-							done();
-						});
-					});
-					it("dann ist der Stack von A '9', von B '8' und von C '10', der Pot '3' und der Höchsteinsatz '2' weil Small- und BigBlind automatisch gesetzt sind", function() {
-						//waechter.holeDieNachsten3Anfragen();
-						//waechter.aktuelleSpielerFragenEnthalten('Pot', 3);
-						
-						//TODO nur 3 Anfragen beantworten? Nicht Preflop bis fertig... wie?
-						//derAktuellePotIst(ich, 3);
-						//Warum ist das 6??
-					//	derAktuelleStackVomSpielerIst(ich, 'A', -1);
-					//	derAktuelleStackVomSpielerIst(ich, 'B', -2);
-					//	derAktuelleStackVomSpielerIst(ich, 'C', 0);
-						//TODO hoechsteinsatz=2??
-					});
-					describe("und der erste Spieler C checked", function() {
-						xit("dann ist der Stack von A '9', von B '8' und von C '8', der Pot '5' und der Höchsteinsatz '2' weil beim Check auf den Höchsteinsatz gegangen wird", function() {});
-					});
-					erstelleWettregelTests(1, true);
-					describe("und der erste Spieler C raised", function() {
-						xit("dann ist der Stack von A '9', von B '8' und von C '6', der Pot '7' und den Höchsteinsatz '4' weil im PreFlop bei Raise den Höchsteinsatz um den 1xBigBlind erhöht wird", function() {});
-					});
-				});
-				describe("und spiele eine Flop-Runde", function() {
-					erstelleNichtPreFlopWettregelTests(1);
-				});
-				describe("und spiele eine TurnCard-Runde", function() {
-					erstelleNichtPreFlopWettregelTests(2);
-				});
-				describe("und spiele eine River-Runde", function() {
-					erstelleNichtPreFlopWettregelTests(2);
-				});
 			});
 		});
+/*
 		describe("und ich Spiele mit den Spielern A (A♦ 10♦) und B (J♦ J♠) und C (K♣ Q♦) und den Tischkarten 10♣ 10♠ 6♠ 4♥ J♥", function() {
 			describe("und ich spiele eine Showdown-Runde mit einem Pot von '2'", function() {
 				describe("dann bekommt jeder Spieler", function() {
@@ -451,6 +349,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 		});
+*/
 		describe("und will den Gewinner aus 2 Blättern ermitteln, dann gilt:", function() {
 			//http://de.wikipedia.org/wiki/Hand_%28Poker%29
 			generateCardSpec("HighCard A♦ 10♦ 9♠ 5♣ 4♣", 'schlaegt', "HighCard K♣ Q♦ J♣ 8♥ 7♥");
