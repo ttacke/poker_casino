@@ -3,15 +3,16 @@
 // CLASS DEFINITION
 CasinoCroupierTexasHoldEmLimitedPoker.prototype = new CasinoCroupier();
 function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
-	this.name = name;
-	this.passwort = passwort;
 	var minSpielerAnzahl = 3;
 	var maxSpielerAnzahl = 23;
-	this.gewinnErmittler = new CasinoPokerGewinnermittlung();
 	
+	this.name = name;
+	this.passwort = passwort;
+	this.gewinnErmittler = new CasinoPokerGewinnermittlung();
 	this.spielerrunde = new CasinoPokerSpielerrunde(
 		minSpielerAnzahl, maxSpielerAnzahl
 	);
+	
 	// ARRAY
 	this._parseKarten = function(string) {
 		var stapel = [];
