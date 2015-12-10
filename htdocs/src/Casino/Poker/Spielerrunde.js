@@ -4,6 +4,7 @@
 function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.name = name;
 	this.daten = {};
+	this.stack = 0;
 }
 
 // CLASS DEFINITION

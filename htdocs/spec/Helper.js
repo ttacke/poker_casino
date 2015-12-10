@@ -171,6 +171,14 @@ function derAktuellePotIst(croupier, pot) {
 	expect(croupier.pot).toBe(pot);
 }
 // VOID
-function derAktuelleStackVomSpielerIst(croupier, spieler, stack) {
-	expect(croupier.stack[spieler]).toBe(stack);
+function derAktuelleStackVomSpielerIst(croupier, spielername, stack) {
+	var spielerliste = croupier.spielerrunde.gibAlleSpieler();
+	for(var i = 0; i < spielerliste.length; i++) {
+		if(spielerliste[i].name == spielername) {
+			expect(spielerliste[i].stack).toBe(stack);
+			return;
+		}
+	}
+	expect(true).toBe(false);
+	
 }
