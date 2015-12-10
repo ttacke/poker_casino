@@ -162,7 +162,7 @@ function spielerKommunikationsWaechter() {
 function aktuelleSpielerDatenEnthalten(croupier, key, val) {
 	var spielerliste = croupier.spielerrunde.gibAlleSpieler();
 	for(var i = 0; i < spielerliste.length; i++) {
-		var daten = croupier._gibSpielerdaten(spielerliste[i].name);
+		var daten = spielerliste[i].daten;
 		expect(daten[key]).toBe(val);
 	}
 }
