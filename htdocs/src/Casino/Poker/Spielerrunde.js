@@ -23,17 +23,17 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.merkeDirHandkarte = function(karte) {
 		this._daten['Hand'].push(karte);
 	};
-	// STRING
-	this.gibHandkartenString = function() {
-		return this._daten['Hand'].join(' ');
+	// ARRAY
+	this.gibHandkarten = function() {
+		return this._daten['Hand'];
 	};
 	// VOID
 	this.merkeDirTischkarte = function(karte) {
 		this._daten['Tisch'].push(karte);
 	};
-	// STRING
-	this.gibTischkartenString = function() {
-		return this._daten['Tisch'].join(' ');
+	// ARRAY
+	this.gibTischkarten = function() {
+		return this._daten['Tisch'];
 	};
 	// STRING
 	this.gibLetzteAktion = function() {

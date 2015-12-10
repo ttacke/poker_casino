@@ -68,8 +68,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var bestesBlatt = gewinnErmittler.gibBestesBlatt(
-				this.croupier._parseKarten(alle_spieler[i].gibHandkartenString()),
-				this.croupier._parseKarten(alle_spieler[i].gibTischkartenString())
+				this.croupier._parseKarten(alle_spieler[i].gibHandkarten().join(' ')),
+				this.croupier._parseKarten(alle_spieler[i].gibTischkarten().join(' '))
 			);
 			var punkte = gewinnErmittler.gibPunkte(bestesBlatt);
 			if(maximalePunkte < punkte) maximalePunkte = punkte;
