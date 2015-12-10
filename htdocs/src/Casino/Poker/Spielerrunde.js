@@ -3,16 +3,16 @@
 // CLASS DEFINITION
 function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.name = name;
-	this.daten = {};
+	this._daten = {};
 	this.stack = 0;
 	
 	// VOID
 	this.setzeLetzteAktion = function(aktion) {
-		this.daten['letzteAktion'] = aktion;
+		this._daten['letzteAktion'] = aktion;
 	};
 	// VOID
 	this.resetDerDaten = function() {
-		this.daten = {
+		this._daten = {
 			'Hand': [],
 			'Tisch': [],
 			'LetzteAktion': '-',
@@ -21,27 +21,35 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	}
 	// VOID
 	this.merkeDirHandkarte = function(karte) {
-		this.daten['Hand'].push(karte);
+		this._daten['Hand'].push(karte);
+	};
+	// STRING
+	this.gibHandkartenString = function() {
+		return this._daten['Hand'].join(' ');
 	};
 	// VOID
 	this.merkeDirTischkarte = function(karte) {
-		this.daten['Tisch'].push(karte);
+		this._daten['Tisch'].push(karte);
+	};
+	// STRING
+	this.gibTischkartenString = function() {
+		return this._daten['Tisch'].join(' ');
 	};
 	// STRING
 	this.gibLetzteAktion = function() {
-		return this.daten['letzteAktion'];
+		return this._daten['letzteAktion'];
 	}
 	// STRING
 	this.gibEinsatz = function() {
-		return this.daten['Einsatz'];
+		return this._daten['Einsatz'];
 	}
 	// STRING
 	this.erhoeheEinsatz = function(erhoehung) {
-		this.daten['Einsatz'] = parseInt(this.daten['Einsatz']) + erhoehung + '';
+		this._daten['Einsatz'] = parseInt(this._daten['Einsatz']) + erhoehung + '';
 	}
 	// STRING
 	this.gibHandkarten = function() {
-		return this.daten['Hand'];
+		return this._daten['Hand'];
 	}
 }
 

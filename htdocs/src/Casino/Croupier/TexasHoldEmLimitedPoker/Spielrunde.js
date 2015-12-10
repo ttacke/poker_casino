@@ -40,7 +40,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		}
 			
 		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		var frage = this._clone(spieler.daten);
+		var frage = this._clone(spieler._daten);
 		frage['Pot'] = spielerrunde.pot + '';
 		frage['Stack'] = spieler.stack + '';
 		frage['Hoechsteinsatz'] = this._gibAktuellenHoechsteinsatz() + '';
