@@ -17,14 +17,18 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 	this.abschluss = function(spielerrunde, doneFunc) {
 		var datenAllerSpieler = [];
 		var alle_spieler = spielerrunde.gibAlleSpieler();
+		var tischkarten = null;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			datenAllerSpieler.push({
 				'Name': alle_spieler[i].gibName(),
 				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
 				'Stack': alle_spieler[i].gibStack() + '',
 				'Einsatz': alle_spieler[i].gibEinsatz() + '',
-				'Hand': alle_spieler[i].gibHandkarten()
+				'Hand': this._clone(alle_spieler[i].gibHandkarten())
 			});
+			if(!tischkarten) {
+				tischkarten = this._clone(alle_spieler[i].gibTischkarten())
+			}
 		}
 		
 		var pot = spielerrunde.pot;
@@ -44,10 +48,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			});
 		}
 		
-		spielerrunde.pot = 0;//TODO ???
-		
 		var daten = {
-			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],//TODO implementieren!
+			'Tisch': tischkarten,
 			'Pot': pot + '',
 			'Gewinner':gewinnerDaten,
 			'Spieler': datenAllerSpieler
