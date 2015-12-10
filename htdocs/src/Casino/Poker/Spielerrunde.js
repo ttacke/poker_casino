@@ -36,6 +36,10 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 		return this.daten['Einsatz'];
 	}
 	// STRING
+	this.erhoeheEinsatz = function(erhoehung) {
+		this.daten['Einsatz'] = parseInt(this.daten['Einsatz']) + erhoehung + '';
+	}
+	// STRING
 	this.gibHandkarten = function() {
 		return this.daten['Hand'];
 	}
