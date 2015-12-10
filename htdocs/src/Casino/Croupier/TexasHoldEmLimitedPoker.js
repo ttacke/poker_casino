@@ -114,13 +114,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		daten['letzteAktion'] = aktion;
 		return;
 	};
-	// STRING
-	this._uebersetzeAntwort = function(antwort) {
-		if(antwort != 'check' && antwort != 'raise') {
-			return 'fold';
-		}
-		return antwort;
-	};
 	// ARRAY
 	this._ermittleGewinner = function() {
 		var alle = [];

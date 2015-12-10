@@ -15,6 +15,13 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
 		
 	};
+	// STRING
+	this._uebersetzeAntwort = function(antwort) {
+		if(antwort != 'check' && antwort != 'raise') {
+			return 'fold';
+		}
+		return antwort;
+	};
 	// INT
 	this._gibAktuellenHoechsteinsatz = function() {
 		var alle_spieler = this.croupier.spielerrunde.gibListe();
@@ -55,7 +62,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			spieler,
 			frage,
 			function(antwort) {
-				var aktion = self.croupier._uebersetzeAntwort(antwort);
+				var aktion = self._uebersetzeAntwort(antwort);
 				if(aktion == 'check') {
 					var hoechsteinsatz = self._gibAktuellenHoechsteinsatz();
 					self._erhoeheAuf(spieler, hoechsteinsatz);
