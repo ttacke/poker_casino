@@ -47,12 +47,20 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				var aktion = self.croupier._uebersetzeAntwort(antwort);
 				if(aktion == 'check') {
 					var hoechsteinsatz = self.croupier._gibAktuellenHoechsteinsatz();
-					self.croupier._erhoeheAuf(spieler, hoechsteinsatz);
+					self._erhoeheAuf(spieler, hoechsteinsatz);
 				}
 				self.croupier._speichereLetzteAktion(spieler, aktion);
 				self._ermittleDenEinsatz(doneFunc, spielerrunde, temp - 1);
 			}
 		);
+	};
+	// VOID
+	this._erhoeheAuf = function(spieler, geforderterEinsatz) {
+		var daten = this.croupier._gibSpielerdaten(spieler);
+		var einsatzVeraenderung = geforderterEinsatz - daten['Einsatz'];
+		daten['Einsatz'] = parseInt(daten['Einsatz']) + einsatzVeraenderung + '';
+		this.croupier.stack[spieler] -= einsatzVeraenderung;
+		this.croupier.pot += einsatzVeraenderung;
 	};
 	// VOID
 	this._frageAlleSpieler = function(liste, daten, doneFunc) {
