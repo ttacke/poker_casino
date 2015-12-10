@@ -31,26 +31,28 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			}
 		}
 		
-		var pot = spielerrunde.gibPot();
-		var gewinner = this._ermittleGewinner(spielerrunde);
-		var gewinn = Math.floor(pot / gewinner.length);
+		var gewinner_liste = this._ermittleGewinner(spielerrunde);
+		
+		var gewinner_spieler = [];
+		for(var i = 0; i < gewinner_liste.length; i++) {
+			gewinner_spieler.push(gewinner_liste[i].spieler);
+		}
+		var verteiltenPot = spielerrunde.gibPot();
+		spielerrunde.verteilePot(gewinner_spieler);
+
 		var gewinnerDaten = [];
-		for(var i = 0; i < gewinner.length; i++) {
-			for(var ii = 0; ii < alle_spieler.length; ii++) {
-				if(alle_spieler[ii].gibName() == gewinner[i].spieler) {
-					alle_spieler[ii].erhoeheStack(gewinn);
-				}
-			}
+		for(var i = 0; i < gewinner_liste.length; i++) {
+			var gewinner = gewinner_liste[i].spieler;
 			gewinnerDaten.push({
-				'Name': gewinner[i].spieler,
-				'Gewinn': gewinn + '',
-				'Blatt': gewinner[i].bestesBlatt
+				'Name': gewinner.gibName(),
+				'Gewinn': gewinner.gibLetztenGewinn() + '',
+				'Blatt': gewinner_liste[i].bestesBlatt
 			});
 		}
 		
 		var daten = {
 			'Tisch': tischkarten,
-			'Pot': pot + '',
+			'Pot': verteiltenPot + '',
 			'Gewinner':gewinnerDaten,
 			'Spieler': datenAllerSpieler
 		};
@@ -95,8 +97,12 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var bestesBlatt = gewinnErmittler.gibBestesBlatt(
-				this.croupier._parseKarten(alle_spieler[i].gibHandkarten().join(' ')),
-				this.croupier._parseKarten(alle_spieler[i].gibTischkarten().join(' '))
+				this.croupier._parseKarten(
+					alle_spieler[i].gibHandkarten().join(' ')
+				),
+				this.croupier._parseKarten(
+					alle_spieler[i].gibTischkarten().join(' ')
+				)
 			);
 			var punkte = gewinnErmittler.gibPunkte(bestesBlatt);
 			if(maximalePunkte < punkte) maximalePunkte = punkte;
@@ -106,7 +112,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 				blatt.push(bestesBlatt[ii].toString());
 			}
 			alle.push({
-				'spieler': alle_spieler[i].gibName(),
+				'spieler': alle_spieler[i],
 				'punkte': punkte,
 				'bestesBlatt': blatt
 			});

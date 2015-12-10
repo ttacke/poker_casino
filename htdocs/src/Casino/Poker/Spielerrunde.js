@@ -5,6 +5,7 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this._name = name;
 	this._daten = {};
 	this._stack = 0;
+	this._letzterGewinn = 0;
 	
 	// VOID
 	this.setzeLetzteAktion = function(aktion) {
@@ -23,6 +24,15 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.gibName = function() {
 		return this._name;
 	}
+	// VOID
+	this.gibLetztenGewinn = function() {
+		return this._letzterGewinn;
+	};
+	// VOID
+	this.addiereGewinn = function(wert) {
+		this.erhoeheStack(wert);
+		this._letzterGewinn = wert;
+	};
 	// INT
 	this.gibStack = function() {
 		return this._stack;
@@ -82,14 +92,22 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.gibPot = function() {
 		return this._pot;
 	};
-	
+	// VOID
+	this.verteilePot = function(gewinner_liste) {
+		if(!this._pot) return;
+		
+		var gewinn = Math.floor(this._pot / gewinner_liste.length);
+		for(var i = 0; i < gewinner_liste.length; i++) {
+			gewinner_liste[i].addiereGewinn(gewinn);
+		}
+		this._pot = 0;
+	}
 	// VOID
 	this.starteWiederAbGeberToken = function() {
 		this.pointer = this.geberTokenPointer;
 	};
 	// BOOLEAN
 	this.starteNeuesSpielUndSchiebeGeberTokenWeiter = function() {
-		this._pot = 0;
 		if(this.spielerListe.length < this.minimaleSpieleranzahl) {
 			return false;
 		}
