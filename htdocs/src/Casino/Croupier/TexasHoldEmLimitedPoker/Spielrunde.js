@@ -6,9 +6,17 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.croupier = croupier;
 	
 	// VOID
+	this.vorbereiten = function(spielerrunde, kartenstapel) {
+		// DoNothing
+	};
+	// VOID
 	this.wetten = function(spielerrunde, kartenstapel, naechsteRunde) {
 		this._ermittleDenEinsatz(naechsteRunde, spielerrunde, spielerrunde.anzahlDerSpieler());
 	};
+	this.abschluss = function(spielerrunde, doneFunc) {
+		// DoNothing
+	};
+	
 	// VOID
 	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
 		if(temp <= 0) {//TODO implementieren

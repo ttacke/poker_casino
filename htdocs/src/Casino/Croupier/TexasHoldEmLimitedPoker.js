@@ -67,24 +67,28 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		var preflop = new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(this, 1);
 		preflop.vorbereiten(this.spielerrunde, kartenstapel);
 		preflop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		preflop.abschluss(this.spielerrunde, null);
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel, naechsteRunde) {
 		var flop = new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1);
 		flop.vorbereiten(this.spielerrunde, kartenstapel);
 		flop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		flop.abschluss(this.spielerrunde, null);
 	};
 	// VOID
 	this._spieleTurnCard = function(kartenstapel, naechsteRunde) {
 		var turnCard = new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1);
 		turnCard.vorbereiten(this.spielerrunde, kartenstapel);
 		turnCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		turnCard.abschluss(this.spielerrunde, null);
 	};
 	// VOID
 	this._spieleRiver = function(kartenstapel, naechsteRunde) {
 		var riverCard = new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1);
 		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
 		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		riverCard.abschluss(this.spielerrunde, null);
 	};
 	// VOID
 	this._spieleShowdown = function(doneFunc) {
