@@ -10,6 +10,15 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.setzeLetzteAktion = function(aktion) {
 		this.daten['letzteAktion'] = aktion;
 	};
+	// VOID
+	this.resetDerDaten = function() {
+		this.daten = {
+			'Hand': [],
+			'Tisch': [],
+			'LetzteAktion': '-',
+			'Einsatz': '0',
+		};
+	}
 }
 
 // CLASS DEFINITION
@@ -31,6 +40,11 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		if(this.spielerListe.length < this.minimaleSpieleranzahl) {
 			return false;
 		}
+		
+		for(var i = 0; i < this.spielerListe.length; i++) {
+			this.spielerListe[i].resetDerDaten();
+		}
+		
 		if(this.geberTokenPointer + 1 >= this.spielerListe.length) {
 			this.geberTokenPointer = 0;
 		} else {

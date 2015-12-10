@@ -31,20 +31,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// BOOLEAN
 	this._bereiteNeuesSpielVor = function() {
-		if(!this.spielerrunde.starteNeuesSpielUndSchiebeGeberTokenWeiter()) {
-			return false;
-		}
-		
-		var alle_spieler = this.spielerrunde.gibAlleSpieler();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			alle_spieler[i].daten = {
-				'Hand': [],
-				'Tisch': [],
-				'LetzteAktion': '-',
-				'Einsatz': '0',
-			};
-		}
-		return true;
+		return this.spielerrunde.starteNeuesSpielUndSchiebeGeberTokenWeiter();
 	};
 	// VOID
 	this.gibHandkartenAnAlleSpieler = function(anzahl, kartenstapel) {
