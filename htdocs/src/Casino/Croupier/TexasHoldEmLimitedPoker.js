@@ -86,25 +86,21 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spielePreflop = function(kartenstapel, naechsteRunde) {
-		
 		var preflop = new CasinoCroupierRundePreflop(this, 1);
 		preflop.vorbereiten(this.spielerrunde, kartenstapel);
 		preflop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
-		
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel, naechsteRunde) {
-		
 		var flop = new CasinoCroupierRundeFlop(this, 1);
 		flop.vorbereiten(this.spielerrunde, kartenstapel);
 		flop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleTurnCard = function(kartenstapel, naechsteRunde) {
-		this.spielerrunde.starteWiederAbGeberToken();
-		
-		this._gibTischkartenAnAlleSpieler(1, kartenstapel);
-		this._ermittleEinsaetzeVonAllen(naechsteRunde);
+		var turnCard = new CasinoCroupierRundeTurnCard(this, 1);
+		turnCard.vorbereiten(this.spielerrunde, kartenstapel);
+		turnCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleRiver = function(kartenstapel, naechsteRunde) {
