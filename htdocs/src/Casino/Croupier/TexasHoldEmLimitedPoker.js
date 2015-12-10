@@ -76,9 +76,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			tischkarten.push(kartenstapel.pop().toString());
 		}
 		
-		var alle_spieler = this.spielerrunde.gibListeDerNamen();
+		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			var daten = alle_spieler[i].daten;
 			for(var ii = 0; ii < tischkarten.length; ii++) {
 				daten['Tisch'].push(tischkarten[ii]);
 			}
