@@ -86,7 +86,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spielePreflop = function(kartenstapel, naechsteRunde) {
-		var preflop = new CasinoCroupierRundePreflop(this, 1);
+		var preflop = new CasinoCroupierRundePreFlop(this, 1);
 		preflop.vorbereiten(this.spielerrunde, kartenstapel);
 		preflop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
@@ -218,40 +218,11 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// VOID
 	this._spieleShowdown = function(doneFunc) {
-		var datenAllerSpieler = [];
-		var alle_spieler = this.spielerrunde.gibListe();
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this._gibSpielerdaten(alle_spieler[i]);
-			datenAllerSpieler.push({
-				'Name': alle_spieler[i],
-				'letzteAktion': daten.letzteAktion,
-				'Stack': this.stack[alle_spieler[i]] + '',
-				'Einsatz': daten.Einsatz,
-				'Hand': daten.Hand
-			});
-		}
-		
-		var pot = this.pot;
-		var gewinner = this._ermittleGewinner();
-		var gewinn = Math.floor(pot / gewinner.length);
-		var gewinnerDaten = [];
-		for(var i = 0; i < gewinner.length; i++) {
-			this.stack[gewinner[i].spieler] += gewinn;
-			gewinnerDaten.push({
-				'Name': gewinner[i].spieler,
-				'Gewinn': gewinn + '',
-				'Blatt': gewinner[i].bestesBlatt
-			});
-		}
-		this.pot = 0;
-		
-		var daten = {
-			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],//TODO implementieren!
-			'Pot': pot + '',
-			'Gewinner':gewinnerDaten,
-			'Spieler': datenAllerSpieler
-		};
-		this._frageAlleSpieler(this._clone(alle_spieler), daten, doneFunc);
+		var showdown = new CasinoCroupierRundeShowdown(this, 1);
+		var kartenstapel = null;
+		showdown.vorbereiten(this.spielerrunde, kartenstapel);
+		showdown.wetten(this.spielerrunde, kartenstapel, doneFunc);
+		showdown.abschluss(this.spielerrunde, doneFunc);
 	};
 	// ARRAY
 	this._clone = function(item) {
