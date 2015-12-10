@@ -2,7 +2,7 @@
 
 // CLASS DEFINITION
 function CasinoPokerPlatzDesSpielers(name, stack) {
-	this.name = name;
+	this._name = name;
 	this._daten = {};
 	this.stack = 0;
 	
@@ -18,6 +18,10 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 			'LetzteAktion': '-',
 			'Einsatz': 0,
 		};
+	}
+	// STRING
+	this.gibName = function() {
+		return this._name;
 	}
 	// VOID
 	this.merkeDirHandkarte = function(karte) {

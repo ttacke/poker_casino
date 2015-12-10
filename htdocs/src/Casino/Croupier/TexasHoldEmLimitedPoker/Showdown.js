@@ -19,7 +19,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			datenAllerSpieler.push({
-				'Name': alle_spieler[i].name,
+				'Name': alle_spieler[i].gibName(),
 				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
 				'Stack': alle_spieler[i].stack + '',
 				'Einsatz': alle_spieler[i].gibEinsatz() + '',
@@ -33,7 +33,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var gewinnerDaten = [];
 		for(var i = 0; i < gewinner.length; i++) {
 			for(var ii = 0; ii < alle_spieler.length; ii++) {
-				if(alle_spieler[ii].name == gewinner[i].spieler) {
+				if(alle_spieler[ii].gibName() == gewinner[i].spieler) {
 					alle_spieler[ii].stack += gewinn;
 				}
 			}
@@ -79,7 +79,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 				blatt.push(bestesBlatt[ii].toString());
 			}
 			alle.push({
-				'spieler': alle_spieler[i].name,
+				'spieler': alle_spieler[i].gibName(),
 				'punkte': punkte,
 				'bestesBlatt': blatt
 			});
