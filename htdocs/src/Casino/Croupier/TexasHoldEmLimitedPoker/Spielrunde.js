@@ -50,7 +50,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 					self.croupier._erhoeheAuf(spieler, hoechsteinsatz);
 				}
 				self.croupier._speichereLetzteAktion(spieler, aktion);
-				self.croupier._ermittleDenEinsatz(doneFunc, temp - 1);
+				self._ermittleDenEinsatz(doneFunc, spielerrunde, temp - 1);
 			}
 		);
 	};
