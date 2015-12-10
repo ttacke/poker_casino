@@ -1,7 +1,7 @@
 "use strict";
 
 // CLASS DEFINITION
-function CasinoCroupierBietrunde(croupier, smallBlind) {
+function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
 	
