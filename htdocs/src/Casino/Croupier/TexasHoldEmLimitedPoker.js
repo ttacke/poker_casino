@@ -118,10 +118,10 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	// ARRAY
 	this._ermittleGewinner = function() {
 		var alle = [];
-		var alle_spieler = this.spielerrunde.gibListeDerNamen();
+		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this._gibSpielerdaten(alle_spieler[i]);
+			var daten = alle_spieler[i].daten;
 			var bestesBlatt = this.gewinnErmittler.gibBestesBlatt(
 				this._parseKarten(daten['Hand'].join(' ')),
 				this._parseKarten(daten['Tisch'].join(' '))
@@ -134,7 +134,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 				blatt.push(bestesBlatt[ii].toString());
 			}
 			alle.push({
-				'spieler': alle_spieler[i],
+				'spieler': alle_spieler[i].name,
 				'punkte': punkte,
 				'bestesBlatt': blatt
 			});
