@@ -4,7 +4,7 @@
 function CasinoPokerPlatzDesSpielers(name, stack) {
 	this._name = name;
 	this._daten = {};
-	this.stack = 0;
+	this._stack = 0;
 	
 	// VOID
 	this.setzeLetzteAktion = function(aktion) {
@@ -23,6 +23,18 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.gibName = function() {
 		return this._name;
 	}
+	// INT
+	this.gibStack = function() {
+		return this._stack;
+	};
+	// VOID
+	this.verringereStack = function(wert) {
+		this._stack -= wert;
+	};
+	// VOID
+	this.erhoeheStack = function(wert) {
+		this._stack += wert;
+	};
 	// VOID
 	this.merkeDirHandkarte = function(karte) {
 		this._daten['Hand'].push(karte);

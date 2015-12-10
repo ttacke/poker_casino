@@ -21,7 +21,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			datenAllerSpieler.push({
 				'Name': alle_spieler[i].gibName(),
 				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
-				'Stack': alle_spieler[i].stack + '',
+				'Stack': alle_spieler[i].gibStack() + '',
 				'Einsatz': alle_spieler[i].gibEinsatz() + '',
 				'Hand': alle_spieler[i].gibHandkarten()
 			});
@@ -34,7 +34,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		for(var i = 0; i < gewinner.length; i++) {
 			for(var ii = 0; ii < alle_spieler.length; ii++) {
 				if(alle_spieler[ii].gibName() == gewinner[i].spieler) {
-					alle_spieler[ii].stack += gewinn;
+					alle_spieler[ii].erhoeheStack(gewinn);
 				}
 			}
 			gewinnerDaten.push({

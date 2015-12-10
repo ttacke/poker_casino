@@ -175,7 +175,7 @@ function derAktuelleStackVomSpielerIst(croupier, spielername, stack) {
 	var spielerliste = croupier.spielerrunde.gibAlleSpieler();
 	for(var i = 0; i < spielerliste.length; i++) {
 		if(spielerliste[i].gibName() == spielername) {
-			expect(spielerliste[i].stack).toBe(stack);
+			expect(spielerliste[i].gibStack()).toBe(stack);
 			return;
 		}
 	}

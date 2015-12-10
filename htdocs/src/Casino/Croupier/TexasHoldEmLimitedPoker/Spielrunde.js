@@ -46,7 +46,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			'LetzteAktion': spieler.gibLetzteAktion(),
 			'Einsatz': spieler.gibEinsatz() + '',
 			'Pot': spielerrunde.pot + '',
-			'Stack': spieler.stack + '',
+			'Stack': spieler.gibStack() + '',
 			'Hoechsteinsatz': this._gibAktuellenHoechsteinsatz() + '',
 		};
 		var alle_spieler = spielerrunde.gibAlleSpieler();
@@ -55,7 +55,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			frage['Spieler'].push({
 				'Name': alle_spieler[ii].gibName(),
 				'letzteAktion': alle_spieler[ii].gibLetzteAktion(),
-				'Stack': alle_spieler[ii].stack + '',
+				'Stack': alle_spieler[ii].gibStack() + '',
 				'Einsatz': alle_spieler[ii].gibEinsatz() + '',
 			});
 		}
@@ -81,7 +81,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			if(alle_spieler[i].gibName() == spielername) {
 				var einsatzVeraenderung = geforderterEinsatz - alle_spieler[i].gibEinsatz();
 				alle_spieler[i].erhoeheEinsatz(einsatzVeraenderung);
-				alle_spieler[i].stack -= einsatzVeraenderung;
+				alle_spieler[i].verringereStack(einsatzVeraenderung);
 				spielerrunde.pot += einsatzVeraenderung;
 			}
 		}
