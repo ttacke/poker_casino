@@ -15,6 +15,17 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
 		
 	};
+	// INT
+	this._gibAktuellenHoechsteinsatz = function() {
+		var alle_spieler = this.croupier.spielerrunde.gibListe();
+		var hoechsteinsatz = 0;
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = this.croupier._gibSpielerdaten(alle_spieler[i]);
+			var aktuellerEinsatz = parseInt(daten['Einsatz']);
+			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
+		}
+		return hoechsteinsatz;
+	};
 	// VOID
 	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
 		if(temp <= 0) {//TODO implementieren
@@ -26,7 +37,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		var frage = this._clone(this.croupier._gibSpielerdaten(spieler));
 		frage['Pot'] = this.croupier.pot + '';
 		frage['Stack'] = this.croupier.stack[spieler] + '';
-		frage['Hoechsteinsatz'] = this.croupier._gibAktuellenHoechsteinsatz() + '';
+		frage['Hoechsteinsatz'] = this._gibAktuellenHoechsteinsatz() + '';
 		
 		var alle_spieler = spielerrunde.gibListe();
 		frage['Spieler'] = [];
@@ -46,7 +57,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			function(antwort) {
 				var aktion = self.croupier._uebersetzeAntwort(antwort);
 				if(aktion == 'check') {
-					var hoechsteinsatz = self.croupier._gibAktuellenHoechsteinsatz();
+					var hoechsteinsatz = self._gibAktuellenHoechsteinsatz();
 					self._erhoeheAuf(spieler, hoechsteinsatz);
 				}
 				self.croupier._speichereLetzteAktion(spieler, aktion);

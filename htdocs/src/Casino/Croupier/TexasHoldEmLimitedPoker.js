@@ -108,17 +108,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
 		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
-	// INT
-	this._gibAktuellenHoechsteinsatz = function() {
-		var alle_spieler = this.spielerrunde.gibListe();
-		var hoechsteinsatz = 0;
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = this._gibSpielerdaten(alle_spieler[i]);
-			var aktuellerEinsatz = parseInt(daten['Einsatz']);
-			if(aktuellerEinsatz > hoechsteinsatz) hoechsteinsatz = aktuellerEinsatz;
-		}
-		return hoechsteinsatz;
-	};
 	// VOID
 	this._speichereLetzteAktion = function(spieler, aktion) {
 		var daten = this._gibSpielerdaten(spieler);
