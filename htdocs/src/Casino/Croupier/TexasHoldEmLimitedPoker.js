@@ -97,38 +97,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
 		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
-	// ARRAY
-	this._ermittleGewinner = function() {
-		var alle = [];
-		var alle_spieler = this.spielerrunde.gibAlleSpieler();
-		var maximalePunkte = 0;
-		for(var i = 0; i < alle_spieler.length; i++) {
-			var daten = alle_spieler[i].daten;
-			var bestesBlatt = this.gewinnErmittler.gibBestesBlatt(
-				this._parseKarten(daten['Hand'].join(' ')),
-				this._parseKarten(daten['Tisch'].join(' '))
-			);
-			var punkte = this.gewinnErmittler.gibPunkte(bestesBlatt);
-			if(maximalePunkte < punkte) maximalePunkte = punkte;
-			
-			var blatt = [];
-			for(var ii = 0; ii < bestesBlatt.length; ii++) {
-				blatt.push(bestesBlatt[ii].toString());
-			}
-			alle.push({
-				'spieler': alle_spieler[i].name,
-				'punkte': punkte,
-				'bestesBlatt': blatt
-			});
-		}
-		var gewinner = [];
-		for(var i = 0; i < alle.length; i++) {
-			if(alle[i].punkte == maximalePunkte) {
-				gewinner.push(alle[i]);
-			}
-		}
-		return gewinner;
-	};
 	// VOID
 	this._spieleShowdown = function(doneFunc) {
 		var showdown = new CasinoCroupierTexasHoldEmLimitedPokerShowdown(this, 1);

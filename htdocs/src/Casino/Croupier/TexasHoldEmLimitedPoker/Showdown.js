@@ -29,7 +29,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		}
 		
 		var pot = spielerrunde.pot;
-		var gewinner = this.croupier._ermittleGewinner();
+		var gewinner = this._ermittleGewinner(spielerrunde);
 		var gewinn = Math.floor(pot / gewinner.length);
 		var gewinnerDaten = [];
 		for(var i = 0; i < gewinner.length; i++) {
@@ -59,5 +59,37 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			daten,
 			doneFunc
 		);
+	};
+	// ARRAY
+	this._ermittleGewinner = function(spielerrunde) {
+		var alle = [];
+		var alle_spieler = spielerrunde.gibAlleSpieler();
+		var maximalePunkte = 0;
+		for(var i = 0; i < alle_spieler.length; i++) {
+			var daten = alle_spieler[i].daten;
+			var bestesBlatt = this.croupier.gewinnErmittler.gibBestesBlatt(
+				this.croupier._parseKarten(daten['Hand'].join(' ')),
+				this.croupier._parseKarten(daten['Tisch'].join(' '))
+			);
+			var punkte = this.croupier.gewinnErmittler.gibPunkte(bestesBlatt);
+			if(maximalePunkte < punkte) maximalePunkte = punkte;
+			
+			var blatt = [];
+			for(var ii = 0; ii < bestesBlatt.length; ii++) {
+				blatt.push(bestesBlatt[ii].toString());
+			}
+			alle.push({
+				'spieler': alle_spieler[i].name,
+				'punkte': punkte,
+				'bestesBlatt': blatt
+			});
+		}
+		var gewinner = [];
+		for(var i = 0; i < alle.length; i++) {
+			if(alle[i].punkte == maximalePunkte) {
+				gewinner.push(alle[i]);
+			}
+		}
+		return gewinner;
 	};
 }
