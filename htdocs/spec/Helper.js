@@ -160,9 +160,9 @@ function spielerKommunikationsWaechter() {
 }
 // VOID
 function aktuelleSpielerDatenEnthalten(croupier, key, val) {
-	var spieler = ['A', 'B', 'C'];
-	for(var i = 0; i < spieler.length; i++) {
-		var daten = croupier._gibSpielerdaten(spieler[i]);
+	var spielerliste = croupier.spielerrunde.gibAlleSpieler();
+	for(var i = 0; i < spielerliste.length; i++) {
+		var daten = croupier._gibSpielerdaten(spielerliste[i].name);
 		expect(daten[key]).toBe(val);
 	}
 }

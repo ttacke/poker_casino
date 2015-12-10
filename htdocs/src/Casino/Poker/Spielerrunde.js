@@ -3,6 +3,7 @@
 // CLASS DEFINITION
 function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.name = name;
+	this.daten = {};
 }
 
 // CLASS DEFINITION
@@ -55,7 +56,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		
 		return true;
 	};
-	// ARRAY(OBJ)
+	// ARRAY(STRING)
 	this.gibListeDerNamen = function() {
 		//TODO
 		var namensListe = [];
@@ -63,6 +64,10 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 			namensListe.push(this.spielerListe[i].name);
 		}
 		return namensListe;
+	};
+	// ARRAY(OBJ)
+	this.gibAlleSpieler = function() {
+		return this.spielerListe;
 	};
 	// INT
 	this.anzahlDerSpieler = function() {
