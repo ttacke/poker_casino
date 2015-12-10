@@ -7,7 +7,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this.passwort = passwort;
 	var minSpielerAnzahl = 3;
 	var maxSpielerAnzahl = 23;
-	this.pot = 0;
 	this.gewinnErmittler = new CasinoPokerGewinnermittlung();
 	
 	this.spielerrunde = new CasinoPokerSpielerrunde(
@@ -35,7 +34,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			return false;
 		}
 		
-		this.pot = 0;
 		var alle_spieler = this.spielerrunde.gibAlleSpieler();
 		for(var i = 0; i < alle_spieler.length; i++) {
 			alle_spieler[i].daten = {

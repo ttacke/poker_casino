@@ -28,7 +28,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			});
 		}
 		
-		var pot = this.croupier.pot;
+		var pot = spielerrunde.pot;
 		var gewinner = this.croupier._ermittleGewinner();
 		var gewinn = Math.floor(pot / gewinner.length);
 		var gewinnerDaten = [];
@@ -45,7 +45,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			});
 		}
 		
-		this.croupier.pot = 0;
+		spielerrunde.pot = 0;//TODO ???
 		
 		var daten = {
 			'Tisch': ['2♦','2♦','2♦','2♦','2♦'],//TODO implementieren!

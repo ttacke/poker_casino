@@ -257,7 +257,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						var kartenstapel = ich._erstelleKartenstapel();
 						ich._gibTischkartenAnAlleSpieler(5, kartenstapel);
 						ich._gibHandkartenAnAlleSpieler(2, kartenstapel);
-						ich.pot = 5;
+						ich.spielerrunde.pot = 5;
 						derAktuellePotIst(ich, 5);
 						derAktuelleStackVomSpielerIst(ich, 'A', 0)
 						derAktuelleStackVomSpielerIst(ich, 'B', 0)

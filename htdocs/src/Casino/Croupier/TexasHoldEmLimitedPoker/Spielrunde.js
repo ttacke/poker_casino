@@ -42,7 +42,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			
 		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
 		var frage = this._clone(spieler.daten);
-		frage['Pot'] = this.croupier.pot + '';
+		frage['Pot'] = spielerrunde.pot + '';
 		frage['Stack'] = spieler.stack + '';
 		frage['Hoechsteinsatz'] = this._gibAktuellenHoechsteinsatz() + '';
 		
@@ -81,7 +81,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				var einsatzVeraenderung = geforderterEinsatz - daten['Einsatz'];
 				daten['Einsatz'] = parseInt(daten['Einsatz']) + einsatzVeraenderung + '';
 				alle_spieler[i].stack -= einsatzVeraenderung;
-				this.croupier.pot += einsatzVeraenderung;				
+				spielerrunde.pot += einsatzVeraenderung;
 			}
 		}
 	};
