@@ -1,9 +1,8 @@
 "use strict";
 
 // CLASS DEFINITION
-function CasinoPokerSpielerplatz(name, stack) {
+function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.name = name;
-	this.stack = stack;
 }
 
 // CLASS DEFINITION
@@ -43,7 +42,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	};
 	// BOOLEAN
 	this.nimmSpielerAufWennNeu = function(spielerName) {
-		var spieler = new CasinoPokerSpielerplatz(spielerName, 0);
+		var spieler = new CasinoPokerPlatzDesSpielers(spielerName, 0);
 		if(this.spielerListe.length + 1 > this.maximaleSpieleranzahl) return false;
 		
 		for(var i = 0; i < this.spielerListe.length; i++) {
