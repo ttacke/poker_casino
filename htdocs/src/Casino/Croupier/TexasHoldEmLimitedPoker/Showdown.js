@@ -62,16 +62,18 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 	};
 	// ARRAY
 	this._ermittleGewinner = function(spielerrunde) {
+		var gewinnErmittler = new CasinoPokerGewinnermittlung();
+		
 		var alle = [];
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
 			var daten = alle_spieler[i].daten;
-			var bestesBlatt = this.croupier.gewinnErmittler.gibBestesBlatt(
+			var bestesBlatt = gewinnErmittler.gibBestesBlatt(
 				this.croupier._parseKarten(daten['Hand'].join(' ')),
 				this.croupier._parseKarten(daten['Tisch'].join(' '))
 			);
-			var punkte = this.croupier.gewinnErmittler.gibPunkte(bestesBlatt);
+			var punkte = gewinnErmittler.gibPunkte(bestesBlatt);
 			if(maximalePunkte < punkte) maximalePunkte = punkte;
 			
 			var blatt = [];

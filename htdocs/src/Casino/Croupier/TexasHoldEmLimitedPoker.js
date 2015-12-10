@@ -8,7 +8,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	
 	this.name = name;
 	this.passwort = passwort;
-	this.gewinnErmittler = new CasinoPokerGewinnermittlung();
+	
 	this.spielerrunde = new CasinoPokerSpielerrunde(
 		minSpielerAnzahl, maxSpielerAnzahl
 	);
