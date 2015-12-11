@@ -9,10 +9,6 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
 		// DoNothing
 	};
-	// VOID
-	this.spielen = function(spielerrunde, kartenstapel, doneFunc) {
-		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
-	};
 	// BOOLEAN
 	this._bieterrunde_enthaelt_nur_check = function(spielerListe) {
 		var trifft_zu = true;
@@ -58,8 +54,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		
 		return false;
 	};
-	// VOID TODO
-	this.spielenNEW = function(spielerrunde, kartenstapel, doneFunc) {
+	// VOID
+	this.spielen = function(spielerrunde, kartenstapel, doneFunc) {
 		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
 		if(this._istWettrundeBeendet(spieler, spielerrunde)) {
 			doneFunc();
@@ -83,35 +79,10 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				}
 				spieler.setzeLetzteAktion(aktion);
 				
-				self.spielenNEW(spielerrunde, kartenstapel, doneFunc);
+				self.spielen(spielerrunde, kartenstapel, doneFunc);
 			}
 		);
 	};
-	// VOID
-	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
-		if(temp <= 0) {//TODO implementieren
-			doneFunc(true);
-			return;
-		}
-		
-		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		var frage = this._erzeugeFrage(spieler, spielerrunde);
-		var self = this;
-		this.croupier.frageDenSpieler(
-			spieler.gibName(),
-			frage,
-			function(antwort) {
-				var aktion = self._uebersetzeAntwort(antwort);
-				if(aktion == 'check') {
-					var hoechsteinsatz = spielerrunde.gibAktuellenHoechsteinsatz();
-					spielerrunde.erhoeheEinsatzAuf(spieler, hoechsteinsatz);
-				}
-				spieler.setzeLetzteAktion(aktion);
-				self._ermittleDenEinsatz(doneFunc, spielerrunde, temp - 1);
-			}
-		);
-	};
-	
 	// HASH
 	this._erzeugeFrage = function(spieler, spielerrunde) {
 		var frage = {

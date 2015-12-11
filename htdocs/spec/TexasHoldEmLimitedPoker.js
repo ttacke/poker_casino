@@ -92,7 +92,7 @@ console.log(name + ': ' + antwort);//TODO
 					ich.nimmMitspielerAuf(
 						function() {
 							ich._bereiteNeuesSpielVor();
-							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 								done();
 							});
 						}
@@ -124,7 +124,7 @@ console.log(name + ': ' + antwort);//TODO
 							ich.wettrunden = [
 								new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
 							];
-							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 								done();
 							});
 						}
@@ -149,7 +149,7 @@ console.log(name + ': ' + antwort);//TODO
 							ich.wettrunden = [
 								new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
 							];
-							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 								done();
 							});
 						}
