@@ -193,18 +193,16 @@
 						<span id="spielrunde">0</span>
 						/ <span id="spiele_pro_sekunde">0</span>pro s
 					</td>
-				</tr>
-				<tr>
 					<th>Timeout</th><td>
 						<span id="timeout">0</span> ms
 					</td>
-					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
 				</tr>
 				<tr>
 					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
 					<th>Bewertungsgrenze:</th><td>
 						<span id="maxAnzahlFuerAuswertungen">0</span>
 					</td>
+					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -222,7 +220,7 @@
 				border-bottom: solid 1px green;
 			}
 			#tischFlaeche * {
-				padding: 0.3em 0.5em;
+				padding: 0.2em 0.3em;
 			}
 			.derIstDran {
 				background-color: #696;
@@ -336,7 +334,6 @@
 			setInterval("replayStep()", 3000);
 		</script>
 		<!--a href="#" onclick="replayStep();return false;">Replay-Step</a-->
-		<br/><br/>
 		<div id="tischFlaeche">
 			<h2 id="AktuelleRunde"></h2>
 			<div id="tisch">
