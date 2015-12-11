@@ -21,11 +21,13 @@
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script type="text/javascript">
+		
+			var VERZOEGERUNG = 0;
 			
 			var TISCHNAME = 'DerGruene';
 			var CASINO_URL = 'ws://10.1.10.198:8080/';
 			var MAX_ANZAHL_FUER_AUSWERTUNGEN = 10000;
-			var TIMEOUT = 100;// ms
+			var TIMEOUT = 50;// ms
 			
 			var CROUPIER_NAME = 'SpieleMeister';
 			var CROUPIER_PASSWORT = '12345';
@@ -93,7 +95,7 @@
 						setTimeout(function() { _warteAufSpieler(); }, 1000);
 						return;
 					}
-					setTimeout(function() { _spiele(); }, 0);//TODO
+					setTimeout(function() { _spiele(); }, VERZOEGERUNG);//TODO
 				});
 				
 			}
@@ -106,12 +108,14 @@
 							name: daten[i].name,
 							gewinne: 0,
 							stack: 0,
+							timeout: 0,
 						};
 						SPIELERLISTE.push(daten[i].name);
 					}
 					var d = SPIELERDATEN[daten[i].name];
 					d['stack'] = daten[i].stack;
-					if(daten[i].gewonnen) d['gewinne'] += 1;
+					if(daten[i].hatGewonnen) d['gewinne'] += 1;
+					if(daten[i].hatTimeout) d['timeout'] += 1;
 				}
 			}
 			// VOID
@@ -120,7 +124,6 @@
 				logge('spiele_pro_sekunde', runden_pro_sekunde);
 				ALTER_SPIELRUNDENZAEHLER = SPIELRUNDENZAEHLER;
 				
-				logge('timeoutzaehler', '-- TODO --');
 				logge('spieleranzahl', croupier.spielerrunde.anzahlDerSpieler());
 				
 				var spielerListe = SPIELERLISTE;
@@ -132,6 +135,7 @@
 						+	'<th>Spieler#' + spielerListe[bereitsAngelegt - 1] + '</th>'
 						+ 		'<td id="spielerStack' + bereitsAngelegt + '">0</td>'
 						+	'<th>gewonnene Spiele</th><td id="spielerGewinne' + bereitsAngelegt + '">0</td>'
+						+	'<th>Timeouts</th><td id="spielerTimeout' + bereitsAngelegt + '">0</td>'
 						+ '</tr>'
 					);
 				}
@@ -141,6 +145,7 @@
 					var daten = SPIELERDATEN[spielerListe[i]];
 					logge('spielerGewinne' + spielerId, daten.gewinne);
 					logge("spielerStack" + spielerId, daten.stack);
+					logge("spielerTimeout" + spielerId, daten.timeout);
 				}
 			}
 		</script>
@@ -180,14 +185,13 @@
 					<th>Status:</th><td id="status">starte...</td>
 					<th>Spielrunden:</th><td>
 						<span id="spielrunde">0</span>
+						/ <span id="spiele_pro_sekunde">0</span>pro s
 					</td>
-					<th>pro Sekunde</th><td><span id="spiele_pro_sekunde">0</span></td>
 				</tr>
 				<tr>
 					<th>Timeout</th><td>
 						<span id="timeout">0</span> ms
 					</td>
-					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
 					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
 				</tr>
 				<tr>
@@ -195,7 +199,6 @@
 					<th>Bewertungsgrenze:</th><td>
 						<span id="maxAnzahlFuerAuswertungen">0</span>
 					</td>
-					
 				</tr>
 			</thead>
 			<tbody>

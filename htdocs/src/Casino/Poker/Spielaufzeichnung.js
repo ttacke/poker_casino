@@ -14,6 +14,13 @@ function CasinoPokerSpielaufzeichnung() {
 	};
 	// ARRAY
 	this.gibSpielerPunkte = function() {
+		var timeouts = {};
+		for(var i = 0; i < this.spielzuege.length; i++) {
+			if(this.spielzuege[i].antwort.status == 'timeout') {
+				timeouts[this.spielzuege[i].spieler] = true;
+			}
+		}
+		
 		var showdown = this.spielzuege[this.spielzuege.length - 1];
 		var liste = [];
 		for(var i = 0; i < showdown.frage.Spieler.length; i++) {
@@ -28,7 +35,8 @@ function CasinoPokerSpielaufzeichnung() {
 			liste.push({
 				name: spielerdaten.Name,
 				stack: spielerdaten.Stack,
-				gewonnen: istGewinner,
+				hatGewonnen: istGewinner,
+				hatTimeout: (timeouts[spielerdaten.Name] ? true : false),
 			});
 		}
 		return liste;
