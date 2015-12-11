@@ -29,14 +29,13 @@
 			var CROUPIER_PASSWORT = '12345';
 			var SPIELNAME = 'TexasHoldEmFixedLimit';
 			var SPIELRUNDENZAEHLER = 0;
-			var ANZAHL_HERZSTILLSTAENDE = 0;
 			
 			
 			var croupier = null;
 			
 			$(function() {
-				//TODO _casinoReset();
-				init();
+				//_casinoReset();
+				_init();
 				setInterval("erstelleSpielerLog()", 1000);
 			});
 			function _casinoReset() {
@@ -45,23 +44,16 @@
 					verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
 				};
 			}
-			function init() {
+			function _init() {
 				logge('maxAnzahlFuerAuswertungen', MAX_ANZAHL_FUER_AUSWERTUNGEN);
 				croupier = new CasinoCroupierTexasHoldEmLimitedPoker(
 					CROUPIER_NAME, CROUPIER_PASSWORT
 				);
 				croupier.betrete(CASINO_URL, function() {
-					starteTisch();
+					_starteTisch();
 				});
-				croupier.herzschrittmacherLog = function() {
-					logge("herzstillstand", ++ANZAHL_HERZSTILLSTAENDE);
-				};
 			}
-			function maxAnzahlFuerAuswertungen(multiplier) {
-				MAX_ANZAHL_FUER_AUSWERTUNGEN *= multiplier;
-				logge('maxAnzahlFuerAuswertungen', MAX_ANZAHL_FUER_AUSWERTUNGEN);
-			}
-			function starteTisch() {
+			function _starteTisch() {
 				croupier.eroeffneTisch(
 					TISCHNAME,
 					SPIELNAME,
@@ -70,24 +62,21 @@
 						logge("timeout", TIMEOUT);
 						if(daten.status == 'ok') {
 							logge('status', 'Tisch "' + TISCHNAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
-							warteAufSpieler();
+							_spiele();
 						} else {
 							logge('status', "Tisch anlegen ist fehlgeschlagen");
-							setTimeout('init()', 1000);
+							setTimeout('_init()', 1000);
 						}
 					}
 				);
 			}
-			function warteAufSpieler() {
-				if(SPIELRUNDENZAEHLER % 1000 == 0) {
-					croupier.nimmMitspielerAuf(function() {
-						spiele_runde();
-					});
-				} else {
-					spiele_runde();
-				}
+			function _warteAufSpieler() {
+				croupier.nimmMitspielerAuf(function() {
+					_spiele();
+				});
 			}
-			function spiele_runde() {
+			// VOID
+			function _spiele() {
 				logge('spielrunde', SPIELRUNDENZAEHLER++);
 				
 				croupier.spieleEinSpiel(function(erfolg) {
@@ -95,11 +84,13 @@
 						logge('status', 'spiele...');
 					} else {
 						logge('status', 'zu wenige Spieler!');
+						setTimeout(function() { _warteAufSpieler(); }, 1000);
 					}
-					setTimeout(function() { warteAufSpieler(); }, 500);//TODO
+					setTimeout(function() { _spiele(); }, 500);//TODO
 				});
 				
 			}
+			// VOID
 			function erstelleSpielerLog() {
 				return;
 				
@@ -173,8 +164,11 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Spiele pro Sekunde</th><td><span id="spiele_pro_sekunde">0</span>/s</td>
-					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
+					<th>Status:</th><td id="status">starte...</td>
+					<th>Spielrunden:</th><td>
+						<span id="spielrunde">0</span>
+					</td>
+					<th>pro Sekunde</th><td><span id="spiele_pro_sekunde">0</span></td>
 				</tr>
 				<tr>
 					<th>Timeout</th><td>
@@ -184,14 +178,11 @@
 					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
 				</tr>
 				<tr>
-					<th>Status:</th><td id="status">starte...</td>
+					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
 					<th>Bewertungsgrenze:</th><td>
 						<span id="maxAnzahlFuerAuswertungen">0</span>
 					</td>
-					<th>Spielrunden/Herztot:</th><td>
-						<span id="spielrunde">0</span> /
-						<span id="herzstillstand">0</span>
-					</td>
+					
 				</tr>
 			</thead>
 			<tbody>
