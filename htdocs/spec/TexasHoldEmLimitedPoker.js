@@ -61,28 +61,46 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 			});
 		});
-		describe("und ich spiele mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
+		describe("und ich spiele mit einem bigBlind von '2', einem SmallBlind von '1' und 11 Karten (jeweils die 2♦)", function() {
 			var waechter = new spielerKommunikationsWaechter();
 			beforeEach(function() {
-				erzeugeSpieler('A', ich, function(frage) {
-					waechter.fragen_hook('A', frage);
-					return 'check';
-				});
-				erzeugeSpieler('B', ich, function(frage) {
-					waechter.fragen_hook('B', frage);
-					return 'check';
-				});
-				erzeugeSpieler('C', ich, function(frage) {
-					waechter.fragen_hook('C', frage);
-					return 'check';
+				waechter.reset();
+				ich._erstelleKartenstapelString = function() {
+					return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
+				};
+			});
+			describe("und mit den 3 Spielern A, B und C", function() {
+				beforeEach(function(done) {
+					//CasinoCroupierTexasHoldEmLimitedPokerSpielrunde
+					erzeugeSpieler('A', ich, function(frage) {
+						waechter.fragen_hook('A', frage);
+						return 'check';
+					});
+					erzeugeSpieler('B', ich, function(frage) {
+						waechter.fragen_hook('B', frage);
+						return 'check';
+					});
+					erzeugeSpieler('C', ich, function(frage) {
+						waechter.fragen_hook('C', frage);
+						return 'check';
+					});
+					ich.nimmMitspielerAuf(done);
 				});
 			});
-			describe("mit einem bigBlind von '2', einem SmallBlind von '1' und 11 Karten (jeweils die 2♦)", function() {
+			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
-					waechter.reset();
-					ich._erstelleKartenstapelString = function() {
-						return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
-					};
+					erzeugeSpieler('A', ich, function(frage) {
+						waechter.fragen_hook('A', frage);
+						return 'check';
+					});
+					erzeugeSpieler('B', ich, function(frage) {
+						waechter.fragen_hook('B', frage);
+						return 'check';
+					});
+					erzeugeSpieler('C', ich, function(frage) {
+						waechter.fragen_hook('C', frage);
+						return 'check';
+					});
 					ich.nimmMitspielerAuf(done);
 				});
 				describe("dann wird Spieler A, B und C je ein mal zum Preflop gefragt", function() {
