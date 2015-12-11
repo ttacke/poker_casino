@@ -105,7 +105,9 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	// VOID
 	this.starteWiederAbGeberToken = function() {
 		for(var i = 0; i < this.spielerListe.length; i++) {
-			this.spielerListe[i].setzeLetzteAktion('-');
+			if(this.spielerListe[i].gibLetzteAktion() != 'fold') {
+				this.spielerListe[i].setzeLetzteAktion('-');
+			}
 		}
 		this.pointer = this.geberTokenPointer;
 	};
@@ -129,6 +131,18 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	};
 	// OBJ
 	this.gibDenSpielerDerAnDerReiheIst = function() {
+		var i = 0;
+		while(i++ < this.spielerListe.length) {
+			var spieler = this._gibDenSpielerDerAnDerReiheIst();
+			
+			if(spieler.gibLetzteAktion() != 'fold') {
+				return spieler;
+			}
+		}
+		throw new Error("Alle Spieler haben mit fold geantwortet");
+	};
+	// OBJ
+	this._gibDenSpielerDerAnDerReiheIst = function() {
 		var spieler = this.spielerListe[this.pointer];
 		if(this.pointer + 1 >= this.spielerListe.length) {
 			this.pointer = 0;
@@ -171,6 +185,28 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	this.gibAlleSpieler = function() {
 		return this.spielerListe;
 	};
+	// ARRAY(OBJ)
+	this.gibSpielerlisteVomAktuellenRueckwaerts = function(spieler) {
+		var position = null;
+		var liste = [];
+		for(var i = 0; i < this.spielerListe.length; i++) {
+			if(this.spielerListe[i].gibName() == spieler.gibName()) {
+				position = i;
+				break;
+			}
+		}
+		for(var i = position; i >= 0; i--) {
+			liste.push(i);
+		}
+		for(var i = this.spielerListe.length - 1; i > position; i--) {
+			liste.push(i);
+		}
+		var spielerListe = [];
+		for(var i = 0; i < liste.length; i++) {
+			spielerListe.push(this.spielerListe[liste[i]]);
+		}
+		return spielerListe;
+	}
 	// INT
 	this.anzahlDerSpieler = function() {
 		return this.spielerListe.length;
