@@ -7,7 +7,20 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this._stack = 0;
 	this._letzterGewinn = 0;
 	this._fold_gegeben = false;
+	this._anzahl_der_raises = 0;
 	
+	// VOID
+	this.fuegeRaiseHinzu = function() {
+		this._anzahl_der_raises++;
+	};
+	// INT
+	this.anzahlDerRaises = function() {
+		return this._anzahl_der_raises;
+	};
+	// VOID
+	this.setzeRaiseZaehlerZurueck = function() {
+		this._anzahl_der_raises = 0;
+	};
 	// VOID
 	this.setzeLetzteAktion = function(aktion) {
 		if(aktion == 'fold') this._fold_gegeben = true;
@@ -114,6 +127,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		for(var i = 0; i < this.spielerListe.length; i++) {
 			if(!this.spielerListe[i].istAusgestiegen()) {
 				this.spielerListe[i].setzeLetzteAktion('-');
+				this.spielerListe[i].setzeRaiseZaehlerZurueck();
 			}
 		}
 		this.pointer = this.geberTokenPointer;

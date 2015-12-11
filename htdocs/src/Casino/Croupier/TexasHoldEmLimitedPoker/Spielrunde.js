@@ -68,7 +68,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			spieler.gibName(),
 			frage,
 			function(antwort) {
-				var aktion = self._uebersetzeAntwort(antwort);
+				var aktion = self._uebersetzeAntwort(spieler, antwort);
 				//if(aktion == 'fold') {
 			//		spielerrunde.
 				//}
@@ -107,9 +107,15 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		return frage;
 	};
 	// STRING
-	this._uebersetzeAntwort = function(antwort) {
+	this._uebersetzeAntwort = function(spieler, antwort) {
 		if(antwort != 'check' && antwort != 'raise') {
 			return 'fold';
+		}
+		if(antwort == 'raise') {
+			spieler.fuegeRaiseHinzu();
+			if(spieler.anzahlDerRaises() > 300) {//TODO
+				return 'check';
+			}
 		}
 		return antwort;
 	};
