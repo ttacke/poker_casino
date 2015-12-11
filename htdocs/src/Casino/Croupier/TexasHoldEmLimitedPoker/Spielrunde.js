@@ -51,6 +51,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		if(this._nur_noch_ein_spieler_vorhanden(spielerListe)) return true;
 		
 		if(this._bieterrunde_enthaelt_nur_check(spielerListe)) return true;
+		
 		if(this._bieterrunde_enthaelt_ein_startraise_und_sonst_nur_check(spielerListe)) return true;
 		
 		return false;
@@ -110,16 +111,16 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	};
 	// STRING
 	this._uebersetzeAntwort = function(spieler, antwort) {
-		if(antwort != 'check' && antwort != 'raise') {
+		if(antwort.details != 'check' && antwort.details != 'raise') {
 			return 'fold';
 		}
-		if(antwort == 'raise') {
+		if(antwort.details == 'raise') {
 			spieler.fuegeRaiseHinzu();
 			if(spieler.anzahlDerRaises() > 3) {
 				return 'check';
 			}
 		}
-		return antwort;
+		return antwort.details;
 	};
 	// ARRAY
 	this._clone = function(item) {

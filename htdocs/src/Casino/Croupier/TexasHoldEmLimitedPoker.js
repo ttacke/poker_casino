@@ -97,9 +97,11 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		kartenstapel = this._mischeStapel(kartenstapel);
 		
 		this.aufzeichnung = new CasinoPokerSpielaufzeichnung();
-		this._spieleAlleWettrunden(kartenstapel, doneFunc)
-		
-		console.log(this.aufzeichnung);
+		var self = this;
+		this._spieleAlleWettrunden(kartenstapel, function(success) {
+			console.log(self.aufzeichnung);
+			doneFunc(success);
+		});
 	};
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {

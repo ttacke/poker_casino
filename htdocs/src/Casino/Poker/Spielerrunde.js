@@ -83,7 +83,7 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	}
 	// BOOLEAN
 	this.istAusgestiegen = function() {
-		return this._fold_gegeben ? true : false;
+		return (this._fold_gegeben ? true : false);
 	}
 	// STRING
 	this.gibEinsatz = function() {

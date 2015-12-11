@@ -88,8 +88,9 @@
 					} else {
 						logge('status', 'zu wenige Spieler!');
 						setTimeout(function() { _warteAufSpieler(); }, 1000);
+						return;
 					}
-					setTimeout(function() { _spiele(); }, 50000);//TODO
+					setTimeout(function() { _spiele(); }, 5000);//TODO
 				});
 				
 			}
