@@ -12,6 +12,10 @@ function CasinoPokerSpielaufzeichnung() {
 			antwort: antwort
 		});
 	};
+	// VOID
+	this.gibNaechstenSpielzug = function() {
+		return this.spielzuege.shift();
+	}
 	// ARRAY
 	this.gibSpielerPunkte = function() {
 		var timeouts = {};

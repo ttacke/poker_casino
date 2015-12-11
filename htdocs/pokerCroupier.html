@@ -37,6 +37,8 @@
 			var SPIELERDATEN = {};
 			var SPIELERLISTE = [];
 			
+			var LETZTES_AUFGEZEICHNETES_SPIEL = null;
+			
 			var croupier = null;
 			
 			$(function() {
@@ -102,6 +104,10 @@
 			// VOID
 			function _loggeSpielerdaten(aufzeichnung) {
 				var daten = aufzeichnung.gibSpielerPunkte();
+				
+				if(!LETZTES_AUFGEZEICHNETES_SPIEL) {
+					LETZTES_AUFGEZEICHNETES_SPIEL = aufzeichnung
+				}
 				for(var i = 0; i < daten.length; i++) {
 					if(!SPIELERDATEN[daten[i].name]) {
 						SPIELERDATEN[daten[i].name] = {
@@ -204,5 +210,88 @@
 			<tbody>
 			</tbody>
 		</table>
+		<style>
+			#tisch {
+				border: solid 3px green;
+			}
+			#tisch > li {
+				border: solid 1px blue;
+			}
+			#tisch * {
+				padding: 0.3em 0.5em;
+			}
+		</style>
+		<script>
+			var tischGezeichnet = false;
+			var nameZuId = {};
+			function zeichneTisch(spielergebnis) {
+				if(tischGezeichnet) return;
+				
+				for(var i = 0; i < spielergebnis.length; i++) {
+					nameZuId[spielergebnis[i].name] = i;
+					
+					$('#tisch').append(
+						'<li id="#tischSpieler' + i + '">'
+							+ ' <span class="name">' + spielergebnis[i].name + '</span>'
+							+ ' <span id="istDran' + i + '"></span>'
+							+ ' <span id="handkarten' + i + '"></span>'
+							+ ' Einsatz:<span id="einsatz' + i + '">0</span>$'
+							+ ' Antwort:<span id="antwort' + i + '"></span>'
+						+ '</li>'
+					);
+				}
+				tischGezeichnet = true;
+			}
+			function werIstDran(spielergebnis, zug) {
+				logge("istDran" + nameZuId[zug.spieler], 'X');
+				for(var i = 0; i < spielergebnis.length; i++) {
+					if(zug.spieler == spielergebnis[i].name) continue;
+					
+					logge("istDran" + nameZuId[spielergebnis[i].name], '');
+				}
+			}
+			
+			function replayStep() {
+				if(!LETZTES_AUFGEZEICHNETES_SPIEL) return undefined;
+				
+				var spielergebnis = LETZTES_AUFGEZEICHNETES_SPIEL.gibSpielerPunkte();
+				
+				zeichneTisch(spielergebnis);
+				
+				var zug = LETZTES_AUFGEZEICHNETES_SPIEL.gibNaechstenSpielzug();
+				werIstDran(spielergebnis, zug);
+				logge("AktuelleRunde", zug.frage.typ);
+				
+				if(zug.frage.typ == 'showdown') {
+					var gewinner = [];
+					for(var i = 0; i < zug.frage.Gewinner.length; i++) {
+						gewinner.push(zug.frage.Gewinner[i].Name + ' (' + zug.frage.Gewinner[i].Gewinn + ')');
+					}
+					logge("RundenErgebniss",
+						'<span>Gewinner: ' + gewinner.join(' & ') + '</span><br/>'
+						
+					)
+					LETZTES_AUFGEZEICHNETES_SPIEL = null;
+				} else {
+					logge("RundenErgebniss", '');
+					logge("handkarten" + nameZuId[zug.spieler], zug.frage.Hand.join(' '));
+					logge("einsatz" + nameZuId[zug.spieler], zug.frage.Einsatz);
+					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details);
+					logge("tischkarten", zug.frage.Tisch.join(' '));
+					logge("tisch_pot", zug.frage.Pot);
+					
+					console.log(zug);
+				}
+			}
+			setInterval("replayStep()", 2000);
+		</script>
+		<a href="#" onclick="replayStep();return false;">Replay-Step</a>
+		<h2 id="AktuelleRunde"></h2>
+		<ul id="tisch">
+			
+		</ul>
+		<br/>Tisch: <span id="tischkarten"></span>
+		<br/>Pot: <span id="tisch_pot"></span>
+		<div id="RundenErgebniss"></div>
 	</body>
 </html>
