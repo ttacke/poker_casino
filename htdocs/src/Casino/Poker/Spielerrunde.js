@@ -225,7 +225,9 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		}
 		var spielerListe = [];
 		for(var i = 0; i < liste.length; i++) {
-			spielerListe.push(this.spielerListe[liste[i]]);
+			var spieler = this.spielerListe[liste[i]];
+			if(spieler.istAusgestiegen()) continue;
+			spielerListe.push(spieler);
 		}
 		return spielerListe;
 	}
