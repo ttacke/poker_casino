@@ -10,18 +10,21 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		// DoNothing
 	};
 	// VOID
-	this.spielen = function(spielerrunde, kartenstapel, naechsteRunde) {
-		this._ermittleDenEinsatz(naechsteRunde, spielerrunde, spielerrunde.anzahlDerSpieler());
+	this.spielen = function(spielerrunde, kartenstapel, doneFunc) {
+		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
 	};
 	
-	// VOID
-	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
-		if(temp <= 0) {//TODO implementieren
-			doneFunc(true);
-			return;
-		}
-			
-		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
+	// VOID TODO
+	this.spielenNEW = function(spielerrunde, kartenstapel, doneFunc) {
+		
+		//var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		
+		//doneFunc();
+		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
+	};
+	
+	// HASH
+	this._erzeugeFrage = function(spieler, spielerrunde) {
 		var frage = {
 			'Hand': this._clone(spieler.gibHandkarten()),
 			'Tisch': this._clone(spieler.gibTischkarten()),
@@ -33,14 +36,25 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		};
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		frage['Spieler'] = [];
-		for(var ii = 0; ii < alle_spieler.length; ii++) {
+		for(var i = 0; i < alle_spieler.length; i++) {
 			frage['Spieler'].push({
-				'Name': alle_spieler[ii].gibName(),
-				'letzteAktion': alle_spieler[ii].gibLetzteAktion(),
-				'Stack': alle_spieler[ii].gibStack() + '',
-				'Einsatz': alle_spieler[ii].gibEinsatz() + '',
+				'Name': alle_spieler[i].gibName(),
+				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
+				'Stack': alle_spieler[i].gibStack() + '',
+				'Einsatz': alle_spieler[i].gibEinsatz() + '',
 			});
 		}
+		return frage;
+	};
+	// VOID
+	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
+		if(temp <= 0) {//TODO implementieren
+			doneFunc(true);
+			return;
+		}
+		
+		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		var frage = this._erzeugeFrage(spieler, spielerrunde);
 		var self = this;
 		this.croupier.frageDenSpieler(
 			spieler.gibName(),

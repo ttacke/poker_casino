@@ -60,6 +60,27 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			}
 		);
 	};
+	
+	
+	// VOID TODO
+	this._spieleAlleWettrundenNEW = function(kartenstapel, doneFunc) {
+		if(!this.wettrunden.length) {
+			doneFunc(true);
+			return;
+		}
+		
+		var wettrunde = this.wettrunden.shift();
+		wettrunde.vorbereiten(this.spielerrunde, kartenstapel);
+		var self = this;
+		wettrunde.spielenNEW(
+			this.spielerrunde,
+			kartenstapel,
+			function() {
+				self._spieleAlleWettrundenNEW(kartenstapel, doneFunc)
+			}
+		);
+	};
+	
 	// VOID
 	this.gibHandkartenAnAlleSpieler = function(anzahl, kartenstapel) {
 		var alle_spieler = this.spielerrunde.gibAlleSpieler();

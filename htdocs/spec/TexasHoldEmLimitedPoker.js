@@ -89,7 +89,8 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						ich.nimmMitspielerAuf(
 							function() {
 								ich._bereiteNeuesSpielVor();
-								ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								//TODO
+								ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
 									done();
 								});
 							}
