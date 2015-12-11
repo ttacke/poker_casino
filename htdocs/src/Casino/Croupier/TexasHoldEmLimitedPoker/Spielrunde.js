@@ -4,6 +4,7 @@
 function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
+	this.typ = '-';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
@@ -69,9 +70,9 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			frage,
 			function(antwort) {
 				var aktion = self._uebersetzeAntwort(spieler, antwort);
-				//if(aktion == 'fold') {
-			//		spielerrunde.
-				//}
+				if(aktion == 'raise') {
+					//TODO
+				}
 				
 				if(aktion == 'check') {
 					var hoechsteinsatz = spielerrunde.gibAktuellenHoechsteinsatz();
@@ -86,6 +87,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	// HASH
 	this._erzeugeFrage = function(spieler, spielerrunde) {
 		var frage = {
+			'typ': this.typ,
 			'Hand': this._clone(spieler.gibHandkarten()),
 			'Tisch': this._clone(spieler.gibTischkarten()),
 			'LetzteAktion': spieler.gibLetzteAktion(),

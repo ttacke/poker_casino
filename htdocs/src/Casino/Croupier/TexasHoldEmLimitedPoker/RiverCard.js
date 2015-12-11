@@ -5,6 +5,7 @@ CasinoCroupierTexasHoldEmLimitedPokerRiverCard.prototype = new CasinoCroupierTex
 function CasinoCroupierTexasHoldEmLimitedPokerRiverCard(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
+	this.typ = 'river';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
