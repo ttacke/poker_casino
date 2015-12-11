@@ -134,9 +134,13 @@ function spielerKommunikationsWaechter() {
 	}
 	// VOID
 	this.holeDieNachsten3Anfragen = function() {
+		this.holeDieNachstenXAnfragen(3);
+	}
+	// VOID
+	this.holeDieNachstenXAnfragen = function(x) {
 		this.naechste_3_spieler = [];
 		this.naechste_3_fragen = [];
-		for(var i = 0; i < 3; i++) {
+		for(var i = 0; i < x; i++) {
 			if(this.spieler_liste.length > 0) {
 				this.naechste_3_spieler.push(this.spieler_liste.shift());
 				this.naechste_3_fragen.push(this.fragen_liste.shift());

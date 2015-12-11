@@ -84,7 +84,36 @@ console.log(name + ': ' + antwort);//TODO
 					return antwort;
 				});
 			};
-			describe("und spiele eine PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
+			describe("und spiele eine komplettes Spiel mit den 3 Spielern A, B und C die immer nur folden", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['fold']);
+					erzeugeAntwortendenSpieler('B', ['fold']);
+					erzeugeAntwortendenSpieler('C', ['fold']);
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+								done();
+							});
+						}
+					);
+				});
+				it("dann werden nur C und A gefragt und B hat gewonnen", function() {
+					waechter.holeDieNachstenXAnfragen(2);
+					waechter.pruefeAktuelleSpielerAufrufe('C', 'A', undefined);
+					
+					waechter.holeDieNachsten3Anfragen();
+					waechter.aktuelleSpielerFragenEnthalten('Spieler', [
+						{ Name: 'A', letzteAktion: 'fold', Stack: '-1', Einsatz: '1', Hand: [ '2♦', '2♦' ] },
+						{ Name: 'B', letzteAktion: '-', Stack: '-2', Einsatz: '2', Hand: [ '2♦', '2♦' ] },
+						{ Name: 'C', letzteAktion: 'fold', Stack: '0', Einsatz: '0', Hand: [ '2♦', '2♦' ] }
+					]);
+			//		waechter.aktuelleSpielerFragenEnthalten('Gewinner', [
+			//			{'Name':'B','Gewinn':'2','Blatt':['2♦', '2♦', '2♦', '2♦', '2♦']},
+			//		]);
+				});
+			});
+		/*	describe("und spiele eine PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
 				beforeEach(function(done) {
 					erzeugeAntwortendenSpieler('A', ['check']);
 					erzeugeAntwortendenSpieler('B', ['check']);
@@ -108,7 +137,7 @@ console.log(name + ': ' + antwort);//TODO
 					//waechter.holeDieNachsten3Anfragen();
 					//waechter.pruefeAktuelleSpielerAufrufe('X', undefined, undefined);
 				});
-			});
+			});*/
 			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
 					erzeugeSpieler('A', ich, function(frage) {

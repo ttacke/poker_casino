@@ -60,6 +60,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 			doneFunc
 		);
 	};
+	this.spielenNEW = this.spielen;//TODO Bootstrap
 	// VOID
 	this._meldeAnAlleSpieler = function(liste_aller_spieler, daten, doneFunc) {
 		if(!liste_aller_spieler.length) {
