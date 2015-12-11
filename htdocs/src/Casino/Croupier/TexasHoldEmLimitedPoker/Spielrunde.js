@@ -10,7 +10,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		// DoNothing
 	};
 	// VOID
-	this.wetten = function(spielerrunde, kartenstapel, naechsteRunde) {
+	this.spielen = function(spielerrunde, kartenstapel, naechsteRunde) {
 		this._ermittleDenEinsatz(naechsteRunde, spielerrunde, spielerrunde.anzahlDerSpieler());
 	};
 	

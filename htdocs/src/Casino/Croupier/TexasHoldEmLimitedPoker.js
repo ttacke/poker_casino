@@ -66,32 +66,32 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this._spielePreflop = function(kartenstapel, naechsteRunde) {
 		var preflop = new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(this, 1);
 		preflop.vorbereiten(this.spielerrunde, kartenstapel);
-		preflop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		preflop.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleFlop = function(kartenstapel, naechsteRunde) {
 		var flop = new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1);
 		flop.vorbereiten(this.spielerrunde, kartenstapel);
-		flop.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		flop.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleTurnCard = function(kartenstapel, naechsteRunde) {
 		var turnCard = new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1);
 		turnCard.vorbereiten(this.spielerrunde, kartenstapel);
-		turnCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		turnCard.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleRiver = function(kartenstapel, naechsteRunde) {
 		var riverCard = new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1);
 		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
-		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
+		riverCard.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
 	this._spieleShowdown = function(kartenstapel, doneFunc) {
 		var showdown = new CasinoCroupierTexasHoldEmLimitedPokerShowdown(this, 1);
 		kartenstapel = null;
 		showdown.vorbereiten(this.spielerrunde, kartenstapel);
-		showdown.wetten(this.spielerrunde, kartenstapel, doneFunc);
+		showdown.spielen(this.spielerrunde, kartenstapel, doneFunc);
 	};
 	// VOID
 	this.spieleEinSpiel = function(doneFunc) {
