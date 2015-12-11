@@ -63,7 +63,6 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.spielenNEW = function(spielerrunde, kartenstapel, doneFunc) {
 		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
 		if(this._istWettrundeBeendet(spieler, spielerrunde)) {
-			console.log('WETT-ENDE');
 			doneFunc();
 			return;
 		}

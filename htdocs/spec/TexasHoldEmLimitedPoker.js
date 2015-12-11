@@ -80,45 +80,35 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				erzeugeSpieler(name, ich, function(frage) {
 					waechter.fragen_hook(name, frage);
 					var antwort = antworten.shift();
-					console.log(name + ': ' + antwort);//TODO
+console.log(name + ': ' + antwort);//TODO
 					return antwort;
 				});
 			};
-			describe("und spiele eine PreFlop-Wettrunde", function() {
-				beforeEach(function() {
-					ich.wettrunden = [
-						new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
-					];
+			describe("und spiele eine PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check']);
+					erzeugeAntwortendenSpieler('B', ['check']);
+					erzeugeAntwortendenSpieler('C', ['check']);
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
+							];
+							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+								done();
+							});
+						}
+					);
 				});
-				describe("mit den 3 Spielern A, B und C die immer nur checken", function() {
-					beforeEach(function(done) {
-						erzeugeAntwortendenSpieler('A', ['check', 'check', 'check']);
-						erzeugeAntwortendenSpieler('B', ['check', 'check', 'check']);
-						erzeugeAntwortendenSpieler('C', ['check', 'check', 'check']);
-						ich.nimmMitspielerAuf(
-							function() {
-								ich._bereiteNeuesSpielVor();
-								//TODO
-								console.log('>>>>>START');
-								ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
-									console.log('>>>>END');
-									done();
-								});
-							}
-						);
-					});
-					it("dann ist die Wettrunde zuende, wenn jeder 1x gefragt wurde", function() {
-						waechter.holeDieNachsten3Anfragen();
-						waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
-						//TODO ???
-						//waechter.holeDieNachsten3Anfragen();
-						//waechter.pruefeAktuelleSpielerAufrufe('X', undefined, undefined);
-					});
+				it("dann ist die Wettrunde zuende, wenn jeder 1x gefragt wurde", function() {
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
+					//TODO ???
+					//waechter.holeDieNachsten3Anfragen();
+					//waechter.pruefeAktuelleSpielerAufrufe('X', undefined, undefined);
 				});
 			});
-			
-			
-			
 			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
 					erzeugeSpieler('A', ich, function(frage) {
