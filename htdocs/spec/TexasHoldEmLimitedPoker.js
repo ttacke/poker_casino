@@ -258,7 +258,11 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						derAktuelleStackVomSpielerIst(ich, 'A', 0)
 						derAktuelleStackVomSpielerIst(ich, 'B', 0)
 						derAktuelleStackVomSpielerIst(ich, 'C', 0)
-						ich._spieleShowdown(ich._erstelleKartenstapel(), function() {
+						
+						ich.wettrunden = [
+							new CasinoCroupierTexasHoldEmLimitedPokerShowdown(ich, 1),
+						];
+						ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 							waechter.holeDieNachsten3Anfragen();
 							done();
 						});
