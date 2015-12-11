@@ -13,6 +13,7 @@
 			var ws = new WebSocket(casinoUrl);
 			ws.onopen = function(event) {
 				console.log('Verbunden');
+				document.write('verbunden');
 				ws.onmessage = function(event) {
 					if(event.data != 'o') {
 						throw new Error('Betreten fehlgeschlagen');
