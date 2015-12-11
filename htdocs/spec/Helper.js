@@ -71,7 +71,7 @@ function erzeugeSpieler(name, croupier, spielerAntwortFunktion) {
 			setTimeout(function() {
 				//TODO: per Timeout auf externes warten
 				var antwort = spielerAntwortFunktion(nachricht);
-				antwortFunktion(antwort);
+				antwortFunktion({ details: antwort });
 			}, 0);
 			return;
 		}
