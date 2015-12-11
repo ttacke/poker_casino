@@ -69,24 +69,43 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					return '2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦ 2♦';
 				};
 			});
-			describe("und mit den 3 Spielern A, B und C", function() {
-				beforeEach(function(done) {
-					//CasinoCroupierTexasHoldEmLimitedPokerSpielrunde
-					erzeugeSpieler('A', ich, function(frage) {
-						waechter.fragen_hook('A', frage);
-						return 'check';
+			var erzeugeAntwortendenSpieler = function(name, antworten) {
+				erzeugeSpieler(name, ich, function(frage) {
+					waechter.fragen_hook(name, frage);
+					return antworten.shift();
+				});
+			};
+			describe("und spiele eine PreFlop-Wettrunde", function() {
+				beforeEach(function() {
+					ich._bereiteNeuesSpielVor();
+					ich.wettrunden = [
+						new CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(ich, 1),
+					];
+				});
+				describe("mit den 3 Spielern A, B und C die immer nur checken", function() {
+					beforeEach(function(done) {
+						erzeugeAntwortendenSpieler('A', ['check', 'raise']);
+						erzeugeAntwortendenSpieler('B', ['check', 'raise']);
+						erzeugeAntwortendenSpieler('C', ['check', 'raise']);
+						ich.nimmMitspielerAuf(
+							function() {
+								ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+									done();
+								});
+							}
+						);
 					});
-					erzeugeSpieler('B', ich, function(frage) {
-						waechter.fragen_hook('B', frage);
-						return 'check';
+					it("Dann ist die Wettrunde zuende, wenn jeder 1x gefragt wurde", function() {
+						waechter.holeDieNachsten3Anfragen();
+						waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
+						waechter.holeDieNachsten3Anfragen();
+						waechter.pruefeAktuelleSpielerAufrufe(undefined, undefined, undefined);
 					});
-					erzeugeSpieler('C', ich, function(frage) {
-						waechter.fragen_hook('C', frage);
-						return 'check';
-					});
-					ich.nimmMitspielerAuf(done);
 				});
 			});
+			
+			
+			
 			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
 					erzeugeSpieler('A', ich, function(frage) {
