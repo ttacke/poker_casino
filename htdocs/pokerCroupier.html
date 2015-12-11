@@ -5,6 +5,7 @@
 		<meta charset="utf-8" />
 		  <script type="text/javascript" src="src/Casino/Besucher.js"></script>
 		  <script type="text/javascript" src="src/Casino/Spieler.js"></script>
+		  <script type="text/javascript" src="src/Casino/Poker/Spielaufzeichnung.js"></script>
 		  <script type="text/javascript" src="src/Casino/Croupier.js"></script>
 		  <script type="text/javascript" src="src/Casino/Croupier/TexasHoldEmLimitedPoker.js"></script>
 		  <script type="text/javascript" src="src/Casino/Croupier/TexasHoldEmLimitedPoker/Spielrunde.js"></script>
@@ -16,6 +17,7 @@
 		  <script type="text/javascript" src="src/Casino/Poker/Gewinnermittlung.js"></script>
 		  <script type="text/javascript" src="src/Casino/Poker/Spielkarte.js"></script>
 		  <script type="text/javascript" src="src/Casino/Poker/Spielerrunde.js"></script>
+		  
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script type="text/javascript">
@@ -23,12 +25,13 @@
 			var TISCHNAME = 'DerGruene';
 			var CASINO_URL = 'ws://127.0.0.1:8080/';
 			var MAX_ANZAHL_FUER_AUSWERTUNGEN = 10000;
-			var TIMEOUT = 10;// ms
+			var TIMEOUT = 50;// ms
 			
 			var CROUPIER_NAME = 'SpieleMeister';
 			var CROUPIER_PASSWORT = '12345';
 			var SPIELNAME = 'TexasHoldEmFixedLimit';
 			var SPIELRUNDENZAEHLER = 0;
+			var ALTER_SPIELRUNDENZAEHLER = 0;
 			
 			
 			var croupier = null;
@@ -86,12 +89,18 @@
 						logge('status', 'zu wenige Spieler!');
 						setTimeout(function() { _warteAufSpieler(); }, 1000);
 					}
-					setTimeout(function() { _spiele(); }, 500);//TODO
+					setTimeout(function() { _spiele(); }, 50000);//TODO
 				});
 				
 			}
 			// VOID
 			function erstelleSpielerLog() {
+				var runden_pro_sekunde = SPIELRUNDENZAEHLER - ALTER_SPIELRUNDENZAEHLER;
+				logge('spiele_pro_sekunde', runden_pro_sekunde);
+				ALTER_SPIELRUNDENZAEHLER = SPIELRUNDENZAEHLER;
+				
+				logge('timeoutzaehler', '-- TODO --');
+				logge('spieleranzahl', croupier.spielerrunde.anzahlDerSpieler());
 				return;
 				
 				var spielerListe = null;
@@ -108,7 +117,7 @@
 				}
 				var rangliste = {};
 				var punkteListe = [];
-				logge('timeoutzaehler', gibGesamtWert('timeout'));
+				
 				for(var i = 0; i < spielerListe.length; i++) {
 					var spieler = (i + 1);
 					logge('spielerTimeouts' + spieler, gibSpielerWert(spieler, 'timeout'));

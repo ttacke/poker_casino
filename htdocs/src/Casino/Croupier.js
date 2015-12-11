@@ -16,6 +16,7 @@ function CasinoCroupier(name, passwort) {
 	this.instanzId = -1;
 	this.spielerTimeout = 100;
 	this.aktuelleFrage = null;
+	this.aufzeichnung = new CasinoPokerSpielaufzeichnung();
 	
 	// VOID
 	this.herzschrittmacherLog = function() {
@@ -77,6 +78,7 @@ function CasinoCroupier(name, passwort) {
 				function(daten) {
 					self.aktuelleFrage = null;
 					clearTimeout(herzschrittmacher);
+					self.aufzeichnung.fuegeSpielzugEin(spielerName, nachricht, daten);
 					antwortFunktion(daten);
 				}
 			);
