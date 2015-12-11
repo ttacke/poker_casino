@@ -190,12 +190,13 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	};
 	// BOOLEAN
 	this.nimmSpielerAufWennNeu = function(spielerName) {
-		var spieler = new CasinoPokerPlatzDesSpielers(spielerName, 0);
 		if(this.spielerListe.length + 1 > this.maximaleSpieleranzahl) return false;
 		
 		for(var i = 0; i < this.spielerListe.length; i++) {
-			if(this.spielerListe[i].name == spielerName) return true;
+			if(this.spielerListe[i].gibName() == spielerName) return true;
 		}
+		
+		var spieler = new CasinoPokerPlatzDesSpielers(spielerName, 0);
 		this.spielerListe.push(
 			spieler
 		);
