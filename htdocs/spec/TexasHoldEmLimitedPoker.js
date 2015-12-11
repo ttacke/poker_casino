@@ -79,9 +79,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			var erzeugeAntwortendenSpieler = function(name, antworten) {
 				erzeugeSpieler(name, ich, function(frage) {
 					waechter.fragen_hook(name, frage);
-					var antwort = antworten.shift();
-console.log(name + ': ' + antwort);//TODO
-					return antwort;
+					return antworten.shift();
 				});
 			};
 			describe("und spiele eine komplettes Spiel mit den 3 Spielern A, B und C die immer nur folden", function() {
