@@ -262,7 +262,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						derAktuelleStackVomSpielerIst(ich, 'A', 0)
 						derAktuelleStackVomSpielerIst(ich, 'B', 0)
 						derAktuelleStackVomSpielerIst(ich, 'C', 0)
-						ich._spieleShowdown(function() {
+						ich._spieleShowdown(ich._erstelleKartenstapel(), function() {
 							waechter.holeDieNachsten3Anfragen();
 							done();
 						});

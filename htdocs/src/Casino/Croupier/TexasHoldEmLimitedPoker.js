@@ -87,11 +87,32 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		riverCard.wetten(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
-	this._spieleShowdown = function(doneFunc) {
+	this._spieleShowdown = function(kartenstapel, doneFunc) {
 		var showdown = new CasinoCroupierTexasHoldEmLimitedPokerShowdown(this, 1);
-		var kartenstapel = null;
+		kartenstapel = null;
 		showdown.vorbereiten(this.spielerrunde, kartenstapel);
 		showdown.wetten(this.spielerrunde, kartenstapel, doneFunc);
+	};
+	// VOID
+	this.spieleEinSpiel = function(doneFunc) {
+		if(!this._bereiteNeuesSpielVor()) {
+			doneFunc(false);
+			return;
+		}
+		
+		var kartenstapel = this._erstelleKartenstapel();
+		kartenstapel = this._mischeStapel(kartenstapel);
+		
+		var self = this;
+		this._spielePreflop(kartenstapel, function() {
+			self._spieleFlop(kartenstapel, function() {
+				self._spieleTurnCard(kartenstapel, function() {
+					self._spieleRiver(kartenstapel, function() {
+						self._spieleShowdown(kartenstapel, doneFunc)
+					})
+				})
+			})
+		});
 	};
 	
 	
@@ -136,27 +157,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 			array[randomIndex] = temporaryValue;
 		}
 		return array;
-	};
-	// VOID
-	this.spieleEinSpiel = function(doneFunc) {
-		if(!this._bereiteNeuesSpielVor()) {
-			doneFunc(false);
-			return;
-		}
-		
-		var kartenstapel = this._erstelleKartenstapel();
-		kartenstapel = this._mischeStapel(kartenstapel);
-		
-		var self = this;
-		this._spielePreflop(kartenstapel, function() {
-			self._spieleFlop(kartenstapel, function() {
-				self._spieleTurnCard(kartenstapel, function() {
-					self._spieleRiver(kartenstapel, function() {
-						self._spieleShowdown(doneFunc)
-					})
-				})
-			})
-		});
 	};
 }
  
