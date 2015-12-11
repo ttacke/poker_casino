@@ -13,6 +13,8 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		minSpielerAnzahl, maxSpielerAnzahl
 	);
 	
+	this.wettrunden = [];
+	
 	// ARRAY
 	this._parseKarten = function(string) {
 		var stapel = [];
@@ -31,6 +33,13 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	};
 	// BOOLEAN
 	this._bereiteNeuesSpielVor = function() {
+		this.wettrunden = [
+			new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerShowdown(this, 1),
+		];
 		return this.spielerrunde.starteNeuesSpielUndSchiebeGeberTokenWeiter();
 	};
 	// VOID
