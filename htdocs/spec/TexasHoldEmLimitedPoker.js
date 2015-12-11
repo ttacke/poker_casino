@@ -64,7 +64,6 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					expect(erfolg).toBe(true);
 					expect(spy23).toHaveBeenCalled();
 					expect(spy24).not.toHaveBeenCalled();
-					console.log('BUGFIX');// TODO: Ohne diese Zeile schlaegt es fehl?!?
 					done();
 				});
 			});
@@ -80,7 +79,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			var erzeugeAntwortendenSpieler = function(name, antworten) {
 				erzeugeSpieler(name, ich, function(frage) {
 					waechter.fragen_hook(name, frage);
-					return 'check';//antworten.shift();
+					var antwort = antworten.shift();
+					console.log(name + ': ' + antwort);//TODO
+					return antwort;
 				});
 			};
 			describe("und spiele eine PreFlop-Wettrunde", function() {
@@ -91,14 +92,16 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				});
 				describe("mit den 3 Spielern A, B und C die immer nur checken", function() {
 					beforeEach(function(done) {
-						erzeugeAntwortendenSpieler('A', ['check', 'check']);
-						erzeugeAntwortendenSpieler('B', ['check', 'check']);
-						erzeugeAntwortendenSpieler('C', ['check', 'check']);
+						erzeugeAntwortendenSpieler('A', ['check', 'check', 'check']);
+						erzeugeAntwortendenSpieler('B', ['check', 'check', 'check']);
+						erzeugeAntwortendenSpieler('C', ['check', 'check', 'check']);
 						ich.nimmMitspielerAuf(
 							function() {
 								ich._bereiteNeuesSpielVor();
 								//TODO
+								console.log('>>>>>START');
 								ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+									console.log('>>>>END');
 									done();
 								});
 							}

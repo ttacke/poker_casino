@@ -6,13 +6,16 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this._daten = {};
 	this._stack = 0;
 	this._letzterGewinn = 0;
+	this._fold_gegeben = false;
 	
 	// VOID
 	this.setzeLetzteAktion = function(aktion) {
+		if(aktion == 'fold') this._fold_gegeben = true;
 		this._daten['letzteAktion'] = aktion;
 	};
 	// VOID
 	this.resetDerDaten = function() {
+		this._fold_gegeben = false;
 		this._daten = {
 			'Hand': [],
 			'Tisch': [],
@@ -65,6 +68,10 @@ function CasinoPokerPlatzDesSpielers(name, stack) {
 	this.gibLetzteAktion = function() {
 		return this._daten['letzteAktion'];
 	}
+	// BOOLEAN
+	this.istAusgestiegen = function() {
+		return this._fold_gegeben ? true : false;
+	}
 	// STRING
 	this.gibEinsatz = function() {
 		return this._daten['Einsatz'];
@@ -105,7 +112,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	// VOID
 	this.starteWiederAbGeberToken = function() {
 		for(var i = 0; i < this.spielerListe.length; i++) {
-			if(this.spielerListe[i].gibLetzteAktion() != 'fold') {
+			if(!this.spielerListe[i].istAusgestiegen()) {
 				this.spielerListe[i].setzeLetzteAktion('-');
 			}
 		}
@@ -135,11 +142,11 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 		while(i++ < this.spielerListe.length) {
 			var spieler = this._gibDenSpielerDerAnDerReiheIst();
 			
-			if(spieler.gibLetzteAktion() != 'fold') {
+			if(!spieler.istAusgestiegen()) {
 				return spieler;
 			}
 		}
-		throw new Error("Alle Spieler haben mit fold geantwortet");
+		throw new Error("Alle Spieler sind ausgestiegen");
 	};
 	// OBJ
 	this._gibDenSpielerDerAnDerReiheIst = function() {
