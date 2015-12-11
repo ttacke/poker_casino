@@ -136,6 +136,78 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					waechter.pruefeAktuelleSpielerAufrufe(undefined, undefined, undefined);
 				});
 			});
+			describe("und raise in der PreFlop-Wettrunde", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check']);
+					erzeugeAntwortendenSpieler('B', ['check']);
+					erzeugeAntwortendenSpieler('C', ['raise']);
+					
+					derAktuellePotIst(ich, 0);
+					
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done(true);
+							});
+						}
+					);
+				});
+				it("dann Beträgt der Einsatz 12x BigBlind", function() {
+					derAktuellePotIst(ich, 12);
+				});
+			});
+			describe("und raise in der Flop-Wettrunde", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check']);
+					erzeugeAntwortendenSpieler('B', ['check']);
+					erzeugeAntwortendenSpieler('C', ['raise']);
+					
+					derAktuellePotIst(ich, 0);
+					
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerFlop(ich, 1),
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done(true);
+							});
+						}
+					);
+				});
+				it("dann Beträgt der Einsatz 1 x BigBlind", function() {
+					derAktuellePotIst(ich, 2);
+				});
+			});
+			describe("und raise in der RiverCard-Wettrunde", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check']);
+					erzeugeAntwortendenSpieler('B', ['check']);
+					erzeugeAntwortendenSpieler('C', ['raise']);
+					
+					derAktuellePotIst(ich, 0);
+					
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(ich, 1),
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done(true);
+							});
+						}
+					);
+				});
+				xit("dann Beträgt der Einsatz 2 x BigBlind", function() {
+					derAktuellePotIst(ich, 4);
+				});
+			});
 			describe("und spiele nur die PreFlop-Wettrunde mit den 3 Spielern A, B und C, wobei nur C als erster raised und alles andere nur check ist", function() {
 				beforeEach(function(done) {
 					erzeugeAntwortendenSpieler('A', ['check', 'check']);
