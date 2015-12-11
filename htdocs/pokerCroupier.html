@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>TexasHoldEmFixedLimit-Poker</title>
 		<meta charset="utf-8" />
 		  <script type="text/javascript" src="src/Casino/Besucher.js"></script>
 		  <script type="text/javascript" src="src/Casino/Spieler.js"></script>
@@ -18,29 +19,38 @@
 		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="src/speedtest.js"></script>
 		<script type="text/javascript">
+			
+			var TISCHNAME = 'DerGruene';
+			var CASINO_URL = 'ws://127.0.0.1:8080/';
+			var MAX_ANZAHL_FUER_AUSWERTUNGEN = 10000;
+			var TIMEOUT = 10;// ms
+			
 			var CROUPIER_NAME = 'SpieleMeister';
 			var CROUPIER_PASSWORT = '12345';
-			var SPIELNAME = 'Zaehlen';
-			var ZAHLEN_TOKEN = 0;
-			var MIN_SPIELER = 2;
-			var TIMEOUT_NEU_SETZEN = false;
+			var SPIELNAME = 'TexasHoldEmFixedLimit';
 			var SPIELRUNDENZAEHLER = 0;
 			var ANZAHL_HERZSTILLSTAENDE = 0;
+			
+			
 			var croupier = null;
 			
 			$(function() {
+				//TODO _casinoReset();
 				init();
 				setInterval("erstelleSpielerLog()", 1000);
 			});
-			function timeout(diff) {
-				top.window.timeout += diff;
-				if(top.window.timeout < 1) top.window.timeout = 1;
-				TIMEOUT_NEU_SETZEN = true;
+			function _casinoReset() {
+				var verbindung = new WebSocket(CASINO_URL);
+				verbindung.onopen = function(event) {
+					verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
+				};
 			}
 			function init() {
-				logge('maxAnzahlFuerAuswertungen', top.window.maxAnzahlFuerAuswertungen);
-				croupier = new CasinoCroupierTexasHoldEmLimitedPoker(CROUPIER_NAME, CROUPIER_PASSWORT);
-				croupier.betrete(top.window.casinoUrl, function() {
+				logge('maxAnzahlFuerAuswertungen', MAX_ANZAHL_FUER_AUSWERTUNGEN);
+				croupier = new CasinoCroupierTexasHoldEmLimitedPoker(
+					CROUPIER_NAME, CROUPIER_PASSWORT
+				);
+				croupier.betrete(CASINO_URL, function() {
 					starteTisch();
 				});
 				croupier.herzschrittmacherLog = function() {
@@ -48,21 +58,25 @@
 				};
 			}
 			function maxAnzahlFuerAuswertungen(multiplier) {
-				top.window.maxAnzahlFuerAuswertungen *= multiplier;
-				logge('maxAnzahlFuerAuswertungen', top.window.maxAnzahlFuerAuswertungen);
+				MAX_ANZAHL_FUER_AUSWERTUNGEN *= multiplier;
+				logge('maxAnzahlFuerAuswertungen', MAX_ANZAHL_FUER_AUSWERTUNGEN);
 			}
 			function starteTisch() {
-				var timeout = top.window.timeout;
-				croupier.eroeffneTisch(top.window.tischName, SPIELNAME, timeout, function(daten) {
-					logge("timeout", timeout);
-					if(daten.status == 'ok') {
-						logge('status', 'Tisch "' + top.window.tischName + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
-						warteAufSpieler();
-					} else {
-						logge('status', "Tisch anlegen ist fehlgeschlagen");
-						setTimeout('init()', 1000);
+				croupier.eroeffneTisch(
+					TISCHNAME,
+					SPIELNAME,
+					TIMEOUT, 
+					function(daten) {
+						logge("timeout", TIMEOUT);
+						if(daten.status == 'ok') {
+							logge('status', 'Tisch "' + TISCHNAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
+							warteAufSpieler();
+						} else {
+							logge('status', "Tisch anlegen ist fehlgeschlagen");
+							setTimeout('init()', 1000);
+						}
 					}
-				});
+				);
 			}
 			function warteAufSpieler() {
 				if(SPIELRUNDENZAEHLER % 1000 == 0) {
@@ -159,15 +173,12 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Abfragen gesamt</th><td><span id="geschwindigkeit">0</span>/s</td>
-					<th>Abfragen/Spieler:</th><td><span id="spielergeschwindigkeit">0</span>/s</td>
+					<th>Spiele pro Sekunde</th><td><span id="spiele_pro_sekunde">0</span>/s</td>
 					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
 				</tr>
 				<tr>
 					<th>Timeout</th><td>
-						<button onclick="return timeout(-1)" id="minus">-</button>
 						<span id="timeout">0</span> ms
-						<button onclick="return timeout(+1)" id="plus">+</button>
 					</td>
 					<th>Anzahl Timeouts</th><td id="timeoutzaehler">0</td>
 					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
@@ -175,9 +186,7 @@
 				<tr>
 					<th>Status:</th><td id="status">starte...</td>
 					<th>Bewertungsgrenze:</th><td>
-						<button onclick="return maxAnzahlFuerAuswertungen(0.5)" id="minus">/2</button>
 						<span id="maxAnzahlFuerAuswertungen">0</span>
-						<button onclick="return maxAnzahlFuerAuswertungen(2)" id="minus">*2</button>
 					</td>
 					<th>Spielrunden/Herztot:</th><td>
 						<span id="spielrunde">0</span> /
