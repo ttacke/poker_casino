@@ -94,6 +94,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		var maximalePunkte = 0;
 		for(var i = 0; i < alle_spieler.length; i++) {
+			if(alle_spieler[i].istAusgestiegen()) continue;
+			
 			var bestesBlatt = gewinnErmittler.gibBestesBlatt(
 				this.croupier._parseKarten(
 					alle_spieler[i].gibHandkarten().join(' ')

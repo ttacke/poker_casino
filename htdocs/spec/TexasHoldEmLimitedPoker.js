@@ -108,9 +108,9 @@ console.log(name + ': ' + antwort);//TODO
 						{ Name: 'B', letzteAktion: '-', Stack: '-2', Einsatz: '2', Hand: [ '2♦', '2♦' ] },
 						{ Name: 'C', letzteAktion: 'fold', Stack: '0', Einsatz: '0', Hand: [ '2♦', '2♦' ] }
 					]);
-			//		waechter.aktuelleSpielerFragenEnthalten('Gewinner', [
-			//			{'Name':'B','Gewinn':'2','Blatt':['2♦', '2♦', '2♦', '2♦', '2♦']},
-			//		]);
+					waechter.aktuelleSpielerFragenEnthalten('Gewinner', [
+						{'Name':'B','Gewinn':'3','Blatt':['2♦', '2♦', '2♦', '2♦', '2♦']},
+					]);
 				});
 			});
 		/*	describe("und spiele eine PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
