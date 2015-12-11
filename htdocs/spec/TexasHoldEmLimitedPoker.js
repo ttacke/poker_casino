@@ -176,32 +176,30 @@ describe("Szenario: das Casino ist geöffnet", function() {
 							done();
 						});
 					});
-					describe("dann bekommt jeder 2 Hand- und 0 Tischkarten, die Info über den aktuellen Höchsteinsatz '2' und wird nach seinem Einsatz gefragt", function() {
-						beforeEach(function() {
+					it("dann bekommt jeder 2 Hand- und 0 Tischkarten, die Info über den aktuellen Höchsteinsatz '2' und wird nach seinem Einsatz gefragt", function() {
 							waechter.aktuelleSpielerFragenEnthalten('Hand', ['2♦', '2♦']);
 							waechter.aktuelleSpielerFragenEnthalten('Tisch', []);
 							waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '2');
+					});
+					describe("beginnend mit Spieler C, der noch nichts gesetzt hat", function() {
+						beforeEach(function() {
+							waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'C', '0', '0', '3');
 						});
-						describe("beginnend mit Spieler C, der noch nichts gesetzt hat", function() {
+						describe("dann Spieler A, dessen bisheriger Einsatz dem SmallBlind entspricht", function() {
 							beforeEach(function() {
-								waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'C', '0', '0', '3');
+								waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'A', '1', '-1', '5');
 							});
-							describe("dann Spieler A, dessen bisheriger Einsatz dem SmallBlind entspricht", function() {
+							describe("dann Spieler B, dessen bisheriger Einsatz dem BigBlind entspricht", function() {
 								beforeEach(function() {
-									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'A', '1', '-1', '5');
+									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'B', '2', '-2', '6');
 								});
-								describe("dann Spieler B, dessen bisheriger Einsatz dem BigBlind entspricht", function() {
-									beforeEach(function() {
-										waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'B', '2', '-2', '6');
-									});
-									it("und dann ist der Einsatz jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
-										derAktuellePotIst(ich, 6);
-										aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '2');
-										derAktuelleStackVomSpielerIst(ich, 'A', -2);
-										derAktuelleStackVomSpielerIst(ich, 'B', -2);
-										derAktuelleStackVomSpielerIst(ich, 'C', -2);
-										waechter.esGibtKeineNeuenAnfragen();
-									});
+								it("und dann ist der Einsatz jedes Spielers '2', der Pot '6' und die Runde ist beendet", function() {
+									derAktuellePotIst(ich, 6);
+									aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '2');
+									derAktuelleStackVomSpielerIst(ich, 'A', -2);
+									derAktuelleStackVomSpielerIst(ich, 'B', -2);
+									derAktuelleStackVomSpielerIst(ich, 'C', -2);
+									waechter.esGibtKeineNeuenAnfragen();
 								});
 							});
 						});
@@ -216,32 +214,30 @@ describe("Szenario: das Casino ist geöffnet", function() {
 								done();
 							});
 						});
-						describe("dann bekommt jeder 0 Hand- und " + tischkarten.length + " Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
+						it("dann bekommt jeder 0 Hand- und " + tischkarten.length + " Tischkarten, die Info über den aktuellen Höchsteinsatz '0' und wird nach seinem Einsatz gefragt", function() {
+							waechter.aktuelleSpielerFragenEnthalten('Hand', []);
+							waechter.aktuelleSpielerFragenEnthalten('Tisch', tischkarten);
+							waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '0');
+						});
+						describe("beginnend mit Spieler A", function() {
 							beforeEach(function() {
-								waechter.aktuelleSpielerFragenEnthalten('Hand', []);
-								waechter.aktuelleSpielerFragenEnthalten('Tisch', tischkarten);
-								waechter.aktuelleSpielerFragenEnthalten('Hoechsteinsatz', '0');
+								waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'A', '0', '0', '0');
 							});
-							describe("beginnend mit Spieler A", function() {
+							describe("dann Spieler B", function() {
 								beforeEach(function() {
-									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(0, 'A', '0', '0', '0');
+									waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'B', '0', '0', '0');
 								});
-								describe("dann Spieler B", function() {
+								describe("dann Spieler C", function() {
 									beforeEach(function() {
-										waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(1, 'B', '0', '0', '0');
+										waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'C', '0', '0', '0');
 									});
-									describe("dann Spieler C", function() {
-										beforeEach(function() {
-											waechter.frageFuerSpielerEnthaelt_EinsatzStackPot(2, 'C', '0', '0', '0');
-										});
-										it("und dann ist der Einsatz jedes Spielers '0' und die Runde ist beendet", function() {
-											derAktuellePotIst(ich, 0);
-											aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '0');
-											derAktuelleStackVomSpielerIst(ich, 'A', 0);
-											derAktuelleStackVomSpielerIst(ich, 'B', 0);
-											derAktuelleStackVomSpielerIst(ich, 'C', 0);
-											waechter.esGibtKeineNeuenAnfragen();
-										});
+									it("und dann ist der Einsatz jedes Spielers '0' und die Runde ist beendet", function() {
+										derAktuellePotIst(ich, 0);
+										aktuelleSpielerDatenEnthalten(ich, 'Einsatz', '0');
+										derAktuelleStackVomSpielerIst(ich, 'A', 0);
+										derAktuelleStackVomSpielerIst(ich, 'B', 0);
+										derAktuelleStackVomSpielerIst(ich, 'C', 0);
+										waechter.esGibtKeineNeuenAnfragen();
 									});
 								});
 							});
