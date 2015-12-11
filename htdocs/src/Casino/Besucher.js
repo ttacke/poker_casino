@@ -172,7 +172,7 @@ function CasinoBesucher() {
 			msg = 'v';
 		} else if(d.aktion == 'frageDenSpieler') {
 			// {"aktion":"frageDenSpieler","spielerName":"a","nachricht":1}
-			msg = 'q' + d.spielerName + "\n" + d.nachricht;
+			msg = 'q' + d.spielerName + "\n" + JSON.stringify(d.nachricht);
 		} else if(d.aktion == 'antwortAnDenCroupier') {
 			// {"aktion":"antwortAnDenCroupier","nachricht":2}
 			msg = 'r' + d.nachricht;
