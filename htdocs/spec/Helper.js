@@ -56,11 +56,13 @@ function erzeugeSpieler(name, croupier, spielerAntwortFunktion) {
 	
 	var bisherigeSpieler = [];
 	croupier.zeigeSpielerDesTisches(function(liste) {
-		bisherigeSpieler = liste;
+		bisherigeSpieler = liste.details;
 	});
 	bisherigeSpieler.push(name);
 	croupier.zeigeSpielerDesTisches = function(antwortFunktion) {
-		antwortFunktion(bisherigeSpieler);
+		antwortFunktion({
+			details: bisherigeSpieler
+		});
 	};
 	
 	var alteFunktion = croupier.frageDenSpieler;

@@ -101,9 +101,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	// VOID
 	this.nimmMitspielerAuf = function(doneFunc) {
 		var self = this;
-		this.zeigeSpielerDesTisches(function(liste) {
-			for(var i = 0; i < liste.length; i++) {
-				self.spielerrunde.nimmSpielerAufWennNeu(liste[i]);
+		this.zeigeSpielerDesTisches(function(antwort) {
+			for(var i = 0; i < antwort.details.length; i++) {
+				self.spielerrunde.nimmSpielerAufWennNeu(antwort.details[i]);
 			}
 			doneFunc();
 		});
