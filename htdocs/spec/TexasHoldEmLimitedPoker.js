@@ -171,7 +171,10 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				describe("und ich spiele eine PreFlop-Runde mit einem Start-Höchsteinsatz von '0'", function() {
 					beforeEach(function(done) {
 						ich._bereiteNeuesSpielVor();
-						ich._spielePreflop(ich._erstelleKartenstapel(), function() {
+						ich.wettrunden = [
+							new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
+						];
+						ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 							waechter.holeDieNachsten3Anfragen();
 							done();
 						});
