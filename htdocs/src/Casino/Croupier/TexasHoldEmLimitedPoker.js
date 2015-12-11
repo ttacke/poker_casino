@@ -35,9 +35,9 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 	this._bereiteNeuesSpielVor = function() {
 		this.wettrunden = [
 		//	new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(this, 1),
-		//	new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1),
-		//	new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1),
-		//	new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1),
+			new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1),
 			new CasinoCroupierTexasHoldEmLimitedPokerShowdown(this, 1),
 		];
 		return this.spielerrunde.starteNeuesSpielUndSchiebeGeberTokenWeiter();
@@ -96,24 +96,6 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		preflop.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
 	};
 	// VOID
-	this._spieleFlop = function(kartenstapel, naechsteRunde) {
-		var flop = new CasinoCroupierTexasHoldEmLimitedPokerFlop(this, 1);
-		flop.vorbereiten(this.spielerrunde, kartenstapel);
-		flop.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
-	};
-	// VOID
-	this._spieleTurnCard = function(kartenstapel, naechsteRunde) {
-		var turnCard = new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(this, 1);
-		turnCard.vorbereiten(this.spielerrunde, kartenstapel);
-		turnCard.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
-	};
-	// VOID
-	this._spieleRiver = function(kartenstapel, naechsteRunde) {
-		var riverCard = new CasinoCroupierTexasHoldEmLimitedPokerRiverCard(this, 1);
-		riverCard.vorbereiten(this.spielerrunde, kartenstapel);
-		riverCard.spielen(this.spielerrunde, kartenstapel, naechsteRunde);
-	};
-	// VOID
 	this.spieleEinSpiel = function(doneFunc) {
 		if(!this._bereiteNeuesSpielVor()) {
 			doneFunc(false);
@@ -125,13 +107,7 @@ function CasinoCroupierTexasHoldEmLimitedPoker(name, passwort) {
 		
 		var self = this;
 		this._spielePreflop(kartenstapel, function() {
-			self._spieleFlop(kartenstapel, function() {
-				self._spieleTurnCard(kartenstapel, function() {
-					self._spieleRiver(kartenstapel, function() {
-						self._spieleAlleWettrunden(kartenstapel, doneFunc)
-					})
-				})
-			})
+			self._spieleAlleWettrunden(kartenstapel, doneFunc)
 		});
 	};
 	

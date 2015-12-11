@@ -209,7 +209,14 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					describe("und ich spiele eine " + name + "-Runde mit einem Start-Höchsteinsatz von '0' und ohne vorherige Karten", function() {
 						beforeEach(function(done) {
 							ich._bereiteNeuesSpielVor();
-							ich['_spiele' + name](ich._erstelleKartenstapel(), function() {
+							
+							var wettrunde = null;
+							eval("wettrunde = new CasinoCroupierTexasHoldEmLimitedPoker" + name + "(ich, 1)");
+							
+							ich.wettrunden = [
+								wettrunde
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
 								waechter.holeDieNachsten3Anfragen();
 								done();
 							});
@@ -246,7 +253,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 				}
 				erstelleRundenCheck('Flop', ['2♦', '2♦', '2♦']);
 				erstelleRundenCheck('TurnCard', ['2♦']);
-				erstelleRundenCheck('River', ['2♦']);
+				erstelleRundenCheck('RiverCard', ['2♦']);
 				describe("und ich spiele eine Showdown-Runde mit einem Pot von '5', den Tischkarten 2♦ 2♦ 2♦ 2♦ 2♦ und den Handkarten je 2♦ 2♦ und einem Spielerstack von je 0", function() {
 					beforeEach(function(done) {
 						ich._bereiteNeuesSpielVor();
