@@ -104,6 +104,9 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 	}
 	// VOID
 	this.starteWiederAbGeberToken = function() {
+		for(var i = 0; i < this.spielerListe.length; i++) {
+			this.spielerListe[i].setzeLetzteAktion('-');
+		}
 		this.pointer = this.geberTokenPointer;
 	};
 	// BOOLEAN

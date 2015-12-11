@@ -16,35 +16,34 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	
 	// VOID TODO
 	this.spielenNEW = function(spielerrunde, kartenstapel, doneFunc) {
-		
-		//var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
-		
+				this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
+				return;
+/*
+		var spieler = spielerrunde.gibDenSpielerDerAnDerReiheIst();
+		var frage = this._erzeugeFrage(spieler, spielerrunde);
+		var self = this;
+		var historie = [];
+		this.croupier.frageDenSpieler(
+			spieler.gibName(),
+			frage,
+			function(antwort) {
+				var aktion = self._uebersetzeAntwort(antwort);
+				if(aktion == 'fold') {
+					spielerrunde.
+				}
+				
+				if(aktion == 'check') {
+					var hoechsteinsatz = spielerrunde.gibAktuellenHoechsteinsatz();
+					spielerrunde.erhoeheEinsatzAuf(spieler, hoechsteinsatz);
+				}
+				spieler.setzeLetzteAktion(aktion);
+				
+				self._ermittleDenEinsatz(doneFunc, spielerrunde, temp - 1);
+			}
+		);
 		//doneFunc();
-		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
-	};
-	
-	// HASH
-	this._erzeugeFrage = function(spieler, spielerrunde) {
-		var frage = {
-			'Hand': this._clone(spieler.gibHandkarten()),
-			'Tisch': this._clone(spieler.gibTischkarten()),
-			'LetzteAktion': spieler.gibLetzteAktion(),
-			'Einsatz': spieler.gibEinsatz() + '',
-			'Pot': spielerrunde.gibPot() + '',
-			'Stack': spieler.gibStack() + '',
-			'Hoechsteinsatz': spielerrunde.gibAktuellenHoechsteinsatz() + '',
-		};
-		var alle_spieler = spielerrunde.gibAlleSpieler();
-		frage['Spieler'] = [];
-		for(var i = 0; i < alle_spieler.length; i++) {
-			frage['Spieler'].push({
-				'Name': alle_spieler[i].gibName(),
-				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
-				'Stack': alle_spieler[i].gibStack() + '',
-				'Einsatz': alle_spieler[i].gibEinsatz() + '',
-			});
-		}
-		return frage;
+		//this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
+*/
 	};
 	// VOID
 	this._ermittleDenEinsatz = function(doneFunc, spielerrunde, temp) {
@@ -69,6 +68,30 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				self._ermittleDenEinsatz(doneFunc, spielerrunde, temp - 1);
 			}
 		);
+	};
+	
+	// HASH
+	this._erzeugeFrage = function(spieler, spielerrunde) {
+		var frage = {
+			'Hand': this._clone(spieler.gibHandkarten()),
+			'Tisch': this._clone(spieler.gibTischkarten()),
+			'LetzteAktion': spieler.gibLetzteAktion(),
+			'Einsatz': spieler.gibEinsatz() + '',
+			'Pot': spielerrunde.gibPot() + '',
+			'Stack': spieler.gibStack() + '',
+			'Hoechsteinsatz': spielerrunde.gibAktuellenHoechsteinsatz() + '',
+		};
+		var alle_spieler = spielerrunde.gibAlleSpieler();
+		frage['Spieler'] = [];
+		for(var i = 0; i < alle_spieler.length; i++) {
+			frage['Spieler'].push({
+				'Name': alle_spieler[i].gibName(),
+				'letzteAktion': alle_spieler[i].gibLetzteAktion(),
+				'Stack': alle_spieler[i].gibStack() + '',
+				'Einsatz': alle_spieler[i].gibEinsatz() + '',
+			});
+		}
+		return frage;
 	};
 	// STRING
 	this._uebersetzeAntwort = function(antwort) {
