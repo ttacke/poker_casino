@@ -113,7 +113,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		}
 		if(antwort == 'raise') {
 			spieler.fuegeRaiseHinzu();
-			if(spieler.anzahlDerRaises() > 300) {//TODO
+			if(spieler.anzahlDerRaises() > 3) {
 				return 'check';
 			}
 		}

@@ -163,6 +163,34 @@ console.log(name + ': ' + antwort);//TODO
 					waechter.pruefeAktuelleSpielerAufrufe(undefined, undefined, undefined);
 				});
 			});
+			describe("und spiele nur die Flop-Wettrunde mit den 3 Spielern A, B und C, wobei immer abwechselnd raise und check benutzt wird", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['raise', 'raise', 'raise', 'raise']);
+					erzeugeAntwortendenSpieler('B', ['check', 'check', 'check', 'check']);
+					erzeugeAntwortendenSpieler('C', ['raise', 'raise', 'raise', 'raise']);
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerFlop(ich, 1),
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done();
+							});
+						}
+					);
+				});
+				it("dann wird jedes raise >4 pro Spieler als check übersetzt, das Spielrundenende ergibt sich durch die raise-check-check-Regel", function() {
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('A', 'B', 'C');
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('A', 'B', undefined);
+				});
+			});
 			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
 					erzeugeSpieler('A', ich, function(frage) {
