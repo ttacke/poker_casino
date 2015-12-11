@@ -11,10 +11,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		// DoNothing
 	};
 	// VOID
-	this.wetten = function(spielerrunde, kartenstapel, naechsteRunde) {
-		// DoNothing
-	};
-	this.abschluss = function(spielerrunde, doneFunc) {
+	this.wetten = function(spielerrunde, kartenstapel, doneFunc) {
 		var datenAllerSpieler = [];
 		var alle_spieler = spielerrunde.gibAlleSpieler();
 		var tischkarten = null;
