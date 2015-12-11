@@ -113,11 +113,11 @@ console.log(name + ': ' + antwort);//TODO
 					]);
 				});
 			});
-		/*	describe("und spiele eine PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
+			describe("und spiele nur die PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
 				beforeEach(function(done) {
-					erzeugeAntwortendenSpieler('A', ['check']);
-					erzeugeAntwortendenSpieler('B', ['check']);
-					erzeugeAntwortendenSpieler('C', ['check']);
+					erzeugeAntwortendenSpieler('A', ['check', 'check']);
+					erzeugeAntwortendenSpieler('B', ['check', 'check']);
+					erzeugeAntwortendenSpieler('C', ['check', 'check']);
 					ich.nimmMitspielerAuf(
 						function() {
 							ich._bereiteNeuesSpielVor();
@@ -130,14 +130,39 @@ console.log(name + ': ' + antwort);//TODO
 						}
 					);
 				});
-				it("dann ist die Wettrunde zuende, wenn jeder 1x gefragt wurde", function() {
+				it("dann ist die Wettrunde zuende, wenn jeder 1x gecheckt hat", function() {
 					waechter.holeDieNachsten3Anfragen();
 					waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
-					//TODO ???
-					//waechter.holeDieNachsten3Anfragen();
-					//waechter.pruefeAktuelleSpielerAufrufe('X', undefined, undefined);
+					
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe(undefined, undefined, undefined);
 				});
-			});*/
+			});
+			describe("und spiele nur die PreFlop-Wettrunde mit den 3 Spielern A, B und C, wobei nur C als erster raised und alles andere nur check ist", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check', 'check']);
+					erzeugeAntwortendenSpieler('B', ['check', 'check']);
+					erzeugeAntwortendenSpieler('C', ['raise', 'check']);
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerPreFlop(ich, 1),
+							];
+							ich._spieleAlleWettrundenNEW(ich._erstelleKartenstapel(), function() {
+								done();
+							});
+						}
+					);
+				});
+				it("dann ist die Wettrunde zuende, wenn jeder 1x gecheckt hat", function() {
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe('C', 'A', 'B');
+					
+					waechter.holeDieNachsten3Anfragen();
+					waechter.pruefeAktuelleSpielerAufrufe(undefined, undefined, undefined);
+				});
+			});
 			describe("und mit den 3 Spielern A, B und C die immer nur mit 'check' antworten", function() {
 				beforeEach(function(done) {
 					erzeugeSpieler('A', ich, function(frage) {

@@ -14,28 +14,26 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		this._ermittleDenEinsatz(doneFunc, spielerrunde, spielerrunde.anzahlDerSpieler());
 	};
 	// BOOLEAN
-	this._bieterrunde_enthaelt_nur_call = function(spielerListe) {
+	this._bieterrunde_enthaelt_nur_check = function(spielerListe) {
 		var trifft_zu = true;
 		for(var i = 0; i < spielerListe.length; i++) {
-			if(spielerListe[i].gibLetzteAktion() != 'call') {
+			if(spielerListe[i].gibLetzteAktion() != 'check') {
 				trifft_zu = false;
 			}
 		}
 		return trifft_zu;
 	}
 	// BOOLEAN
-	this._bieterrunde_enthaelt_ein_startraise_und_sonst_nur_call = function(spielerListe) {
-		var trifft_zu = true;
-		
-		if(spielerListe[spielerListe.length - 1].gibLetzteAktion() != 'raise') {
-			trifft_zu = false;
+	this._bieterrunde_enthaelt_ein_startraise_und_sonst_nur_check = function(spielerListe) {
+		if(spielerListe[0].gibLetzteAktion() != 'raise') {
+			return false;
 		}
-		for(var i = 0; i < spielerListe.length - 1; i++) {
-			if(spielerListe[i].gibLetzteAktion() != 'call') {
-				trifft_zu = false;
+		for(var i = 1; i < spielerListe.length; i++) {
+			if(spielerListe[i].gibLetzteAktion() != 'check') {
+				return false;
 			}
 		}
-		return trifft_zu;
+		return true;
 	}
 	// BOOLEAN
 	this._nur_noch_ein_spieler_vorhanden = function(spielerListe) {
@@ -54,10 +52,11 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 		var spielerListe = spielerrunde.gibSpielerlisteVomAktuellenRueckwaerts(spieler);
 		
 		if(this._nur_noch_ein_spieler_vorhanden(spielerListe)) return true;
-		if(this._bieterrunde_enthaelt_nur_call(spielerListe)) return true;
-		if(this._bieterrunde_enthaelt_ein_startraise_und_sonst_nur_call(spielerListe)) return true;
 		
-		return false;//TODO implementieren
+		if(this._bieterrunde_enthaelt_nur_check(spielerListe)) return true;
+		if(this._bieterrunde_enthaelt_ein_startraise_und_sonst_nur_check(spielerListe)) return true;
+		
+		return false;
 	};
 	// VOID TODO
 	this.spielenNEW = function(spielerrunde, kartenstapel, doneFunc) {
@@ -84,10 +83,6 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				}
 				spieler.setzeLetzteAktion(aktion);
 				
-				if(self._istWettrundeBeendet(spieler, spielerrunde)) {
-					doneFunc();
-					return;
-				}
 				self.spielenNEW(spielerrunde, kartenstapel, doneFunc);
 			}
 		);
