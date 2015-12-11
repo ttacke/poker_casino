@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>Spieler C</title>
 		<meta charset="utf-8" />
 		<script type="text/javascript">
 			var GESTARTET = false;
@@ -17,10 +18,15 @@
 						throw new Error('Betreten fehlgeschlagen');
 					}
 					ws.onmessage = function(event) {
-						console.log(event);
-						var frage = event.data.substr(1, event.data.length);
-						var antwort = ((frage * 1) + 1);
-						ws.send('r' + antwort);
+						var frage = JSON.parse(event.data.substr(1, event.data.length));
+						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
+							console.log(frage.typ + ': ', frage);
+							ws.send('r' + 'ok');
+							return;
+						}
+						
+						console.log(frage.typ + ': ', frage);
+						ws.send('r' + 'xxx');//raise, check, fold
 					}
 				};
 				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);

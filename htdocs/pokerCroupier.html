@@ -24,7 +24,6 @@
 			var ZAHLEN_TOKEN = 0;
 			var MIN_SPIELER = 2;
 			var TIMEOUT_NEU_SETZEN = false;
-			var AKTUELLE_SPIELERLISTE = [];
 			var SPIELRUNDENZAEHLER = 0;
 			var ANZAHL_HERZSTILLSTAENDE = 0;
 			var croupier = null;
@@ -66,39 +65,31 @@
 				});
 			}
 			function warteAufSpieler() {
-				if(SPIELRUNDENZAEHLER % 666 == 0) {
-					croupier.zeigeSpielerDesTisches(function(antwort) {
-						var liste = antwort.details;
-						if(liste.length < MIN_SPIELER) {
-							logge('status', 'warte auf min. ' + MIN_SPIELER + ' Spieler...');
-							setTimeout('warteAufSpieler()', 1000);
-							return;
-						} else {
-							logge('status', 'Aktualisiere Spielrunde');
-							logge('spieleranzahl', liste.length);
-							AKTUELLE_SPIELERLISTE = liste;
-							croupier.nimmMitspielerAuf(function() {
-								spiele_runde();
-							});
-						}
+				if(SPIELRUNDENZAEHLER % 1000 == 0) {
+					croupier.nimmMitspielerAuf(function() {
+						spiele_runde();
 					});
 				} else {
-					logge('status', 'spiele...');
 					spiele_runde();
 				}
 			}
 			function spiele_runde() {
-				SPIELRUNDENZAEHLER++;
-				logge('spielrunde', SPIELRUNDENZAEHLER);
+				logge('spielrunde', SPIELRUNDENZAEHLER++);
+				
 				croupier.spieleEinSpiel(function(erfolg) {
-					console.log('EinSpielFertig: ' + erfolg);
-					console.log(croupier);
-					setTimeout(function() { warteAufSpieler(); }, 5000);
+					if(erfolg) {
+						logge('status', 'spiele...');
+					} else {
+						logge('status', 'zu wenige Spieler!');
+					}
+					setTimeout(function() { warteAufSpieler(); }, 500);//TODO
 				});
 				
 			}
 			function erstelleSpielerLog() {
-				var spielerListe = AKTUELLE_SPIELERLISTE;
+				return;
+				
+				var spielerListe = null;
 				var bereitsAngelegt = $('table tbody').find('tr').length;
 				while(spielerListe.length > bereitsAngelegt) {
 					bereitsAngelegt++;
