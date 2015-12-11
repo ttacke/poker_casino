@@ -184,6 +184,30 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					derAktuellePotIst(ich, 2);
 				});
 			});
+			describe("und raise in der TurnCard-Wettrunde", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', ['check']);
+					erzeugeAntwortendenSpieler('B', ['check']);
+					erzeugeAntwortendenSpieler('C', ['raise']);
+					
+					derAktuellePotIst(ich, 0);
+					
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich.wettrunden = [
+								new CasinoCroupierTexasHoldEmLimitedPokerTurnCard(ich, 1),
+							];
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done(true);
+							});
+						}
+					);
+				});
+				it("dann Beträgt der Einsatz 2 x BigBlind", function() {
+					derAktuellePotIst(ich, 4);
+				});
+			});
 			describe("und raise in der RiverCard-Wettrunde", function() {
 				beforeEach(function(done) {
 					erzeugeAntwortendenSpieler('A', ['check']);
@@ -204,7 +228,7 @@ describe("Szenario: das Casino ist geöffnet", function() {
 						}
 					);
 				});
-				xit("dann Beträgt der Einsatz 2 x BigBlind", function() {
+				it("dann Beträgt der Einsatz 2 x BigBlind", function() {
 					derAktuellePotIst(ich, 4);
 				});
 			});

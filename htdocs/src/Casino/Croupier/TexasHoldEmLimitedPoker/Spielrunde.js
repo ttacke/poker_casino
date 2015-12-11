@@ -74,7 +74,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				if(aktion == 'raise') {
 					//TODO
 					var hoechsteinsatz = spielerrunde.gibAktuellenHoechsteinsatz();
-					spielerrunde.erhoeheEinsatzAuf(spieler, hoechsteinsatz + (2 * self.smallBlind));
+					spielerrunde.erhoeheEinsatzAuf(spieler, hoechsteinsatz + self._gibRaiseEinsatz());
 				}
 				
 				if(aktion == 'check') {
@@ -86,6 +86,10 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 				self.spielen(spielerrunde, kartenstapel, doneFunc);
 			}
 		);
+	};
+	// INT
+	this._gibRaiseEinsatz = function() {
+		return this.smallBlind * 2;
 	};
 	// HASH
 	this._erzeugeFrage = function(spieler, spielerrunde) {

@@ -13,4 +13,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerRiverCard(croupier, smallBlind) {
 		
 		this.croupier.gibTischkartenAnAlleSpieler(1, kartenstapel);
 	};
+	// INT
+	this._gibRaiseEinsatz = function() {
+		return this.smallBlind * 4;
+	};
 }
