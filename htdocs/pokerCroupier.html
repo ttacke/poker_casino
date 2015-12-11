@@ -211,14 +211,22 @@
 			</tbody>
 		</table>
 		<style>
-			#tisch {
+			#tischFlaeche {
 				border: solid 3px green;
+				background-color: #9F9;
 			}
-			#tisch > li {
-				border: solid 1px blue;
+			#tisch {
+				
+			}
+			#tisch > div {
+				border-bottom: solid 1px green;
 			}
 			#tisch * {
 				padding: 0.3em 0.5em;
+			}
+			.derIstDran {
+				background-color: #696;
+				
 			}
 		</style>
 		<script>
@@ -231,23 +239,25 @@
 					nameZuId[spielergebnis[i].name] = i;
 					
 					$('#tisch').append(
-						'<li id="#tischSpieler' + i + '">'
+						'<div id="tischSpieler' + i + '">'
 							+ ' <span class="name">' + spielergebnis[i].name + '</span>'
-							+ ' <span id="istDran' + i + '"></span>'
-							+ ' <span id="handkarten' + i + '"></span>'
 							+ ' Einsatz:<span id="einsatz' + i + '">0</span>$'
 							+ ' Antwort:<span id="antwort' + i + '"></span>'
-						+ '</li>'
+							+ ' <span id="handkarten' + i + '"></span>'
+						+ '</div>'
 					);
 				}
 				tischGezeichnet = true;
 			}
 			function werIstDran(spielergebnis, zug) {
-				logge("istDran" + nameZuId[zug.spieler], 'X');
+				$("#tischSpieler" + nameZuId[zug.spieler]).addClass("derIstDran");
 				for(var i = 0; i < spielergebnis.length; i++) {
 					if(zug.spieler == spielergebnis[i].name) continue;
-					
-					logge("istDran" + nameZuId[spielergebnis[i].name], '');
+					$("#tischSpieler" + nameZuId[spielergebnis[i].name]).removeClass("derIstDran");
+				}
+				for(var i = 0; i < zug.frage.Spieler.length; i++) {
+					var s = zug.frage.Spieler[i];
+					logge("einsatz" + nameZuId[s.Name], s.Einsatz);
 				}
 			}
 			
@@ -275,7 +285,6 @@
 				} else {
 					logge("RundenErgebniss", '');
 					logge("handkarten" + nameZuId[zug.spieler], zug.frage.Hand.join(' '));
-					logge("einsatz" + nameZuId[zug.spieler], zug.frage.Einsatz);
 					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details);
 					logge("tischkarten", zug.frage.Tisch.join(' '));
 					logge("tisch_pot", zug.frage.Pot);
@@ -286,12 +295,14 @@
 			setInterval("replayStep()", 2000);
 		</script>
 		<a href="#" onclick="replayStep();return false;">Replay-Step</a>
-		<h2 id="AktuelleRunde"></h2>
-		<ul id="tisch">
-			
-		</ul>
-		<br/>Tisch: <span id="tischkarten"></span>
-		<br/>Pot: <span id="tisch_pot"></span>
-		<div id="RundenErgebniss"></div>
+		<div id="tischFlaeche">
+			<h2 id="AktuelleRunde"></h2>
+			<div id="tisch">
+				
+			</div>
+			<br/>Boardkarten: <span id="tischkarten"></span>
+			<br/>Pot: <span id="tisch_pot"></span>$
+			<div id="RundenErgebniss"></div>
+		</div>
 	</body>
 </html>
