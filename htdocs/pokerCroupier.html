@@ -221,12 +221,29 @@
 			#tisch > div {
 				border-bottom: solid 1px green;
 			}
-			#tisch * {
+			#tischFlaeche * {
 				padding: 0.3em 0.5em;
 			}
 			.derIstDran {
 				background-color: #696;
-				
+			}
+			#tischFlaeche .roteKarte {
+				color: #F00;
+				background-color: white;
+				border: solid 1px black;
+				padding: 0.2em 0.1em;
+			}
+			#tischFlaeche .schwarzeKarte {
+				color: #000;
+				background-color: white;
+				border: solid 1px black;
+				padding: 0.2em 0.1em;
+			}
+			#tisch .name {
+				font-weight: bold;
+			}
+			#tischFlaeche .pot {
+				font-weight: bold;
 			}
 		</style>
 		<script>
@@ -284,13 +301,25 @@
 					LETZTES_AUFGEZEICHNETES_SPIEL = null;
 				} else {
 					logge("RundenErgebniss", '');
-					logge("handkarten" + nameZuId[zug.spieler], zug.frage.Hand.join(' '));
+					logge("handkarten" + nameZuId[zug.spieler], zeigeKarten(zug.frage.Hand));
 					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details);
-					logge("tischkarten", zug.frage.Tisch.join(' '));
+					logge("tischkarten", zeigeKarten(zug.frage.Tisch));
 					logge("tisch_pot", zug.frage.Pot);
-					
-					console.log(zug);
 				}
+			}
+			function zeigeKarten(karten) {
+				var layout = [];
+				for(var i = 0; i < karten.length; i++) {
+					if(
+						karten[i].match(/♥/)
+						|| karten[i].match(/♦/)
+					) {
+						layout.push('<span class="roteKarte">' + karten[i] + '</span>');
+					} else {// ♣ ♠
+						layout.push('<span class="schwarzeKarte">' + karten[i] + '</span>');
+					}
+				}
+				return layout.join(' ');
 			}
 			setInterval("replayStep()", 2000);
 		</script>
@@ -300,8 +329,8 @@
 			<div id="tisch">
 				
 			</div>
-			<br/>Boardkarten: <span id="tischkarten"></span>
-			<br/>Pot: <span id="tisch_pot"></span>$
+			<br/><span>Boardkarten: <span id="tischkarten"></span></span>
+			<br/><span class="pot">Pot: <span id="tisch_pot"></span>$</span>
 			<div id="RundenErgebniss"></div>
 		</div>
 	</body>
