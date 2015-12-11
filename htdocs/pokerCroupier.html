@@ -245,6 +245,9 @@
 			#tischFlaeche .pot {
 				font-weight: bold;
 			}
+			.fett {
+				font-weight: bold;
+			}
 		</style>
 		<script>
 			var tischGezeichnet = false;
@@ -258,8 +261,8 @@
 					$('#tisch').append(
 						'<div id="tischSpieler' + i + '">'
 							+ ' <span class="name">' + spielergebnis[i].name + '</span>'
-							+ ' Einsatz:<span id="einsatz' + i + '">0</span>$'
-							+ ' Antwort:<span id="antwort' + i + '"></span>'
+							+ ' <span class="fett">Einsatz:</span><span id="einsatz' + i + '">0</span>$'
+							+ ' <span class="fett">Antwort:</span><span id="antwort' + i + '"></span>'
 							+ ' <span id="handkarten' + i + '"></span>'
 						+ '</div>'
 					);
@@ -299,10 +302,19 @@
 						
 					)
 					LETZTES_AUFGEZEICHNETES_SPIEL = null;
+					
+					setTimeout(function() {
+						for(var i = 0; i < zug.spieler.length; i++) {
+							logge("handkarten" + nameZuId[zug.frage.Spieler[i].Name], zeigeKarten([]));
+							logge("antwort" + nameZuId[zug.frage.Spieler[i].Name], '');
+							logge("einsatz" + nameZuId[zug.frage.Spieler[i].Name], 0);
+						}
+					}, 3000);
+					
 				} else {
 					logge("RundenErgebniss", '');
 					logge("handkarten" + nameZuId[zug.spieler], zeigeKarten(zug.frage.Hand));
-					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details);
+					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details || 'NIX');
 					logge("tischkarten", zeigeKarten(zug.frage.Tisch));
 					logge("tisch_pot", zug.frage.Pot);
 				}
@@ -321,9 +333,10 @@
 				}
 				return layout.join(' ');
 			}
-			setInterval("replayStep()", 2000);
+			setInterval("replayStep()", 3000);
 		</script>
-		<a href="#" onclick="replayStep();return false;">Replay-Step</a>
+		<!--a href="#" onclick="replayStep();return false;">Replay-Step</a-->
+		<br/><br/>
 		<div id="tischFlaeche">
 			<h2 id="AktuelleRunde"></h2>
 			<div id="tisch">
