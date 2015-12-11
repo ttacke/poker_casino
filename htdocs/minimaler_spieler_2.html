@@ -20,12 +20,12 @@
 					ws.onmessage = function(event) {
 						var frage = JSON.parse(event.data.substr(1, event.data.length));
 						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
-							console.log(frage.typ + ': ', frage);
+							//console.log(frage.typ + ': ', frage);
 							ws.send('r' + 'ok');
 							return;
 						}
 						
-						console.log(frage.typ + ': ', frage);
+						//console.log(frage.typ + ': ', frage);
 						ws.send('r' + 'fold');//raise, check, fold
 					}
 				};

@@ -18,6 +18,10 @@ function CasinoCroupier(name, passwort) {
 	this.aktuelleFrage = null;
 	this.aufzeichnung = new CasinoPokerSpielaufzeichnung();
 	
+	// OBJ
+	this.gibAufzeichnung = function() {
+		return this.aufzeichnung
+	};
 	// VOID
 	this.herzschrittmacherLog = function() {
 		console.log("Herzstillstand! Reanimierung durchgefuehrt.");

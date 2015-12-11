@@ -32,7 +32,8 @@
 			var SPIELNAME = 'TexasHoldEmFixedLimit';
 			var SPIELRUNDENZAEHLER = 0;
 			var ALTER_SPIELRUNDENZAEHLER = 0;
-			
+			var SPIELERDATEN = {};
+			var SPIELERLISTE = [];
 			
 			var croupier = null;
 			
@@ -85,14 +86,33 @@
 				croupier.spieleEinSpiel(function(erfolg) {
 					if(erfolg) {
 						logge('status', 'spiele...');
+						var aufzeichnung = croupier.gibAufzeichnung();
+						_loggeSpielerdaten(aufzeichnung);
 					} else {
 						logge('status', 'zu wenige Spieler!');
 						setTimeout(function() { _warteAufSpieler(); }, 1000);
 						return;
 					}
-					setTimeout(function() { _spiele(); }, 5000);//TODO
+					setTimeout(function() { _spiele(); }, 0);//TODO
 				});
 				
+			}
+			// VOID
+			function _loggeSpielerdaten(aufzeichnung) {
+				var daten = aufzeichnung.gibSpielerPunkte();
+				for(var i = 0; i < daten.length; i++) {
+					if(!SPIELERDATEN[daten[i].name]) {
+						SPIELERDATEN[daten[i].name] = {
+							name: daten[i].name,
+							gewinne: 0,
+							stack: 0,
+						};
+						SPIELERLISTE.push(daten[i].name);
+					}
+					var d = SPIELERDATEN[daten[i].name];
+					d['stack'] = daten[i].stack;
+					if(daten[i].gewonnen) d['gewinne'] += 1;
+				}
 			}
 			// VOID
 			function erstelleSpielerLog() {
@@ -102,42 +122,25 @@
 				
 				logge('timeoutzaehler', '-- TODO --');
 				logge('spieleranzahl', croupier.spielerrunde.anzahlDerSpieler());
-				return;
 				
-				var spielerListe = null;
+				var spielerListe = SPIELERLISTE;
 				var bereitsAngelegt = $('table tbody').find('tr').length;
 				while(spielerListe.length > bereitsAngelegt) {
 					bereitsAngelegt++;
 					$('table tbody').append(
 						'<tr >'
-						+	'<th>Spieler#' + bereitsAngelegt + ', Punkte:</th><td id="spielerPunkte' + bereitsAngelegt + '">0</td>'
-						+	'<th>Timeouts</th><td id="spielerTimeouts' + bereitsAngelegt + '">0</td>'
-						+	'<th>Rang</th><td id="spielerRang' + bereitsAngelegt + '">0</td>'
+						+	'<th>Spieler#' + spielerListe[bereitsAngelegt - 1] + '</th>'
+						+ 		'<td id="spielerStack' + bereitsAngelegt + '">0</td>'
+						+	'<th>gewonnene Spiele</th><td id="spielerGewinne' + bereitsAngelegt + '">0</td>'
 						+ '</tr>'
 					);
 				}
-				var rangliste = {};
-				var punkteListe = [];
 				
 				for(var i = 0; i < spielerListe.length; i++) {
-					var spieler = (i + 1);
-					logge('spielerTimeouts' + spieler, gibSpielerWert(spieler, 'timeout'));
-					var punkte = gibSpielerWert(spieler, 'punkte');
-					logge("spielerPunkte" + spieler, punkte);
-					if(!punkte) punkte = 0;
-					punkte *= 1;
-					if(!rangliste[punkte]) rangliste[punkte] = [];
-					
-					rangliste[punkte].push(spieler);
-					punkteListe.push(punkte);
-				}
-				punkteListe.sort(function(a, b) { return b - a; });
-				for(var i = 0; i < punkteListe.length; i++) {
-					var rang = i + 1;
-					for(var ii = 0; ii < rangliste[punkteListe[i] + ''].length; ii++) {
-						var spieler = rangliste[punkteListe[i]][ii];
-						logge('spielerRang' + spieler, rang);
-					}
+					var spielerId = (i + 1);
+					var daten = SPIELERDATEN[spielerListe[i]];
+					logge('spielerGewinne' + spielerId, daten.gewinne);
+					logge("spielerStack" + spielerId, daten.stack);
 				}
 			}
 		</script>
