@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 
-Anleitung
-=========
+Spielanleitung
+==============
 
 Schnellstart
 ------------
@@ -12,6 +12,9 @@ Dieser Bot ist, wenn Ihr Name und Passwort anpasst und die Zeile "lösch mich" e
 Technische Regeln:
 ------------------
 - Der Croupier spricht mit eurem Bot via WebSocket
+
+- Ob ihr diesen Bot als Grundlage nutzt (JavaScript) oder selber was schreibt, ist egal. Es gibt aktuell
+  aber keine Vorlage für andere Sprachen. Ich selber (ttacke) habe es bisher nur in Perl und JavaScript genutzt.
 
 - Der String, um sich beim Croupier anzumelden ist:
   "pDieErsteHerausforderung\n" + spielerName + "\n" + spielerPasswort
@@ -41,7 +44,54 @@ Spielregeln
   (mindestens +/-2.147.483.647, aber heutzutage mit 64bit sind es +/-9.223.372.036.854.775.807)
 
 - Euch werden 5 Wettrunden gespielt: reflop, flop, turncard, river, showdown
-  In welcher Runde ihr euch befindet, wird in der Frage des Croupiers in "Rundenname"
+  In welcher Wettrunden ihr euch befindet, wird in der Frage des Croupiers in "Rundenname"
+
+  - preflop:
+    - der Gebertoken (= "erster Spieler" der Runde wird im Uhrzeigersinn auf den nächsten Spieler gesetzt
+    - vom ersten Spieler wird der SmallBlind abgezogen und in den Pot geworfen
+      (das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)
+    - vom zweiten Spieler wird der BigBlind abgezogen und in den Pot geworfen
+      (das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)
+    - eine normale Wettrunde beginnt: siehe Wettrunde
+      jedem Spieler werden bei jeder Frage seine 2 Handkarten gezeigt
+
+  - flop
+    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
+    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 3 Tischkarten gezeigt
+
+  - turncard
+    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
+    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 4 Tischkarten gezeigt
+
+  - river
+    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
+    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 5 Tischkarten gezeigt
+
+  - showdown (eigentlich keine Wettrunde)
+    - der Croupier ermittelt aus den Karten aller Spielern den Gewinner und gibt jedem Spieler das Ergebnis bekannt
+      Siehe: Gewinner ermitteln
+    - der Pot wird an den/die Gewinner ausgeschüttet
+    - ein neues Spiel beginnt mit preflop
+
+  - Wettrundenregeln:
+    - mit "fold" steigt man aus dem Spiel aus und ist erst beim nächsten Spiel wieder dabei
+    - mit "raise" erhöht man das aktuelle Höchstgebot um einen BigBlind, also um 2
+    - mit "check" wird der eigene Einsatz auf das aktuelle Höchstgebot gesetzt
+    - sind alle Spieler, bis auf einer, mit "fold" ausgestiegen, ist das Spiel sofort beendet und
+      der letzte verbleibende Spieler hat gewonnen.
+    - antworten alle Spieler hintereinander nur mit "check" ist die Wettrunde beendet und die nächste beginnt
+    - Antwortet ein Spieler mit "raise" und nach ihm alle anderen mit "check", ist die Wettrunde beendet und
+      die nächste beginnt
+    - antwortet ein Spieler mit "raise" und hat aber schon 3 mal mit "raise" in dieser Wettrunde geantwortet,
+      wird die Antwort als "check" interpretiert
+
+  - Gewinner ermitteln
+      - die Karten aller Spieler werden in allen varianten mit den Tischkarten kombiniert und das beste Blatt
+        jedes Spielers ermittelt. Es werden dazu immer 5 Karten benutzt. Welches Blatt welches Schlägt, findet 
+        ihr hier:
+          https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Wahrscheinlichkeiten
+        oder etwas detaillierter hier:
+          https://de.wikipedia.org/wiki/Hand_%28Poker%29#Kombinationsm.C3.B6glichkeiten_bei_f.C3.BCnf_aus_52_Karten
 -->
 <html>
 	<head>
