@@ -1,4 +1,48 @@
 <!DOCTYPE html>
+<!--
+
+Anleitung
+=========
+
+Schnellstart
+------------
+Dieser Bot ist, wenn Ihr Name und Passwort anpasst und die Zeile "lösch mich" entfernt, direkt lauffähig.
+
+
+Technische Regeln:
+------------------
+- Der Croupier spricht mit eurem Bot via WebSocket
+
+- Der String, um sich beim Croupier anzumelden ist:
+  "pDieErsteHerausforderung\n" + spielerName + "\n" + spielerPasswort
+
+- Die Kombination Spielername und Passwort kann frei gewählt werden. Nach dem ersten betreten ist das
+  Password gesetzt und kann nicht mehr geändert werden. Ohne das Passwort kann man also das Casino
+  dann nicht mehr mit diesem Namen betreten.
+
+- Hat die Verbindung geklappt, müsst ihr nur noch auf die Fragen des Croupiers antworten. Valide Antworten sind
+  "fold", "check" und "raise". Alles andere wird als "fold" interpretiert.
+  
+- Ihr bekommt 150ms Zeit für eine Antwort (incl Netzwerk-Roundtrip-Zeit). Schafft ihr das nicht, wird für euch
+  mit "fold" geantwortet.
+
+- Bei 10 Timeouts in Folge werded ihr 3 Sekunden lang immer als "Timeout" gewertet. Warum? Ihr sollt die anderen
+  Spieler nicht ausbremsen. Zeit ist hier quasi direkt Geld.
+
+
+Spielregeln
+-----------
+
+- Grob ist es Texas Hold´em Poker mit Fixed Limit (LHE) https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Limits
+
+- Der BigBlind ist 2, der Small Blind 1
+
+- Euer Stack (= euer Geldhaufen) beginnt bei 0. Ihr könnt "beliebig" ins Negative und Positive gehen
+  (mindestens +/-2.147.483.647, aber heutzutage mit 64bit sind es +/-9.223.372.036.854.775.807)
+
+- Euch werden 5 Wettrunden gespielt: reflop, flop, turncard, river, showdown
+  In welcher Runde ihr euch befindet, wird in der Frage des Croupiers in "Rundenname"
+-->
 <html>
 	<head>
 		<title>Vorlage eines Poker-Bots</title>
@@ -34,7 +78,7 @@
 					}
 					ws.onmessage = function(event) {
 						var frage = JSON.parse(event.data.substr(1, event.data.length));
-						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
+						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
 							ws.send('r' + 'ok');
 							
 							for(var i = 0;i < frage.Spieler.length; i++) {
@@ -43,7 +87,7 @@
 							return;
 						}
 						
-						ws.send('r' + 'check');//raise, check, fold
+						ws.send('r' + 'fold');//raise, check, fold
 					}
 				};
 				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);

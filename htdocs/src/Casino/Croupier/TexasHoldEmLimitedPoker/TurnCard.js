@@ -5,7 +5,7 @@ CasinoCroupierTexasHoldEmLimitedPokerTurnCard.prototype = new CasinoCroupierTexa
 function CasinoCroupierTexasHoldEmLimitedPokerTurnCard(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
-	this.typ = 'turncard';
+	this.rundenname = 'turncard';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {

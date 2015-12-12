@@ -17,7 +17,7 @@
 					}
 					ws.onmessage = function(event) {
 						var frage = JSON.parse(event.data.substr(1, event.data.length));
-						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
+						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
 							ws.send('r' + 'ok');
 							return;
 						}

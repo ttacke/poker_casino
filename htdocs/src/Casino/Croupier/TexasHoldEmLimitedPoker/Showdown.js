@@ -5,7 +5,7 @@ CasinoCroupierTexasHoldEmLimitedPokerShowdown.prototype = new CasinoCroupierTexa
 function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
-	this.typ = 'showdown';
+	this.rundenname = 'showdown';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
@@ -49,7 +49,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerShowdown(croupier, smallBlind) {
 		}
 		
 		var daten = {
-			'typ': this.typ,
+			'Rundenname': this.rundenname,
 			'Tisch': tischkarten,
 			'Pot': verteiltenPot + '',
 			'Gewinner':gewinnerDaten,

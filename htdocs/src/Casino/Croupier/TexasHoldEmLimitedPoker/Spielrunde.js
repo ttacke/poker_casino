@@ -4,7 +4,7 @@
 function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
-	this.typ = '-';
+	this.rundenname = '-';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
@@ -94,7 +94,7 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	// HASH
 	this._erzeugeFrage = function(spieler, spielerrunde) {
 		var frage = {
-			'typ': this.typ,
+			'Rundenname': this.rundenname,
 			'Hand': this._clone(spieler.gibHandkarten()),
 			'Tisch': this._clone(spieler.gibTischkarten()),
 			'LetzteAktion': spieler.gibLetzteAktion(),

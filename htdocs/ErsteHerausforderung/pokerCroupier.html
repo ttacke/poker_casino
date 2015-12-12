@@ -27,7 +27,7 @@
 			var TISCHNAME = 'DieErsteHerausforderung';
 			var CASINO_URL = 'ws://10.1.6.150:8080/';
 			var MAX_ANZAHL_FUER_AUSWERTUNGEN = 10000;
-			var TIMEOUT = 100;// ms
+			var TIMEOUT = 150;// ms
 			
 			var CROUPIER_NAME = 'CroupierNummer1';
 			var CROUPIER_PASSWORT = 'eruqn09t0qzvruhnaslirtneiquz';
@@ -288,9 +288,9 @@
 				
 				var zug = LETZTES_AUFGEZEICHNETES_SPIEL.gibNaechstenSpielzug();
 				werIstDran(spielergebnis, zug);
-				logge("AktuelleRunde", zug.frage.typ);
+				logge("AktuelleRunde", zug.frage.Rundenname);
 				
-				if(zug.frage.typ == 'showdown') {
+				if(zug.frage.Rundenname == 'showdown') {
 					var gewinner = [];
 					for(var i = 0; i < zug.frage.Gewinner.length; i++) {
 						gewinner.push(zug.frage.Gewinner[i].Name + ' (' + zug.frage.Gewinner[i].Gewinn + ')');

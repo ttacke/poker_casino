@@ -5,7 +5,7 @@ CasinoCroupierTexasHoldEmLimitedPokerPreFlop.prototype = new CasinoCroupierTexas
 function CasinoCroupierTexasHoldEmLimitedPokerPreFlop(croupier, smallBlind) {
 	this.smallBlind = smallBlind;
 	this.croupier = croupier;
-	this.typ = 'preflop';
+	this.rundenname = 'preflop';
 	
 	// VOID
 	this.vorbereiten = function(spielerrunde, kartenstapel) {
