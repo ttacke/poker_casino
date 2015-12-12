@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vorlage eines Poker-Bots</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			var casinoUrl = 'ws:10.1.6.150:8080';
+			var tischName = 'DieErsteHerausforderung';
+			
+			var spielerName = 'Dein Name';// bitte anpassen
+			var spielerPasswort = 'Dein geheimes Passwort';// bitte anpassen
+			
+			
+			Lösch mich, damit ich funktioniere. Aber erst Name und Passwort richtig einsetzen!
+			
+			
+			var spieler_statistik = {};
+			setInterval(function() {
+				var statistik = [];
+				for(var name in spieler_statistik) {
+					var stack = spieler_statistik[name];
+					if(spielerName == name) name = '<strong>' + name + '</strong>';
+					statistik.push('<dt>' + name + '</dt><dd>' + stack + '</dd>');
+				}
+				document.body.innerHTML = '<h1>Spielstatistik</h1><dl>' + statistik.join('') + '</dl>';
+			}, 1000);
+			
+			var ws = new WebSocket(casinoUrl);
+			ws.onopen = function(event) {
+				ws.onmessage = function(event) {
+					if(event.data != 'o') {
+						document.body.innerHTML = 'Betreten fehlgeschlagen';
+						throw new Error('Betreten fehlgeschlagen');
+					}
+					ws.onmessage = function(event) {
+						var frage = JSON.parse(event.data.substr(1, event.data.length));
+						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
+							ws.send('r' + 'ok');
+							
+							for(var i = 0;i < frage.Spieler.length; i++) {
+								spieler_statistik[frage.Spieler[i].Name] = frage.Spieler[i].Stack;
+							}
+							return;
+						}
+						
+						ws.send('r' + 'check');//raise, check, fold
+					}
+				};
+				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);
+			};
+		</script>
+	</head>
+	<body>Starte...</body>
+</html>

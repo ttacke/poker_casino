@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Spieler C</title>
 		<meta charset="utf-8" />
 		<script type="text/javascript">
-			var GESTARTET = false;
 			var casinoUrl = 'ws:10.1.6.150:8080';
-			var tischName = 'DerGruene';
+			var tischName = 'DieErsteHerausforderung';
 			var spielerName = 'Spieler C';
-			var spielerPasswort = 'password';
+			var spielerPasswort = 'sejrhcqi4tnz204958nct098';
 			
 			var ws = new WebSocket(casinoUrl);
 			ws.onopen = function(event) {
-				console.log('Verbunden');
-				document.write('verbunden');
+				document.body.innerHTML = spielerName;
 				ws.onmessage = function(event) {
 					if(event.data != 'o') {
 						throw new Error('Betreten fehlgeschlagen');
@@ -21,12 +18,9 @@
 					ws.onmessage = function(event) {
 						var frage = JSON.parse(event.data.substr(1, event.data.length));
 						if(frage.typ == 'showdown') {//preflop, flop, turncard, river, showdown
-							//console.log(frage.typ + ': ', frage);
 							ws.send('r' + 'ok');
 							return;
 						}
-						
-						//console.log(frage.typ + ': ', frage);
 						ws.send('r' + 'check');//raise, check, fold
 					}
 				};
@@ -34,6 +28,5 @@
 			};
 		</script>
 	</head>
-	<body>
-	</body>
+	<body></body>
 </html>

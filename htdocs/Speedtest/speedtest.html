@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Casino 1.0</title>
+		<title>Casino Speedtest</title>
 		<style>
 			body {
 				margin: 0;
@@ -60,7 +60,7 @@
 				width: 18rem;
 			}
 		</style>
-		<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
 		<script>
 			window.tischName = 'GrafZahl';
 			window.aktuelleSpielerNummer = 0;
@@ -79,7 +79,7 @@
 				}
 				window.casinoUrl = 'ws://' + ip + '/';
 				$('#start').hide();
-				_casinoReset();
+				//_casinoReset();
 				_erzeugeCroupier();
 				$('#spielerListe').show();
 				return false;
