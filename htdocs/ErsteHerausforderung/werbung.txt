@@ -1,0 +1,25 @@
+Ich fordere euch heraus! Jeden einzelnen!
+
+- Worin: Einen Poker-Bot schreiben
+- Wann: beliebig zwischen 14.12. 10 Uhr und 18.12. 14 Uhr
+- Wo: im internen Netz
+- Was ist für euch drin: jeder, der die Gewinnt, kriegt am 18.12. ein Stück von dem Kuchen, den ich backen werde.
+  Nicht zu vergessen natürlich auch jede Memnge Ruhm und Ehre.
+
+Was braucht man dazu:
+- Mut
+- Hunger
+- Mut
+
+Teilnehmen geht so:
+- Diese Datei herunterladen:
+- sie mit einem (Text-)Editor öffnen
+  - spielerName und spielerPasswort eintragen
+  - die Zeile "Lösch mich, damit ich funktioniere" komplett löschen
+  - speichern
+- die Datei in einem Browser öffnen
+
+Und Gewinnen geht so:
+- den Code des Bots so verändern, dass er mehr "Zugewinn pro Minute" hat als der Bot "Minime".
+  Einen Screenshot davon machen und hier posten.
+

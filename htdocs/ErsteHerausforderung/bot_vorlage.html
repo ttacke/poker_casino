@@ -6,18 +6,16 @@ Spielanleitung
 
 Schnellstart
 ------------
+
 Dieser Bot ist, wenn Ihr Name und Passwort anpasst und die Zeile "lösch mich" entfernt, direkt lauffähig.
 
 
 Technische Regeln:
 ------------------
-- Der Croupier spricht mit eurem Bot via WebSocket
 
 - Ob ihr diesen Bot als Grundlage nutzt (JavaScript) oder selber was schreibt, ist egal. Es gibt aktuell
-  aber keine Vorlage für andere Sprachen. Ich selber (ttacke) habe es bisher nur in Perl und JavaScript genutzt.
-
-- Der String, um sich beim Croupier anzumelden ist:
-  "pDieErsteHerausforderung\n" + spielerName + "\n" + spielerPasswort
+  aber keine Vorlage für andere Sprachen. Der Croupier spricht mit eurem Bot via WebSocket, das ist alles,
+  was man braucht.
 
 - Die Kombination Spielername und Passwort kann frei gewählt werden. Nach dem ersten betreten ist das
   Password gesetzt und kann nicht mehr geändert werden. Ohne das Passwort kann man also das Casino
@@ -30,7 +28,7 @@ Technische Regeln:
   mit "fold" geantwortet.
 
 - Bei 10 Timeouts in Folge werded ihr 3 Sekunden lang immer als "Timeout" gewertet. Warum? Ihr sollt die anderen
-  Spieler nicht ausbremsen. Zeit ist hier quasi direkt Geld.
+  Spieler nicht ausbremsen. Zeit ist hier wirklich Geld.
 
 
 Spielregeln
@@ -101,20 +99,30 @@ Spielregeln
 			var casinoUrl = 'ws:10.1.6.150:8080';
 			var tischName = 'DieErsteHerausforderung';
 			
-			var spielerName = 'Dein Name';// bitte anpassen
-			var spielerPasswort = 'Dein geheimes Passwort';// bitte anpassen
+			var spielerName = 'DeinName';// bitte anpassen, aber Sonderzeichen besser vermeiden
+			var spielerPasswort = 'DeingeheimesPasswort';// bitte anpassen, aber Sonderzeichen besser vermeiden
 			
 			
-			Lösch mich, damit ich funktioniere. Aber erst Name und Passwort richtig einsetzen!
+			//Lösch mich, damit ich funktioniere. Aber erst Name und Passwort richtig einsetzen!
 			
 			
 			var spieler_statistik = {};
+			var zugewinnstatistik = {};
 			setInterval(function() {
 				var statistik = [];
 				for(var name in spieler_statistik) {
 					var stack = spieler_statistik[name];
+					if(!zugewinnstatistik[name]) zugewinnstatistik[name] = [];
+					var i = zugewinnstatistik[name].length - 60;
+					var zugewinn = 'verfügbar in ' + (i * -1) + ' Sekunden';
+					if(i >= 0) {
+						zugewinn = stack - zugewinnstatistik[name][i];
+					}
+					zugewinnstatistik[name].push(stack);
 					if(spielerName == name) name = '<strong>' + name + '</strong>';
-					statistik.push('<dt>' + name + '</dt><dd>' + stack + '</dd>');
+					statistik.push('<dt>' + name + '</dt><dd>Zugewinn pro Minute: ' + zugewinn + '<br/><small>Aktueller Stack: ' + stack + '</small></dd>');
+					
+					
 				}
 				document.body.innerHTML = '<h1>Spielstatistik</h1><dl>' + statistik.join('') + '</dl>';
 			}, 1000);
