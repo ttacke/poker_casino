@@ -39,6 +39,9 @@ function spielstatistik() {
 	var statistik = [];
 	for(var name in spielstatistik_zugewinnstatistik) {
 		var i = spielstatistik_zugewinnstatistik[name].length - spielstatistik_benutzte_datenmenge;
+		var stack = spielstatistik_zugewinnstatistik[name][
+			spielstatistik_zugewinnstatistik[name].length - 1
+		];
 		var zugewinn = 'verfügbar in ' + (i * -1) + ' Spielen';
 		if(i >= 0) {
 			var daten = [];
