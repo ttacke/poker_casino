@@ -12,7 +12,7 @@ Was braucht man dazu:
 - Mut
 
 Teilnehmen geht so:
-- Diese Datei herunterladen:
+- Diese Datei im Browser öffnen und lokal irgendwo speichern: http://10.1.6.150/casino/ErsteHerausforderung/bot_vorlage.html
 - sie mit einem (Text-)Editor öffnen
   - spielerName und spielerPasswort eintragen
   - die Zeile "Lösch mich, damit ich funktioniere" komplett löschen
@@ -20,6 +20,6 @@ Teilnehmen geht so:
 - die Datei in einem Browser öffnen
 
 Und Gewinnen geht so:
-- den Code des Bots so verändern, dass er mehr "Zugewinn pro Minute" hat als der Bot "Minime".
-  Einen Screenshot davon machen und hier posten.
+- Den Code des Bots so verändern, dass er mehr "Zugewinn pro Minute" hat als der Bot "Minime". Einen Screenshot davon machen und hier posten.
 
+Tipp: Eine Anleitung zu den Regeln gibts in der Datei selbst.
