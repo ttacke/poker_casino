@@ -87,6 +87,11 @@
 			function _spiele() {
 				logge('spielrunde', SPIELRUNDENZAEHLER++);
 				
+				if(SPIELRUNDENZAEHLER % 100 == 0) {
+					setTimeout(function() { _warteAufSpieler(); }, 1000);
+					return;
+				}
+				
 				croupier.spieleEinSpiel(function(erfolg) {
 					if(erfolg) {
 						logge('status', 'spiele...');
