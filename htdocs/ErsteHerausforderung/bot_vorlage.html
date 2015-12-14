@@ -95,6 +95,7 @@ Spielregeln
 	<head>
 		<title>Vorlage eines Poker-Bots</title>
 		<meta charset="utf-8" />
+		<script type="text/javascript" src="http://10.1.6.150/casino/spielstatistik.js"></script>
 		<script type="text/javascript">
 			var casinoUrl = 'ws:10.1.6.150:8080';
 			var tischName = 'DieErsteHerausforderung';
@@ -108,23 +109,10 @@ Spielregeln
 			
 			var spieler_statistik = {};
 			var zugewinnstatistik = {};
-			setInterval(function() {
-				var statistik = [];
-				for(var name in spieler_statistik) {
-					var stack = spieler_statistik[name];
-					if(!zugewinnstatistik[name]) zugewinnstatistik[name] = [];
-					var i = zugewinnstatistik[name].length - 60;
-					var zugewinn = 'verfügbar in ' + (i * -1) + ' Sekunden';
-					if(i >= 0) {
-						zugewinn = stack - zugewinnstatistik[name][i];
-					}
-					zugewinnstatistik[name].push(stack);
-					if(spielerName == name) name = '<strong>' + name + '</strong>';
-					statistik.push('<dt>' + name + '</dt><dd>Zugewinn pro Minute: ' + zugewinn + '<br/><small>Aktueller Stack: ' + stack + '</small></dd>');
-					
-					
-				}
-				document.body.innerHTML = '<h1>Spielstatistik</h1><dl>' + statistik.join('') + '</dl>';
+			setInterval(function() {// Das zeigt die aktuellen Spielergebnisse im HTML
+				spielstatistik(
+					spieler_statistik, zugewinnstatistik
+				);
 			}, 1000);
 			
 			var ws = new WebSocket(casinoUrl);
