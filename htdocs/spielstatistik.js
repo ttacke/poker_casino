@@ -1,4 +1,3 @@
-var spielstatistik_spieler_statistik = {};
 var spielstatistik_zugewinnstatistik = {};
 var spielstatistik_benutzte_datenmenge = 500;
 // INT
@@ -38,12 +37,7 @@ function _spielstatistik_gibDurchschnitt(liste) {
 // VOID
 function spielstatistik() {
 	var statistik = [];
-	for(var name in spielstatistik_spieler_statistik) {
-		var stack = spielstatistik_spieler_statistik[name];
-		if(!spielstatistik_zugewinnstatistik[name]) spielstatistik_zugewinnstatistik[name] = [];
-		
-		spielstatistik_zugewinnstatistik[name].push(stack);
-		
+	for(var name in spielstatistik_zugewinnstatistik) {
 		var i = spielstatistik_zugewinnstatistik[name].length - spielstatistik_benutzte_datenmenge;
 		var zugewinn = 'verfügbar in ' + (i * -1) + ' Spielen';
 		if(i >= 0) {
@@ -63,7 +57,10 @@ function spielstatistik_log(frage) {
 	if(frage.Rundenname != 'showdown') return;
 	
 	for(var i = 0;i < frage.Spieler.length; i++) {
-		spielstatistik_spieler_statistik[frage.Spieler[i].Name] = frage.Spieler[i].Stack;
+		if(!spielstatistik_zugewinnstatistik[frage.Spieler[i].Name]) {
+			spielstatistik_zugewinnstatistik[frage.Spieler[i].Name] = [];
+		}
+		spielstatistik_zugewinnstatistik[frage.Spieler[i].Name].push(frage.Spieler[i].Stack);
 	}
 }
 setInterval(function() {
