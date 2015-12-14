@@ -1,3 +1,6 @@
+var spielstatistik_spieler_statistik = {};
+var spielstatistik_zugewinnstatistik = {};
+var spielstatistik_benutzte_datenmenge = 500;
 // INT
 function _spielstatistik_berechneTrend(daten) {
 	var x_durchschnitt = ((daten.length + 1) * (daten.length / 2)) / daten.length;
@@ -33,20 +36,20 @@ function _spielstatistik_gibDurchschnitt(liste) {
 	return summe / anzahl;
 }
 // VOID
-function spielstatistik(spieler_statistik, zugewinnstatistik) {
+function spielstatistik() {
 	var statistik = [];
-	for(var name in spieler_statistik) {
-		var stack = spieler_statistik[name];
-		if(!zugewinnstatistik[name]) zugewinnstatistik[name] = [];
+	for(var name in spielstatistik_spieler_statistik) {
+		var stack = spielstatistik_spieler_statistik[name];
+		if(!spielstatistik_zugewinnstatistik[name]) spielstatistik_zugewinnstatistik[name] = [];
 		
-		zugewinnstatistik[name].push(stack);
+		spielstatistik_zugewinnstatistik[name].push(stack);
 		
-		var i = zugewinnstatistik[name].length - 60;
-		var zugewinn = 'verfügbar in ' + (i * -1) + ' Sekunden';
+		var i = spielstatistik_zugewinnstatistik[name].length - spielstatistik_benutzte_datenmenge;
+		var zugewinn = 'verfügbar in ' + (i * -1) + ' Spielen';
 		if(i >= 0) {
 			var daten = [];
-			for(;i < zugewinnstatistik[name].length; i++) {
-				daten.push(zugewinnstatistik[name][i]);
+			for(;i < spielstatistik_zugewinnstatistik[name].length; i++) {
+				daten.push(spielstatistik_zugewinnstatistik[name][i]);
 			}
 			zugewinn = _spielstatistik_berechneTrend(daten);
 		}
@@ -55,3 +58,14 @@ function spielstatistik(spieler_statistik, zugewinnstatistik) {
 	}
 	document.body.innerHTML = '<h1>Spielstatistik</h1><dl>' + statistik.join('') + '</dl>';
 }
+// VOID
+function spielstatistik_log(frage) {
+	if(frage.Rundenname != 'showdown') return;
+	
+	for(var i = 0;i < frage.Spieler.length; i++) {
+		spielstatistik_spieler_statistik[frage.Spieler[i].Name] = frage.Spieler[i].Stack;
+	}
+}
+setInterval(function() {
+	spielstatistik();
+}, 1000);
