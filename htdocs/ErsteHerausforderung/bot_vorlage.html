@@ -127,7 +127,7 @@ Spielregeln
 						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
 							ws.send('r' + 'ok');
 							
-							for(var i = 0;i < frage.Spieler.length; i++) {
+							for(var i = 0;i < frage.Spieler.length; i++) {// Dient der Anzeige der Spielergebnisse
 								spieler_statistik[frage.Spieler[i].Name] = frage.Spieler[i].Stack;
 							}
 							return;
