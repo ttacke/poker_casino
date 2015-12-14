@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<script type="text/javascript">
 			var casinoUrl = 'ws:10.1.6.150:8080';
-			var tischName = 'DieErsteHerausforderung';
+			var tischName = 'DieErsteHerausforderung-20151215';
 			var spielerName = 'Spieler B';
 			var spielerPasswort = 'ewopcn1v03411xm3pugulkje';
 			
@@ -21,7 +21,7 @@
 							ws.send('r' + 'ok');
 							return;
 						}
-						ws.send('r' + 'check');//raise, check, fold
+						ws.send('r' + 'fold');//raise, check, fold
 					}
 				};
 				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);

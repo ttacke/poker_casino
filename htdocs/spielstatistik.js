@@ -1,5 +1,5 @@
-var spielstatistik_zugewinnstatistik = {};
-var spielstatistik_benutzte_datenmenge = 1000;
+var spielstatistik_daten = {};
+var spielstatistik_benutzte_datenmenge_fuer_trend = 2500;
 // INT
 function _spielstatistik_berechneTrend(daten) {
 	var x_durchschnitt = ((daten.length + 1) * (daten.length / 2)) / daten.length;
@@ -34,38 +34,59 @@ function _spielstatistik_gibDurchschnitt(liste) {
 	}
 	return summe / anzahl;
 }
-// VOID
-function spielstatistik() {
-	var statistik = [];
-	for(var name in spielstatistik_zugewinnstatistik) {
-		var i = spielstatistik_zugewinnstatistik[name].length - spielstatistik_benutzte_datenmenge;
-		var stack = spielstatistik_zugewinnstatistik[name][
-			spielstatistik_zugewinnstatistik[name].length - 1
-		];
-		var zugewinn = 'verfügbar in ' + (i * -1) + ' Spielen';
-		if(i >= 0) {
-			var daten = [];
-			for(;i < spielstatistik_zugewinnstatistik[name].length; i++) {
-				daten.push(spielstatistik_zugewinnstatistik[name][i]);
-			}
-			zugewinn = _spielstatistik_berechneTrend(daten);
+// STRING
+function spielstatistik_gib_trend(stackliste, benutzte_anzahl) {
+	var i = stackliste.length - benutzte_anzahl;
+	var trend = 'verfügbar in ' + (i * -1) + ' Spielen';
+	if(i >= 0) {
+		var daten = [];
+		for(;i < stackliste.length; i++) {
+			daten.push(stackliste[i]);
 		}
-		if(spielerName == name) name = '<strong>' + name + '</strong>';
-		statistik.push('<dt>' + name + '</dt><dd>Zugewinn pro Minute: ' + zugewinn + '<br/><small style="color: #CCC">Aktueller Stack: ' + stack + '</small></dd>');
+		trend = _spielstatistik_berechneTrend(daten);
 	}
-	document.body.innerHTML = '<h1>Spielstatistik</h1><dl>' + statistik.join('') + '</dl>';
+	return trend;
+}
+// VOID
+function spielstatistik_show() {
+	var statistik = [];
+	for(var name in spielstatistik_daten) {
+		var stack = spielstatistik_daten[name][
+			spielstatistik_daten[name].length - 1
+		];
+		
+		while(spielstatistik_daten[name].length > spielstatistik_benutzte_datenmenge_fuer_trend) {
+			spielstatistik_daten[name].shift();
+		}
+		
+		var trend = spielstatistik_gib_trend(spielstatistik_daten[name], spielstatistik_benutzte_datenmenge_fuer_trend);
+		var datenmenge_fuer_kurztrend = Math.floor(spielstatistik_benutzte_datenmenge_fuer_trend / 10);
+		var kurz_trend = spielstatistik_gib_trend(spielstatistik_daten[name], datenmenge_fuer_kurztrend);
+		var datenmenge_fuer_sehrkurztrend = Math.floor(spielstatistik_benutzte_datenmenge_fuer_trend / 100);
+		var sehr_kurz_trend = spielstatistik_gib_trend(spielstatistik_daten[name], datenmenge_fuer_sehrkurztrend);
+		
+		if(spielerName == name) name = '<strong>' + name + '</strong>';
+		statistik.push(
+			'<dt>' + name + '</dt>'
+				+ '<dd>Trend für ' + spielstatistik_benutzte_datenmenge_fuer_trend + ' Spiele: ' + trend + ' <strong>("Zugewinn pro Minute")</strong><br/>'
+				+ '<small style="color: #999">Trend für ' + datenmenge_fuer_kurztrend + ' Spiele: ' + kurz_trend + '<br/>'
+				+ 'Trend für ' + datenmenge_fuer_sehrkurztrend + ' Spiele: ' + sehr_kurz_trend + '<br/>'
+				+ 'Aktueller Stack: ' + stack + '</small></dd>'
+			);
+	}
+	document.body.innerHTML = '<h1>Spielstatistik</h1><small style="color:#999">' + new Date() + '</small><dl>' + statistik.join('') + '</dl>';
 }
 // VOID
 function spielstatistik_log(frage) {
 	if(frage.Rundenname != 'showdown') return;
 	
 	for(var i = 0;i < frage.Spieler.length; i++) {
-		if(!spielstatistik_zugewinnstatistik[frage.Spieler[i].Name]) {
-			spielstatistik_zugewinnstatistik[frage.Spieler[i].Name] = [];
+		if(!spielstatistik_daten[frage.Spieler[i].Name]) {
+			spielstatistik_daten[frage.Spieler[i].Name] = [];
 		}
-		spielstatistik_zugewinnstatistik[frage.Spieler[i].Name].push(frage.Spieler[i].Stack);
+		spielstatistik_daten[frage.Spieler[i].Name].push(frage.Spieler[i].Stack);
 	}
 }
 setInterval(function() {
-	spielstatistik();
+	spielstatistik_show();
 }, 1000);

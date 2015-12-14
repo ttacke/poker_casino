@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Minime</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="http://10.1.6.150/casino/spielstatistik.js"></script>
+		<script type="text/javascript">
+			var casinoUrl = 'ws:10.1.6.150:8080';
+			var tischName = 'DieErsteHerausforderung-20151215';
+			
+			var spielerName = 'Minimeee';
+			var spielerPasswort = 'wievnpqerzoqfecwqieurvqiuergtquercnoqiweu';
+			
+			// ARRAY
+			function splitCard(card) {
+				card.match(/^(.*)(.)$/);
+				return [RegExp.$1,RegExp.$2];
+			}
+			var ws = new WebSocket(casinoUrl);
+			ws.onopen = function(event) {
+				ws.onmessage = function(event) {
+					if(event.data != 'o') {
+						document.body.innerHTML = 'Betreten fehlgeschlagen';
+						throw new Error('Betreten fehlgeschlagen');
+					}
+					ws.onmessage = function(event) {
+						var frage = JSON.parse(event.data.substr(1, event.data.length));
+						spielstatistik_log(frage);// Dient der Anzeige der Spielergebnisse
+						
+						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
+							ws.send('r' + 'ok');
+							return;
+						}
+						var antwort = 'check';
+						if(frage.Rundenname == 'preflop') {
+							var card1 = splitCard(frage.Hand[0]);
+							var card2 = splitCard(frage.Hand[1]);
+							if(
+								card1[0] == card1[0]
+								&& (card1[0] == 'A'
+								|| card1[0] == 'K'
+								|| card1[0] == 'Q'
+								|| card1[0] == 'J'
+								|| card1[0] == '10')
+							) {
+								antwort = 'raise';
+							}
+						}
+						
+						ws.send('r' + antwort);//raise, check, fold
+					}
+				};
+				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);
+			};
+		</script>
+	</head>
+	<body>Starte...</body>
+</html>
