@@ -20,7 +20,7 @@ function _spielstatistik_berechneTrend(daten) {
 		sxi += xi;
 		syi += yi;
 	}
-	return Math.floor(summe_xy / summe_xx);
+	return Math.floor((summe_xy / summe_xx) * daten.length);
 }
 // FLOAT
 function _spielstatistik_gibDurchschnitt(liste) {
