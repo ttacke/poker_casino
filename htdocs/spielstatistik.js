@@ -1,5 +1,5 @@
 var spielstatistik_zugewinnstatistik = {};
-var spielstatistik_benutzte_datenmenge = 500;
+var spielstatistik_benutzte_datenmenge = 1000;
 // INT
 function _spielstatistik_berechneTrend(daten) {
 	var x_durchschnitt = ((daten.length + 1) * (daten.length / 2)) / daten.length;
