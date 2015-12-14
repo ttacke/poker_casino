@@ -23,3 +23,12 @@ Und Gewinnen geht so:
 - Den Code des Bots so verändern, dass er mehr "Zugewinn pro Minute" hat als der Bot "Minime". Einen Screenshot davon machen und hier posten.
 
 Tipp: Eine Anleitung zu den Regeln gibts in der Datei selbst.
+
+
+>>>
+
+The game is on!
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbN0JpsVa3Z5rkyiwhKskQUk0LUqZWQxSJSbfke1y198MhscMXKA
+
+Wichtig: wer bereits die Bot-Vorlage heruntergeladen hatte, sollte das nochmal tun. Es wurden Fehler in der Punkteanzeige korrigiert und die Doku wurde noch erweitert.
+
