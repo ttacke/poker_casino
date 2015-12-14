@@ -106,15 +106,6 @@ Spielregeln
 			
 			Lösch mich, damit ich funktioniere. Aber erst Name und Passwort richtig einsetzen!
 			
-			
-			var spieler_statistik = {};
-			var zugewinnstatistik = {};
-			setInterval(function() {// Das zeigt die aktuellen Spielergebnisse im HTML
-				spielstatistik(
-					spieler_statistik, zugewinnstatistik
-				);
-			}, 1000);
-			
 			var ws = new WebSocket(casinoUrl);
 			ws.onopen = function(event) {
 				ws.onmessage = function(event) {
@@ -124,12 +115,10 @@ Spielregeln
 					}
 					ws.onmessage = function(event) {
 						var frage = JSON.parse(event.data.substr(1, event.data.length));
+						spielstatistik_log(frage);// Dient der Anzeige der Spielergebnisse
+						
 						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
 							ws.send('r' + 'ok');
-							
-							for(var i = 0;i < frage.Spieler.length; i++) {// Dient der Anzeige der Spielergebnisse
-								spieler_statistik[frage.Spieler[i].Name] = frage.Spieler[i].Stack;
-							}
 							return;
 						}
 						
