@@ -32,44 +32,37 @@
 							return;
 						}
 						var antwort = 'check';
-						//if(frage.Rundenname == 'preflop') {
-							var card1 = splitCard(frage.Hand[0]);
-							var card2 = splitCard(frage.Hand[1]);
+						
+						var card1 = splitCard(frage.Hand[0]);
+						var card2 = splitCard(frage.Hand[1]);
+						/* Bringt nochmal ca 100
+						if(frage.Rundenname == 'preflop') {
 							if(
-								card1[0] == card2[0]
-								&& (card1[0] == 'A'
+								card1[0] == 'A'
+								|| card1[0] == 'K'
+								|| card1[0] == 'Q'
+								|| card1[0] == 'J'
+								|| card1[0] == '10'
+								|| card2[0] == 'A'
+								|| card2[0] == 'K'
+								|| card2[0] == 'Q'
+								|| card2[0] == 'J'
+								|| card2[0] == '10'
+							) {
+								antwort = 'raise';
+							}
+						}*/
+						/* Aggressiveres Raise: bringt gegenüber Minime das doppelte, der Raised nur im preflop */
+						if(
+							card1[0] == card2[0]
+							&& (card1[0] == 'A'
 								|| card1[0] == 'K'
 								|| card1[0] == 'Q'
 								|| card1[0] == 'J'
 								|| card1[0] == '10')
-							) {
-								antwort = 'raise';
-							}
-							if(
-								card1[0] != card2[0]
-								&& (
-									card1[0] == '2'
-									|| card1[0] == '3'
-									|| card1[0] == '4'
-									|| card1[0] == '5'
-									|| card1[0] == '6'
-									|| card1[0] == '7'
-									|| card1[0] == '8'
-									|| card1[0] == '9'
-								) && (
-									card2[0] == '2'
-									|| card2[0] == '3'
-									|| card2[0] == '4'
-									|| card2[0] == '5'
-									|| card2[0] == '6'
-									|| card2[0] == '7'
-									|| card2[0] == '8'
-									|| card2[0] == '9'
-								)
-							) {
-								antwort = 'fold';
-							}
-						//}
+						) {
+							antwort = 'raise';
+						}
 						
 						ws.send('r' + antwort);//raise, check, fold
 					}
