@@ -7,6 +7,7 @@ use LOCAL::Casino();
 my $IP = $ARGV[0] || '127.0.0.1';
 my $PORT = $ARGV[1] || '8080';
 
+#TODO Tipp von Ben: der Server geht aus, wenn sich jemand disconnected. Es gibt dann keine Meldung
 while(1) {
 	warn "Starte Server auf $IP:$PORT ...";
 	
