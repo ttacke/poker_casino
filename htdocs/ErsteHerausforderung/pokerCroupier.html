@@ -3,21 +3,21 @@
 	<head>
 		<title>TexasHoldEmFixedLimit-Poker</title>
 		<meta charset="utf-8" />
-		  <script type="text/javascript" src="../src/Casino/Besucher.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Spieler.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Poker/Spielaufzeichnung.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Spielrunde.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/PreFlop.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Flop.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/TurnCard.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/RiverCard.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Showdown.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Poker/Gewinnermittlung.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Poker/Spielkarte.js"></script>
-		  <script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
-		  
+			<script type="text/javascript" src="../src/Casino/Besucher.js"></script>
+			<script type="text/javascript" src="../src/Casino/Spieler.js"></script>
+			<script type="text/javascript" src="../src/Casino/Poker/Spielaufzeichnung.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Spielrunde.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/PreFlop.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Flop.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/TurnCard.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/RiverCard.js"></script>
+			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Showdown.js"></script>
+			<script type="text/javascript" src="../src/Casino/Poker/Gewinnermittlung.js"></script>
+			<script type="text/javascript" src="../src/Casino/Poker/Spielkarte.js"></script>
+			<script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
+			
 		<script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="../src/speedtest.js"></script>
 		<script type="text/javascript">
@@ -144,7 +144,7 @@
 					$('table tbody').append(
 						'<tr >'
 						+	'<th>' + spielerListe[bereitsAngelegt - 1] + '</th>'
-						+ 		'<td id="spielerStack' + bereitsAngelegt + '">0</td>'
+						+	'<td id="spielerStack' + bereitsAngelegt + '">0</td>'
 						+	'<th>gewonnene Spiele</th><td id="spielerGewinne' + bereitsAngelegt + '">0</td>'
 						+	'<th>Timeouts</th><td id="spielerTimeout' + bereitsAngelegt + '">0</td>'
 						+ '</tr>'
@@ -253,16 +253,26 @@
 			}
 		</style>
 		<script>
-			var tischGezeichnet = false;
+			var namenGezeichnet = "";
 			var nameZuId = {};
 			function zeichneTisch(spielergebnis) {
-				if(tischGezeichnet) return;
+				spielergebnis.sort(function(a,b) { return a.name.localeCompare(b.name); });
+				var namen = "";
+				for(var i = 0; i < spielergebnis.length; i++) {
+					namen += spielergebnis[i].name;
+				}
+				
+				if (namen === namenGezeichnet) {
+				  return;
+				}
+				$('#tisch').empty();
 				
 				for(var i = 0; i < spielergebnis.length; i++) {
 					nameZuId[spielergebnis[i].name] = i;
+					namenGezeichnet = namen;
 					
 					$('#tisch').append(
-						'<div id="tischSpieler' + i + '">'
+						'<div class="spieler" id="tischSpieler' + i + '">'
 							+ ' <span class="name">' + spielergebnis[i].name + '</span>'
 							+ ' <span class="fett">Einsatz:</span><span id="einsatz' + i + '">0</span>$'
 							+ ' <span class="fett">Antwort:</span><span id="antwort' + i + '"></span>'
@@ -270,7 +280,6 @@
 						+ '</div>'
 					);
 				}
-				tischGezeichnet = true;
 			}
 			function werIstDran(spielergebnis, zug) {
 				$("#tischSpieler" + nameZuId[zug.spieler]).addClass("derIstDran");
@@ -308,9 +317,14 @@
 					
 					setTimeout(function() {
 						for(var i = 0; i < zug.spieler.length; i++) {
-							logge("handkarten" + nameZuId[zug.frage.Spieler[i].Name], zeigeKarten([]));
-							logge("antwort" + nameZuId[zug.frage.Spieler[i].Name], '');
-							logge("einsatz" + nameZuId[zug.frage.Spieler[i].Name], 0);
+							if (zug.frage.Spieler[i]) {
+								logge("handkarten" + nameZuId[zug.frage.Spieler[i].Name], zeigeKarten([]));
+								logge("antwort" + nameZuId[zug.frage.Spieler[i].Name], '');
+								logge("einsatz" + nameZuId[zug.frage.Spieler[i].Name], 0);
+							}
+							else {
+								logge("spieler "+i+" nicht gefunden");
+							}
 						}
 					}, 3000);
 					
