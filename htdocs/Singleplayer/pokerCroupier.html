@@ -3,364 +3,176 @@
 	<head>
 		<title>TexasHoldEmFixedLimit-Poker</title>
 		<meta charset="utf-8" />
-			<script type="text/javascript" src="../src/Casino/Besucher.js"></script>
-			<script type="text/javascript" src="../src/Casino/Spieler.js"></script>
-			<script type="text/javascript" src="../src/Casino/Poker/Spielaufzeichnung.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Spielrunde.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/PreFlop.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Flop.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/TurnCard.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/RiverCard.js"></script>
-			<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Showdown.js"></script>
-			<script type="text/javascript" src="../src/Casino/Poker/Gewinnermittlung.js"></script>
-			<script type="text/javascript" src="../src/Casino/Poker/Spielkarte.js"></script>
-			<script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
-			
-		<script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
-		<script type="text/javascript" src="../src/speedtest.js"></script>
-		<script type="text/javascript">
 		
-			var VERZOEGERUNG = 0;
-			
-			var TISCHNAME = 'DieErsteHerausforderung-20151215';
-			var CASINO_URL = 'ws://10.1.6.150:8080/';
-			var MAX_ANZAHL_FUER_AUSWERTUNGEN = 10000;
-			var TIMEOUT = 150;// ms
-			
-			var CROUPIER_NAME = 'CroupierNummer1';
-			var CROUPIER_PASSWORT = 'eruqn09t0qzvruhnaslirtneiquz';
-			var SPIELNAME = 'TexasHoldEmFixedLimit(LHE)';
-			var SPIELRUNDENZAEHLER = 0;
-			var ALTER_SPIELRUNDENZAEHLER = 0;
-			var SPIELERDATEN = {};
-			var SPIELERLISTE = [];
-			
-			var LETZTES_AUFGEZEICHNETES_SPIEL = null;
-			
-			var croupier = null;
-			
-			$(function() {
-				//_casinoReset();
-				_init();
-				setInterval("erstelleSpielerLog()", 1000);
-			});
-			function _casinoReset() {
-				var verbindung = new WebSocket(CASINO_URL);
-				verbindung.onopen = function(event) {
-					verbindung.send('x-ef84ab0c-5df1-4ff3-811b-706c3c92c6f5');
-				};
-			}
-			function _init() {
-				logge('maxAnzahlFuerAuswertungen', MAX_ANZAHL_FUER_AUSWERTUNGEN);
-				croupier = new CasinoCroupierTexasHoldEmLimitedPoker(
-					CROUPIER_NAME, CROUPIER_PASSWORT
-				);
-				croupier.betrete(CASINO_URL, function() {
-					_starteTisch();
-				});
-			}
-			function _starteTisch() {
-				croupier.eroeffneTisch(
-					TISCHNAME,
-					SPIELNAME,
-					TIMEOUT, 
-					function(daten) {
-						logge("timeout", TIMEOUT);
-						if(daten.status == 'ok') {
-							logge('status', 'Tisch "' + TISCHNAME + '" mit Spiel "' + SPIELNAME + '" eröffnet: ' + daten.status);
-							_spiele();
-						} else {
-							logge('status', "Tisch anlegen ist fehlgeschlagen");
-							setTimeout('_init()', 1000);
-						}
-					}
-				);
-			}
-			function _warteAufSpieler() {
-				croupier.nimmMitspielerAuf(function() {
-					_spiele();
-				});
-			}
-			// VOID
-			function _spiele() {
-				logge('spielrunde', SPIELRUNDENZAEHLER++);
-				
-				if(SPIELRUNDENZAEHLER % 100 == 0) {
-					setTimeout(function() { _warteAufSpieler(); }, 1000);
-					return;
-				}
-				
-				croupier.spieleEinSpiel(function(erfolg) {
-					if(erfolg) {
-						logge('status', 'spiele...');
-						var aufzeichnung = croupier.gibAufzeichnung();
-						_loggeSpielerdaten(aufzeichnung);
-					} else {
-						logge('status', 'zu wenige Spieler!');
-						setTimeout(function() { _warteAufSpieler(); }, 1000);
-						return;
-					}
-					setTimeout(function() { _spiele(); }, VERZOEGERUNG);//TODO
-				});
-				
-			}
-			// VOID
-			function _loggeSpielerdaten(aufzeichnung) {
-				var daten = aufzeichnung.gibSpielerPunkte();
-				
-				if(!LETZTES_AUFGEZEICHNETES_SPIEL) {
-					LETZTES_AUFGEZEICHNETES_SPIEL = aufzeichnung
-				}
-				for(var i = 0; i < daten.length; i++) {
-					if(!SPIELERDATEN[daten[i].name]) {
-						SPIELERDATEN[daten[i].name] = {
-							name: daten[i].name,
-							gewinne: 0,
-							stack: 0,
-							timeout: 0,
-						};
-						SPIELERLISTE.push(daten[i].name);
-					}
-					var d = SPIELERDATEN[daten[i].name];
-					d['stack'] = daten[i].stack;
-					if(daten[i].hatGewonnen) d['gewinne'] += 1;
-					if(daten[i].hatTimeout) d['timeout'] += 1;
-				}
-			}
-			// VOID
-			function erstelleSpielerLog() {
-				var runden_pro_sekunde = SPIELRUNDENZAEHLER - ALTER_SPIELRUNDENZAEHLER;
-				logge('spiele_pro_sekunde', runden_pro_sekunde);
-				ALTER_SPIELRUNDENZAEHLER = SPIELRUNDENZAEHLER;
-				
-				logge('spieleranzahl', croupier.spielerrunde.anzahlDerSpieler());
-				
-				var spielerListe = SPIELERLISTE;
-				var bereitsAngelegt = $('table tbody').find('tr').length;
-				while(spielerListe.length > bereitsAngelegt) {
-					bereitsAngelegt++;
-					$('table tbody').append(
-						'<tr >'
-						+	'<th>' + spielerListe[bereitsAngelegt - 1] + '</th>'
-						+	'<td id="spielerStack' + bereitsAngelegt + '">0</td>'
-						+	'<th>gewonnene Spiele</th><td id="spielerGewinne' + bereitsAngelegt + '">0</td>'
-						+	'<th>Timeouts</th><td id="spielerTimeout' + bereitsAngelegt + '">0</td>'
-						+ '</tr>'
-					);
-				}
-				
-				for(var i = 0; i < spielerListe.length; i++) {
-					var spielerId = (i + 1);
-					var daten = SPIELERDATEN[spielerListe[i]];
-					logge('spielerGewinne' + spielerId, daten.gewinne);
-					logge("spielerStack" + spielerId, daten.stack);
-					logge("spielerTimeout" + spielerId, daten.timeout);
-				}
-			}
-		</script>
+		<script type="text/javascript" src="../src/Casino/Besucher.js"></script>
+		<script type="text/javascript" src="../src/Casino/Spieler.js"></script>
+		<script type="text/javascript" src="../src/Casino/Poker/Spielaufzeichnung.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Spielrunde.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/PreFlop.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Flop.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/TurnCard.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/RiverCard.js"></script>
+		<script type="text/javascript" src="../src/Casino/Croupier/TexasHoldEmLimitedPoker/Showdown.js"></script>
+		<script type="text/javascript" src="../src/Casino/Poker/Gewinnermittlung.js"></script>
+		<script type="text/javascript" src="../src/Casino/Poker/Spielkarte.js"></script>
+		<script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
+		
+		<link href="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
+		<script src="../lib/jquery-2.1.4.min.js"></script>
+		<script src="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 		<style>
-			table {
+			body {
+				color: #FFF;
+				background-color: black;
+			}
+			h1 span span {
+				color: #000;
 				width: 100%;
 			}
-			table, th, td {
-				padding: 0;
-				margin: 0;
-				border-collapse: collapse;
+			#titel {
+				margin-left: 1.0rem;
+				color: #666;
 			}
-			th, td {
-				padding: 0.2rem 0.5rem;
-				border: 1px solid #000;
+			.icon {
+				display: inline-block;
+				padding: 0.3rem 0.4rem 0.6rem 0.4rem;
 			}
-			th {
-				border-right: none;
-				text-align: right;
-				width: 11rem;
-			}
-			td {
-				border-left: none;
-				overflow: hidden;
-				width: 18%;
-			}
-			tbody th, tbody td {
-				border-color: #CCC;
-				color: #999;
-			}
-		</style>
-	</head>
-	<body>
-		<table>
-			<thead>
-				<tr>
-					<th>Status:</th><td id="status">starte...</td>
-					<th>Spielrunden:</th><td>
-						<span id="spielrunde">0</span>
-						/ <span id="spiele_pro_sekunde">0</span>pro s
-					</td>
-					<th>Timeout</th><td>
-						<span id="timeout">0</span> ms
-					</td>
-				</tr>
-				<tr>
-					<th>aktive Spieler:</th><td id="spieleranzahl">0</td>
-					<th>Bewertungsgrenze:</th><td>
-						<span id="maxAnzahlFuerAuswertungen">0</span>
-					</td>
-					<th>Timeoutstrafe:</th><td>10 in Folge = 3s</td>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-		<style>
-			#tischFlaeche {
-				border: solid 3px green;
-				background-color: #9F9;
-			}
-			#tisch {
-				
-			}
-			#tisch > div {
-				border-bottom: solid 1px green;
-			}
-			#tischFlaeche * {
-				padding: 0.2em 0.3em;
-			}
-			.derIstDran {
-				background-color: #696;
-			}
-			#tischFlaeche .roteKarte {
-				color: #F00;
-				background-color: white;
-				border: solid 1px black;
-				padding: 0.2em 0.1em;
-			}
-			#tischFlaeche .schwarzeKarte {
-				color: #000;
-				background-color: white;
-				border: solid 1px black;
-				padding: 0.2em 0.1em;
-			}
-			#tisch .name {
-				font-weight: bold;
-			}
-			#tischFlaeche .pot {
-				font-weight: bold;
-			}
-			.fett {
-				font-weight: bold;
-			}
-		</style>
-		<script>
-			var namenGezeichnet = "";
-			var nameZuId = {};
-			function zeichneTisch(spielergebnis) {
-				spielergebnis.sort(function(a,b) { return a.name.localeCompare(b.name); });
-				var namen = "";
-				for(var i = 0; i < spielergebnis.length; i++) {
-					namen += spielergebnis[i].name;
-				}
-				
-				if (namen === namenGezeichnet) {
-				  return;
-				}
-				$('#tisch').empty();
-				
-				for(var i = 0; i < spielergebnis.length; i++) {
-					nameZuId[spielergebnis[i].name] = i;
-					namenGezeichnet = namen;
-					
-					$('#tisch').append(
-						'<div class="spieler" id="tischSpieler' + i + '">'
-							+ ' <span class="name">' + spielergebnis[i].name + '</span>'
-							+ ' <span class="fett">Einsatz:</span><span id="einsatz' + i + '">0</span>$'
-							+ ' <span class="fett">Antwort:</span><span id="antwort' + i + '"></span>'
-							+ ' <span id="handkarten' + i + '"></span>'
-						+ '</div>'
-					);
-				}
-			}
-			function werIstDran(spielergebnis, zug) {
-				$("#tischSpieler" + nameZuId[zug.spieler]).addClass("derIstDran");
-				for(var i = 0; i < spielergebnis.length; i++) {
-					if(zug.spieler == spielergebnis[i].name) continue;
-					$("#tischSpieler" + nameZuId[spielergebnis[i].name]).removeClass("derIstDran");
-				}
-				for(var i = 0; i < zug.frage.Spieler.length; i++) {
-					var s = zug.frage.Spieler[i];
-					logge("einsatz" + nameZuId[s.Name], s.Einsatz);
-				}
+			fieldset {
+				border: 1px dotted #CCC;
+				margin-bottom: 1rem;
 			}
 			
-			function replayStep() {
-				if(!LETZTES_AUFGEZEICHNETES_SPIEL) return undefined;
-				
-				var spielergebnis = LETZTES_AUFGEZEICHNETES_SPIEL.gibSpielerPunkte();
-				
-				zeichneTisch(spielergebnis);
-				
-				var zug = LETZTES_AUFGEZEICHNETES_SPIEL.gibNaechstenSpielzug();
-				werIstDran(spielergebnis, zug);
-				logge("AktuelleRunde", zug.frage.Rundenname);
-				
-				if(zug.frage.Rundenname == 'showdown') {
-					var gewinner = [];
-					for(var i = 0; i < zug.frage.Gewinner.length; i++) {
-						gewinner.push(zug.frage.Gewinner[i].Name + ' (' + zug.frage.Gewinner[i].Gewinn + ')');
-					}
-					logge("RundenErgebniss",
-						'<span>Gewinner: ' + gewinner.join(' & ') + '</span><br/>'
-						
-					)
-					LETZTES_AUFGEZEICHNETES_SPIEL = null;
-					
-					setTimeout(function() {
-						for(var i = 0; i < zug.spieler.length; i++) {
-							if (zug.frage.Spieler[i]) {
-								logge("handkarten" + nameZuId[zug.frage.Spieler[i].Name], zeigeKarten([]));
-								logge("antwort" + nameZuId[zug.frage.Spieler[i].Name], '');
-								logge("einsatz" + nameZuId[zug.frage.Spieler[i].Name], 0);
-							}
-							else {
-								logge("spieler "+i+" nicht gefunden");
-							}
-						}
-					}, 3000);
-					
-				} else {
-					logge("RundenErgebniss", '');
-					logge("handkarten" + nameZuId[zug.spieler], zeigeKarten(zug.frage.Hand));
-					logge("antwort" + nameZuId[zug.spieler], zug.antwort.details || 'NIX');
-					logge("tischkarten", zeigeKarten(zug.frage.Tisch));
-					logge("tisch_pot", zug.frage.Pot);
-				}
+			legend {
+				padding: 0.2rem 0.4rem;
+				font-weight: bold;
 			}
-			function zeigeKarten(karten) {
-				var layout = [];
-				for(var i = 0; i < karten.length; i++) {
-					if(
-						karten[i].match(/♥/)
-						|| karten[i].match(/♦/)
-					) {
-						layout.push('<span class="roteKarte">' + karten[i] + '</span>');
-					} else {// ♣ ♠
-						layout.push('<span class="schwarzeKarte">' + karten[i] + '</span>');
-					}
-				}
-				return layout.join(' ');
+			
+			
+			.spiel > div {
+				margin-bottom: 1.0rem;
+				margin-top: 1.0rem;
 			}
-			setInterval("replayStep()", 3000);
+			.spiel select {
+				width: 100%;
+			}
+			.spiel button .ui-icon {
+				display: inline-block;
+			}
+			
+			.erweitert input {
+				width: 50%;
+				margin-top: 0.2rem;
+			}
+			.erweitert label {
+				width: 13rem;
+				display: inline-block;
+				text-align: right;
+			}
+			.erweitert {
+				position: relative;
+			}
+			.erweitert .icon {
+				position: absolute;
+				right: 1.5rem;
+			}
+			
+		</style>
+		<script>
+			$(function() {
+				$( ".tooltip" ).tooltip();
+				$( ".icon" ).hover(
+					function() {
+						$( this ).addClass( "ui-state-hover" );
+					},
+					function() {
+						$( this ).removeClass( "ui-state-hover" );
+					}
+				);
+				$( "select" ).selectmenu();
+				
+			});
+			
+			/* wichtiges
+			#titel
+			#server_domain
+			
+			*/
 		</script>
-		<!--a href="#" onclick="replayStep();return false;">Replay-Step</a-->
-		<div id="tischFlaeche">
-			<h2 id="AktuelleRunde"></h2>
-			<div id="tisch">
+	</head>
+	<body>
+
+<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<h1 class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<span class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+			<span class="ui-tabs-anchor">
+				//SEIBERT/MEDIA Casino:
+				<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
+			</span>
+		</span>
+	</h1>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<form>
+			
+			<fieldset class="spiel">
+				<legend>Spiel-Einstellungen</legend>
 				
-			</div>
-			<br/><span>Boardkarten: <span id="tischkarten"></span></span>
-			<br/><span class="pot">Pot: <span id="tisch_pot"></span>$</span>
-			<div id="RundenErgebniss"></div>
-		</div>
+				<div>
+					<label for="gegner">Vorgegebene Gegner-Bots:</label>
+					<br/>
+					<select name="gegner" id="gegner">
+						<option>2 Verlierer: Antworten immer mit "fold"</option>
+						<option>2 Checker: Antworten immer mit "check"</option>
+						<option>1 Checker + Minime: Mitläufer mit nur wenig Eigeninitiative</option>
+						<option>1 Checker + Wadenbeißer: Mitläufer, aber schon etwas aggresiv</option>
+						<option>Keine: für freies Spiel, z.B. Turniere</option>
+					</select>
+				</div>
+				<div>
+					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button">
+						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
+					</button>
+				</div>
+			</fieldset>
+			<fieldset class="erweitert tooltip" title="Das zu Ändern macht eigentlich nur bei freiem Spiel sinn. Zum Entsperren auf rechts Schloss-Icon klicken.">
+				<legend>Croupier-Einstellungen</legend>
+				
+				<span class="icon ui-state-default ui-corner-all">
+					<span class="ui-icon ui-icon-locked"></span>
+				</span>
+				
+				<label for="tisch_name">Name des Tisches:</label>
+				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="9af9c14a-4137-407c-ab78-ea8c47ea3d1e"/>
+				<br/>
+				
+				<label for="tisch_name">Name des Croupiers:</label>
+				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="b7b089a0-2d41-4fba-8ad1-375020c92f98"/>
+				<br/>
+				
+				<label for="tisch_name">Passwort des Croupiers:</label>
+				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="5da88636-8063-444a-933e-da2233811b24"/>
+				
+			</fieldset>
+			<fieldset class="erweitert tooltip" title="Das zu Ändern ist nur sinnvoll, wenn man seinen eigenen Casino-Server hat. Zum Entsperren rechts auf Schloss-Icon klicken.">
+				<legend>Casino-Server</legend>
+				
+				<span class="icon ui-state-default ui-corner-all">
+					<span class="ui-icon ui-icon-locked"></span>
+				</span>
+				
+				<label for="casino_domain">Domain:</label>
+				<input type="text" disabled="disabled" value="127.0.0.1" name="casino_domain" id="casino_domain"/>
+				<br/>
+				
+				<label for="casino_port">Port:</label>
+				<input type="text" disabled="disabled" value="8080" name="casino_port" id="casino_port"/>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+
+
 	</body>
 </html>
