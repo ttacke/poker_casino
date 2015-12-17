@@ -35,54 +35,33 @@
 				margin-left: 1.0rem;
 				color: #666;
 			}
-			.icon {
-				display: inline-block;
-				padding: 0.3rem 0.4rem 0.6rem 0.4rem;
+			button {
+				margin-top: 1.5rem;
 			}
-			fieldset {
-				border: 1px dotted #CCC;
-				margin-bottom: 1rem;
-			}
-			
-			legend {
-				padding: 0.2rem 0.4rem;
-				font-weight: bold;
-			}
-			
-			
-			.spiel > div {
-				margin-bottom: 1.0rem;
-				margin-top: 1.0rem;
-			}
-			.spiel select {
-				width: 100%;
-			}
-			.spiel button .ui-icon {
+			button .ui-icon {
 				display: inline-block;
 			}
-			
-			.erweitert input {
+			select {
+				width: 90%;
+			}
+			input {
 				width: 50%;
 				margin-top: 0.2rem;
 			}
-			.erweitert label {
+			label {
 				width: 13rem;
 				display: inline-block;
 				text-align: right;
 			}
-			.erweitert {
-				position: relative;
-			}
-			.erweitert .icon {
-				position: absolute;
-				right: 1.5rem;
+			p {
+				color: #CCC;
+				font-style: italic;
 			}
 			
 		</style>
 		<script>
 			$(function() {
-				$( ".tooltip" ).tooltip();
-				$( ".icon" ).hover(
+				$( "button" ).hover(
 					function() {
 						$( this ).addClass( "ui-state-hover" );
 					},
@@ -91,88 +70,77 @@
 					}
 				);
 				$( "select" ).selectmenu();
-				
+				$( ".accordeon" ).accordion();
 			});
 			
 			/* wichtiges
-			#titel
-			#server_domain
-			
+			#start
+				#server_domain
+				#mitspieler
+				#tisch_name
+				#croupier_user
+				#croupier_passwort
+				#casino_domain
+				#casino_port
 			*/
 		</script>
 	</head>
 	<body>
-
-<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-	<h1 class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
-			<span class="ui-tabs-anchor">
-				//SEIBERT/MEDIA Casino:
-				<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
-			</span>
-		</span>
-	</h1>
-	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-		<form>
-			
-			<fieldset class="spiel">
-				<legend>Spiel-Einstellungen</legend>
-				
-				<div>
-					<label for="gegner">Vorgegebene Gegner-Bots:</label>
-					<br/>
-					<select name="gegner" id="gegner">
-						<option>2 Verlierer: Antworten immer mit "fold"</option>
-						<option>2 Checker: Antworten immer mit "check"</option>
-						<option>1 Checker + Minime: Mitläufer mit nur wenig Eigeninitiative</option>
-						<option>1 Checker + Wadenbeißer: Mitläufer, aber schon etwas aggresiv</option>
-						<option>Keine: für freies Spiel, z.B. Turniere</option>
-					</select>
-				</div>
-				<div>
-					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button">
+		<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<h1 class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<span class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+					<span class="ui-tabs-anchor">
+						//SEIBERT/MEDIA Casino:
+						<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
+					</span>
+				</span>
+			</h1>
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<form id="start">
+					<div class="accordeon">
+						<h3>Mitspieler</h3>
+						<div>
+							<p>Welche Spieler sollen bereits am Tisch sitzen?</p>
+							<select name="mitspieler" id="mitspieler">
+								<option>2 Verlierer: Antworten immer mit "fold"</option>
+								<option>2 Checker: Antworten immer mit "check"</option>
+								<option>1 Checker + Minime: Mitläufer mit nur wenig Eigeninitiative</option>
+								<option>1 Checker + Wadenbeißer: Mitläufer, aber schon etwas aggresiv</option>
+								<option>Keine: für freies Spiel, z.B. Turniere</option>
+							</select>
+						</div>
+						<h3>Erweitert: Croupier</h3>
+						<div>
+							<p>Diese Einstellungen zu ändern ist nur dann sinnvoll, wenn man ein freies Spiel startet.</p>
+							
+							<label for="tisch_name">TischID:</label>
+							<input type="text" name="tisch_name" id="tisch_name" value="9af9c14a-4137-407c-ab78-ea8c47ea3d1e"/>
+							<br/>
+							
+							<label for="croupier_user">Name:</label>
+							<input type="text" name="croupier_user" id="croupier_user" value="b7b089a0-2d41-4fba-8ad1-375020c92f98"/>
+							<br/>
+							
+							<label for="croupier_passwort">Passwort:</label>
+							<input type="password" name="croupier_passwort" id="croupier_passwort" value="5da88636-8063-444a-933e-da2233811b24"/>
+						</div>
+						<h3>Erweitert: Casino-Server</h3>
+						<div>
+							<p>Diese Einstellungen zu ändern ist nur dann sinnvoll, wenn man seinen eigenen Casino-Server betreibt.</p>
+							
+							<label for="casino_domain">Domain/IP:</label>
+							<input type="text" value="127.0.0.1" name="casino_domain" id="casino_domain"/>
+							<br/>
+							
+							<label for="casino_port">Port:</label>
+							<input type="text" value="8080" name="casino_port" id="casino_port"/>
+						</div>
+					</div>
+					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
 					</button>
-				</div>
-			</fieldset>
-			<fieldset class="erweitert tooltip" title="Das zu Ändern macht eigentlich nur bei freiem Spiel sinn. Zum Entsperren auf rechts Schloss-Icon klicken.">
-				<legend>Croupier-Einstellungen</legend>
-				
-				<span class="icon ui-state-default ui-corner-all">
-					<span class="ui-icon ui-icon-locked"></span>
-				</span>
-				
-				<label for="tisch_name">Name des Tisches:</label>
-				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="9af9c14a-4137-407c-ab78-ea8c47ea3d1e"/>
-				<br/>
-				
-				<label for="tisch_name">Name des Croupiers:</label>
-				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="b7b089a0-2d41-4fba-8ad1-375020c92f98"/>
-				<br/>
-				
-				<label for="tisch_name">Passwort des Croupiers:</label>
-				<input type="text" name="tisch_name" disabled="disabled" id="tisch_name" value="5da88636-8063-444a-933e-da2233811b24"/>
-				
-			</fieldset>
-			<fieldset class="erweitert tooltip" title="Das zu Ändern ist nur sinnvoll, wenn man seinen eigenen Casino-Server hat. Zum Entsperren rechts auf Schloss-Icon klicken.">
-				<legend>Casino-Server</legend>
-				
-				<span class="icon ui-state-default ui-corner-all">
-					<span class="ui-icon ui-icon-locked"></span>
-				</span>
-				
-				<label for="casino_domain">Domain:</label>
-				<input type="text" disabled="disabled" value="127.0.0.1" name="casino_domain" id="casino_domain"/>
-				<br/>
-				
-				<label for="casino_port">Port:</label>
-				<input type="text" disabled="disabled" value="8080" name="casino_port" id="casino_port"/>
-			</fieldset>
-		</form>
-	</div>
-</div>
-
-
-
+				</form>
+			</div>
+		</div>
 	</body>
 </html>
