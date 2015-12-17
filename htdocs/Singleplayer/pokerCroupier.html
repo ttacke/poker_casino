@@ -23,6 +23,9 @@
 		<script src="../lib/jquery-2.1.4.min.js"></script>
 		<script src="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 		<style>
+			html, body {
+				height: 95%;
+			}
 			body {
 				color: #FFF;
 				background-color: black;
@@ -57,7 +60,9 @@
 				color: #CCC;
 				font-style: italic;
 			}
-			
+			#start {
+				display: none;
+			}
 		</style>
 		<script>
 			$(function() {
@@ -88,11 +93,9 @@
 	<body>
 		<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 			<h1 class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-				<span class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
-					<span class="ui-tabs-anchor">
-						//SEIBERT/MEDIA Casino:
-						<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
-					</span>
+				<span class="ui-tabs-anchor">
+					//SEIBERT/MEDIA Casino:
+					<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
 				</span>
 			</h1>
 			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
@@ -139,6 +142,38 @@
 					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
 					</button>
+				</form>
+				<form>
+				<!-- Gleicher Stand...
+				https://code.google.com/p/hot-rats/source/browse/trunk/poker/
+				-->
+					<style>
+						body > div {
+							height: 100%;
+						}
+						.ui-tabs-panel {
+							height: 70%;
+						}
+						form, #tisch {
+							height: 100%;
+						}
+						#tisch > span {
+							height: 100%;
+							border-radius: 10rem;
+							width: 80%;
+							display: block;
+							background: #9fda58 url("images/ui-bg_gloss-wave_85_9fda58_500x100.png") repeat-x scroll 50% 50%;
+							border-width: 0.5rem;
+							margin: auto;
+							margin-top: 1rem;
+						}
+					</style>
+					
+					<div id="tisch" class="ui-helper-reset ui-helper-clearfix ui-corner-all">
+						<span class="ui-corner-top ui-corner-bottom ui-state-active">
+							
+						</span>
+					</h1>
 				</form>
 			</div>
 		</div>
