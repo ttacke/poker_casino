@@ -40,14 +40,18 @@
 						<div>
 							<p>Welche Spieler sollen bereits am Tisch sitzen?</p>
 							<select name="mitspieler" id="mitspieler">
-								<option>2 Verlierer: Antworten immer mit "fold"</option>
-								<option>2 Checker: Antworten immer mit "check"</option>
-								<option>1 Checker + Minime: Mitläufer mit nur wenig Eigeninitiative</option>
-								<option>1 Checker + Wadenbeißer: Mitläufer, aber schon etwas aggresiv</option>
-								<option>Keine: für freies Spiel, z.B. Turniere</option>
+								<option>Verlierer + Verlierer</option>
+								<option>Checker + Checker</option>
+								<option>Narziss + Checker</option>
+								<option>Ygramul + Checker</option>
+								<option>Keine: freies Spiel, z.B. Turniere</option>
 							</select>
-							<div class="">
-							</div>
+							<ul id="bot_liste">
+								<li><span class="bot_name">Verlierer:</span><span class="bot_beschreibung">antwortet nur mit "fold"</span></li>
+								<li><span class="bot_name">Checker:</span><span class="bot_beschreibung">antwortet nur mit "check"</span></li>
+								<li><span class="bot_name">Narziss:</span><span class="bot_beschreibung">Schaut nur auf sich</span></li>
+								<li><span class="bot_name">Ygramul:</span><span class="bot_beschreibung">ümmert sich um Viele</span></li>
+							</ul>
 						</div>
 						<h3>Erweitert: Croupier</h3>
 						<div>

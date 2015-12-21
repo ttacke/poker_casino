@@ -39,10 +39,22 @@ p {
 	font-style: italic;
 }
 #start {
-	display: none;
-}
-#spiel {
 	xdisplay: none;
+}
+	ul#bot_liste {
+		list-style-type: none;
+	}
+		#bot_liste li {
+			width: 45%;
+			display: inline-block;
+		}
+		#bot_liste .bot_name {
+			display: inline-block;
+			min-width: 25%;
+			font-weight: bold;
+		}
+#spiel {
+	display: none;
 }
 body > div {
 	height: 100%;
