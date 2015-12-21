@@ -1,0 +1,284 @@
+html {
+	font-size: 100%;
+}
+html, body {
+	height: 95%;
+}
+body {
+	color: #FFF;
+	background-color: black;
+}
+h1 span span {
+	color: #000;
+	width: 100%;
+}
+#titel {
+	margin-left: 1.0rem;
+	color: #666;
+}
+button {
+	margin-top: 1.5rem;
+}
+button .ui-icon {
+	display: inline-block;
+}
+select {
+	width: 90%;
+}
+input {
+	width: 50%;
+	margin-top: 0.2rem;
+}
+label {
+	width: 13rem;
+	display: inline-block;
+	text-align: right;
+}
+p {
+	color: #CCC;
+	font-style: italic;
+}
+#start {
+	display: none;
+}
+body > div {
+	height: 100%;
+}
+.ui-tabs-panel {
+	height: 70%;
+}
+form, #tisch {
+	height: 100%;
+}
+#tisch > span {
+	height: 100%;
+	border-radius: 10rem;
+	width: 70%;
+	display: block;
+	background: #9fda58;
+	border-width: 0.5rem;
+	margin: auto;
+	margin-top: 1rem;
+}
+	#tisch table {
+		width: 100%;
+	}
+	#tisch tbody td {
+		width: 50%;
+		padding-bottom: 3rem;
+		padding-top: 3rem;
+	}
+#spiel {
+	position: relative;
+}
+#groesse {
+	position: absolute;
+}
+#board {
+	padding-top: 1rem;
+	width: 12rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+.spieler {
+	margin-bottom: 2rem;
+	position: relative;
+	height: 3rem;
+}
+	.spieler_inner {
+		width: 19rem;
+		height: 3rem;
+		position: absolute;
+	}
+		.links .spieler_inner {
+			left: -12rem;
+		}
+		.rechts .spieler_inner {
+			right: -12rem;
+		}
+	.name {
+		position: absolute;
+		width: 50%;
+		font-size: 1rem;
+		max-height: 3rem;
+		overflow: hidden;
+	}
+		.links .name {
+			text-align: right;
+			left: 0;
+		}
+		.rechts .name {
+			text-align: left;
+			right: 0;
+		}
+		.ist_an_der_reihe .name {
+			text-decoration: underline;
+			font-size: 1.2em;
+			color: yellow;
+		}
+		.ist_raus .name {
+			text-decoration: line-through;
+			color: #333;
+		}
+	.einsatz {
+		font-size: 0;
+		display: inline-block;
+		position: absolute;
+		top: -0.2rem;
+		width: 2.8rem;
+		min-height: 3rem;
+		padding: 0.2rem;
+	}
+		.links .einsatz {
+			right: 0;
+			transform: rotate(-90deg);
+			transform-origin: top right 0;
+		}
+		.rechts .einsatz {
+			left: 0;
+			transform: rotate(90deg);
+			transform-origin: 0rem 0rem 0;
+		}
+	.rechts .einsatz_inner {
+		transform: scaleX(-1);
+	}
+	.coin {
+		display: inline-block;
+		width: 1.4rem;
+		height: 1.8rem;
+		background-color: #a2941e;
+		margin-right: -0.9rem;
+		margin-bottom: 0.2rem;
+		border-radius: 0.7rem;
+	}
+		.coin_inner {
+			font-size: 1rem;
+			color: black;
+			font-weight: bold;
+			text-align: center;
+			vertical-align: 50%;
+			display: inline-block;
+			height: calc(100% - 0.3rem);
+			width: 100%;
+			padding-top: 0.3rem;
+			border-radius: 0.7rem;
+			background-color: #eef113;
+		}
+			.links .coin_inner {
+				margin-left: 20%;
+			}
+			.rechts .coin_inner {
+				margin-left: 20%;
+			}
+	.hand {
+		font-size: 0;
+		position: absolute;
+	}
+		.links .hand {
+			right: 0;
+		}
+		.rechts .hand {
+			left: 0;
+		}
+	.karte {
+		font-size: 1rem;
+		background-color: white;
+		border: solid 0.05rem black;
+		border-radius: 0.2rem;
+		width: 2rem;
+		text-align: center;
+		padding-top: 0.7rem;
+		padding-bottom: 0.7rem;
+		display: inline-block;
+		position: relative;
+	}
+		.karte:before, .karte_inner:before {
+			position: absolute;
+			top: -0.15rem;
+			right: 0.15rem;
+			font-size: 0.9rem;
+		}
+		.karte_inner:before {
+			right: auto;
+			left: 0.15rem;
+		}
+		.karte:after, .karte_inner:after {
+			position: absolute;
+			bottom: -0.05rem;
+			left: 0.15rem;
+			font-size: 0.9rem;
+		}
+		.karte_inner:after {
+			left: auto;
+			right: 0.15rem;
+		}
+		
+		.links .karte {
+			margin-right: 0.5rem;
+		}
+		.rechts .karte {
+			margin-left: 0.5rem;
+		}
+		.ist_raus .karte {
+			background-color: #CCC;
+			color: #999;
+		}
+		.pik:before, .pik .karte_inner:before, .pik:after, .pik .karte_inner:after {
+			content: "♠";
+		}
+		.kreuz:before, .kreuz .karte_inner:before, .kreuz:after, .kreuz .karte_inner:after {
+			content: "♣";
+		}
+		.karo:before, .karo .karte_inner:before, .karo:after, .karo .karte_inner:after {
+			content: "♦";
+		}
+		.herz:before, .herz .karte_inner:before, .herz:after, .herz .karte_inner:after {
+			content: "♥";
+		}
+		.herz, .karo {
+			color: red;
+		}
+		.kreuz, .pik {
+			color: black;
+		}
+#gewinner_outer {
+	position: absolute;
+	top: 6.5rem;
+	left: 50%;
+	z-index: 1;
+	display: none;
+}
+	#gewinner {
+		position: relative;
+		left: -50%;
+		padding: 1.0rem 2rem;
+		margin-bottom: 3rem;
+		width: 20rem;
+		text-align: center;
+		border-width: 0.5rem;
+		border-radius: 1.5rem;
+	}
+		#gewinner h2 {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+	.gewinner {
+		padding-top: 2.5rem;
+		width: 12rem;
+		margin-left: auto;
+		margin-right: auto;
+	}
+		.gewinner .name {
+			margin-top: -1.5rem;
+		}
+	#gewinner .einsatz_outer {
+		position: relative;
+		padding-top: 3.0rem;
+		padding-bottom: 0;
+		text-align: left;
+		height: 4rem;
+	}
+		#gewinner .einsatz {
+			left: -1.0rem;
+			top: 2.5rem;
+		}
