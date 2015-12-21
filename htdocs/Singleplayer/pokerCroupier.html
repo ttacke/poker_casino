@@ -3,7 +3,7 @@
 	<head>
 		<title>TexasHoldEmFixedLimit-Poker</title>
 		<meta charset="utf-8" />
-		
+		<xbase href="http://localhost"/>
 		<script type="text/javascript" src="../src/Casino/Besucher.js"></script>
 		<script type="text/javascript" src="../src/Casino/Spieler.js"></script>
 		<script type="text/javascript" src="../src/Casino/Poker/Spielaufzeichnung.js"></script>
@@ -143,10 +143,21 @@
 						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
 					</button>
 				</form>
-				<form>
+				<form id="spiel">
 				<!-- Gleicher Stand...
 				https://code.google.com/p/hot-rats/source/browse/trunk/poker/
 				-->
+					<script>
+						function plus() {
+							$('#spiel').attr('style', 'font-size: 2rem');
+						}
+						function minus() {
+							$('#spiel').attr('style', 'font-size: 1rem');
+						}
+						$(function() {
+							
+						});
+					</script>
 					<style>
 						body > div {
 							height: 100%;
@@ -160,20 +171,270 @@
 						#tisch > span {
 							height: 100%;
 							border-radius: 10rem;
-							width: 80%;
+							width: 70%;
 							display: block;
 							background: #9fda58 url("images/ui-bg_gloss-wave_85_9fda58_500x100.png") repeat-x scroll 50% 50%;
 							border-width: 0.5rem;
 							margin: auto;
 							margin-top: 1rem;
 						}
+							#tisch table {
+								width: 100%;
+							}
+							#tisch tbody td {
+								width: 50%;
+								padding-bottom: 3rem;
+								padding-top: 3rem;
+							}
+						#spiel {
+							position: relative;
+						}
+						#groesse {
+							position: absolute;
+						}
+						.board {
+							padding-top: 1rem;
+							width: 12rem;
+							margin-left: auto;
+							margin-right: auto;
+						}
+						.spieler {
+							margin-bottom: 2rem;
+							position: relative;
+							height: 3rem;
+						}
+							.spieler_inner {
+								width: 19rem;
+								height: 3rem;
+								position: absolute;
+							}
+								.links .spieler_inner {
+									left: -12rem;
+								}
+								.rechts .spieler_inner {
+									right: -12rem;
+								}
+							.name {
+								position: absolute;
+								width: 50%;
+								font-size: 1rem;
+								max-height: 3rem;
+								overflow: hidden;
+							}
+								.links .name {
+									text-align: right;
+									left: 0;
+								}
+								.rechts .name {
+									text-align: left;
+									right: 0;
+								}
+								.ist_an_der_reihe .name {
+									text-decoration: underline;
+									font-size: 1.2em;
+									color: yellow;
+								}
+								.ist_raus .name {
+									text-decoration: line-through;
+									color: #333;
+								}
+							.einsatz {
+								font-size: 0;
+								display: inline-block;
+								position: absolute;
+								top: -0.2rem;
+								width: 2.8rem;
+								min-height: 3rem;
+								padding: 0.2rem;
+							}
+								.links .einsatz {
+									right: 0;
+									transform: rotate(-90deg);
+									transform-origin: top right 0;
+								}
+								.rechts .einsatz {
+									left: 0;
+									transform: rotate(90deg);
+									transform-origin: 0rem 0rem 0;
+								}
+							.rechts .einsatz_inner {
+								transform: scaleX(-1);
+							}
+							.coin {
+								display: inline-block;
+								width: 1.4rem;
+								height: 1.8rem;
+								background-color: #a2941e;
+								margin-right: -0.9rem;
+								margin-bottom: 0.2rem;
+								border-radius: 0.7rem;
+							}
+								.coin_inner {
+									font-size: 1rem;
+									color: black;
+									font-weight: bold;
+									text-align: center;
+									vertical-align: 50%;
+									display: inline-block;
+									height: 100%;
+									width: 100%;
+									border-radius: 0.7rem;
+									background-color: #eef113;
+								}
+									.links .coin_inner {
+										margin-left: 20%;
+									}
+									.rechts .coin_inner {
+										margin-left: 20%;
+									}
+							.hand {
+								font-size: 0;
+								position: absolute;
+							}
+								.links .hand {
+									right: 0;
+								}
+								.rechts .hand {
+									left: 0;
+								}
+							.karte {
+								font-size: 1rem;
+								background-color: white;
+								border: solid 1px black;
+								border-radius: 3px;
+								width: 2rem;
+								text-align: center;
+								padding-top: 0.7rem;
+								padding-bottom: 0.7rem;
+								display: inline-block;
+							}
+								.links .karte {
+									margin-right: 0.5rem;
+								}
+								.rechts .karte {
+									margin-left: 0.5rem;
+								}
+								.ist_raus .karte {
+									background-color: #333;
+								}
+								.rot {
+									color: red;
+								}
+								.schwarz {
+									color: black;
+								}
 					</style>
+					
+					<div id="groesse">
+						<a href="#" onclick="plus()">+</a>
+						<a href="#" onclick="minus()">-</a>
+					</div>
+					
 					
 					<div id="tisch" class="ui-helper-reset ui-helper-clearfix ui-corner-all">
 						<span class="ui-corner-top ui-corner-bottom ui-state-active">
-							
+							<table>
+								<thead>
+								<tr>
+									<td colspan="2">
+										<div class="board">
+											<span class="karte schwarz">A♣</span>
+											<span class="karte rot">10♠</span>
+											<span class="karte schwarz">A♣</span>
+											<span class="karte rot">10♠</span>
+											<span class="karte rot">10♠</span>
+										</div>
+									</td>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td class="links">
+							<div class="spieler ist_an_der_reihe">
+								<div class="spieler_inner">
+									<div class="name">Biene</div>
+									<div class="hand">
+										<span class="karte schwarz">A♣</span>
+										<span class="karte rot">10♠</span>
+									</div>
+									<div class="einsatz"><div class="einsatz_inner">
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+									</div></div>
+								</div>
+							</div>
+							<div class="spieler ist_raus">
+								<div class="spieler_inner">
+									<div class="name">Biene</div>
+									<div class="hand">
+										<span class="karte schwarz">A♣</span>
+										<span class="karte rot">10♠</span>
+									</div>
+									<div class="einsatz"><div class="einsatz_inner">
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+									</div></div>
+								</div>
+							</div>
+									</td>
+									<td class="rechts">
+							<div class="spieler">
+								<div class="spieler_inner">
+									<div class="name">Biene</div>
+									
+								</div>
+							</div>
+							<div class="spieler">
+								<div class="spieler_inner">
+									<div class="name">Biene</div>
+									<div class="hand">
+										<span class="karte schwarz">A♣</span>
+										<span class="karte rot">10♠</span>
+									</div>
+									<div class="einsatz"><div class="einsatz_inner">
+										
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										<span class="coin"><span class="coin_inner">€</span></span>
+										
+									</div></div>
+								</div>
+							</div>
+									</td>
+								</tr>
+								</tbody>
+							</table>
 						</span>
-					</h1>
+					</div>
 				</form>
 			</div>
 		</div>
