@@ -41,6 +41,9 @@ p {
 #start {
 	display: none;
 }
+#spiel {
+	xdisplay: none;
+}
 body > div {
 	height: 100%;
 }
@@ -73,7 +76,13 @@ form, #tisch {
 }
 #groesse {
 	position: absolute;
+	right: 0;
+	top: 0;
 }
+	#groesse .ui-button-text {
+		font-size: 1.5rem;
+		padding: 0.5rem 1rem;
+	}
 #board {
 	padding-top: 1rem;
 	width: 12rem;
