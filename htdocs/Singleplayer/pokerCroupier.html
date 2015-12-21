@@ -192,7 +192,7 @@
 						#groesse {
 							position: absolute;
 						}
-						.board {
+						#board {
 							padding-top: 1rem;
 							width: 12rem;
 							margin-left: auto;
@@ -318,12 +318,12 @@
 								}
 								.karte_inner:before {
 									right: auto;
-									left: 0.1rem;
+									left: 0.15rem;
 								}
 								.karte:after, .karte_inner:after {
 									position: absolute;
 									bottom: -0.05rem;
-									left: 0.1rem;
+									left: 0.15rem;
 									font-size: 0.9rem;
 								}
 								.karte_inner:after {
@@ -359,6 +359,46 @@
 								.kreuz, .pik {
 									color: black;
 								}
+						#gewinner_outer {
+							position: absolute;
+							top: 6.5rem;
+							left: 50%;
+							z-index: 1;
+						}
+							#gewinner {
+								position: relative;
+								left: -50%;
+								padding: 1.0rem 2rem;
+								margin-bottom: 3rem;
+								width: 20rem;
+								text-align: center;
+								border-width: 0.5rem;
+								border-radius: 1.5rem;
+							}
+								#gewinner h2 {
+									margin-top: 0;
+									margin-bottom: 0;
+								}
+							.gewinner {
+								padding-top: 2.5rem;
+								width: 12rem;
+								margin-left: auto;
+								margin-right: auto;
+							}
+								.gewinner .name {
+									margin-top: -1.5rem;
+								}
+							#gewinner .einsatz_outer {
+								position: relative;
+								padding-top: 3.0rem;
+								padding-bottom: 0;
+								text-align: left;
+								height: 4rem;
+							}
+								#gewinner .einsatz {
+									left: -1.0rem;
+									top: 2.5rem;
+								}
 					</style>
 					
 					<div id="groesse">
@@ -369,11 +409,53 @@
 					
 					<div id="tisch" class="ui-helper-reset ui-helper-clearfix ui-corner-all">
 						<span class="ui-corner-top ui-corner-bottom ui-state-active">
+							<div id="gewinner_outer">
+								<div id="gewinner" class="ui-corner-top ui-corner-bottom ui-state-active">
+									<h2>Gewinner</h2>
+									<div id="spieler">
+										<div class="gewinner">
+											<span class="name">Biene</span>
+											<span class="karte kreuz"><span class="karte_inner">A</span></span>
+											<span class="karte pik"><span class="karte_inner">10</span></span>
+											<span class="karte herz"><span class="karte_inner">A</span></span>
+											<span class="karte karo"><span class="karte_inner">Q</span></span>
+											<span class="karte pik"><span class="karte_inner">K</span></span>
+										</div>
+										<div class="gewinner">
+											<span class="name">Biene</span>
+											<span class="karte kreuz"><span class="karte_inner">A</span></span>
+											<span class="karte pik"><span class="karte_inner">10</span></span>
+											<span class="karte herz"><span class="karte_inner">A</span></span>
+											<span class="karte karo"><span class="karte_inner">Q</span></span>
+											<span class="karte pik"><span class="karte_inner">K</span></span>
+										</div>
+									</div>
+									<div class="einsatz_outer links">
+										je
+										<div class="einsatz"><div class="einsatz_inner">
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											<span class="coin"><span class="coin_inner">€</span></span>
+											
+										</div></div>
+									</div>
+								</div>
+							</div>
 							<table>
 								<thead>
 								<tr>
 									<td colspan="2">
-										<div class="board">
+										<div id="board">
 											<span class="karte kreuz"><span class="karte_inner">A</span></span>
 											<span class="karte pik"><span class="karte_inner">10</span></span>
 											<span class="karte herz"><span class="karte_inner">A</span></span>
