@@ -276,8 +276,9 @@
 									text-align: center;
 									vertical-align: 50%;
 									display: inline-block;
-									height: 100%;
+									height: calc(100% - 5px);
 									width: 100%;
+									padding-top: 5px;
 									border-radius: 0.7rem;
 									background-color: #eef113;
 								}
@@ -307,7 +308,29 @@
 								padding-top: 0.7rem;
 								padding-bottom: 0.7rem;
 								display: inline-block;
+								position: relative;
 							}
+								.karte:before, .karte_inner:before {
+									position: absolute;
+									top: -0.15rem;
+									right: 0.15rem;
+									font-size: 0.9rem;
+								}
+								.karte_inner:before {
+									right: auto;
+									left: 0.1rem;
+								}
+								.karte:after, .karte_inner:after {
+									position: absolute;
+									bottom: -0.05rem;
+									left: 0.1rem;
+									font-size: 0.9rem;
+								}
+								.karte_inner:after {
+									left: auto;
+									right: 0.15rem;
+								}
+								
 								.links .karte {
 									margin-right: 0.5rem;
 								}
@@ -315,12 +338,25 @@
 									margin-left: 0.5rem;
 								}
 								.ist_raus .karte {
-									background-color: #333;
+									background-color: #CCC;
+									color: #999;
 								}
-								.rot {
+								.pik:before, .pik .karte_inner:before, .pik:after, .pik .karte_inner:after {
+									content: "♠";
+								}
+								.kreuz:before, .kreuz .karte_inner:before, .kreuz:after, .kreuz .karte_inner:after {
+									content: "♣";
+								}
+								.karo:before, .karo .karte_inner:before, .karo:after, .karo .karte_inner:after {
+									content: "♦";
+								}
+								.herz:before, .herz .karte_inner:before, .herz:after, .herz .karte_inner:after {
+									content: "♥";
+								}
+								.herz, .karo {
 									color: red;
 								}
-								.schwarz {
+								.kreuz, .pik {
 									color: black;
 								}
 					</style>
@@ -338,11 +374,11 @@
 								<tr>
 									<td colspan="2">
 										<div class="board">
-											<span class="karte schwarz">A♣</span>
-											<span class="karte rot">10♠</span>
-											<span class="karte schwarz">A♣</span>
-											<span class="karte rot">10♠</span>
-											<span class="karte rot">10♠</span>
+											<span class="karte kreuz"><span class="karte_inner">A</span></span>
+											<span class="karte pik"><span class="karte_inner">10</span></span>
+											<span class="karte herz"><span class="karte_inner">A</span></span>
+											<span class="karte karo"><span class="karte_inner">Q</span></span>
+											<span class="karte pik"><span class="karte_inner">K</span></span>
 										</div>
 									</td>
 								</tr>
@@ -354,8 +390,8 @@
 								<div class="spieler_inner">
 									<div class="name">Biene</div>
 									<div class="hand">
-										<span class="karte schwarz">A♣</span>
-										<span class="karte rot">10♠</span>
+										<span class="karte kreuz"><span class="karte_inner">A</span></span>
+										<span class="karte karo"><span class="karte_inner">10</span></span>
 									</div>
 									<div class="einsatz"><div class="einsatz_inner">
 										<span class="coin"><span class="coin_inner">€</span></span>
@@ -379,8 +415,8 @@
 								<div class="spieler_inner">
 									<div class="name">Biene</div>
 									<div class="hand">
-										<span class="karte schwarz">A♣</span>
-										<span class="karte rot">10♠</span>
+										<span class="karte kreuz"><span class="karte_inner">A</span></span>
+										<span class="karte karo"><span class="karte_inner">10</span></span>
 									</div>
 									<div class="einsatz"><div class="einsatz_inner">
 										<span class="coin"><span class="coin_inner">€</span></span>
@@ -394,18 +430,13 @@
 							</div>
 									</td>
 									<td class="rechts">
-							<div class="spieler">
-								<div class="spieler_inner">
-									<div class="name">Biene</div>
-									
-								</div>
-							</div>
+							
 							<div class="spieler">
 								<div class="spieler_inner">
 									<div class="name">Biene</div>
 									<div class="hand">
-										<span class="karte schwarz">A♣</span>
-										<span class="karte rot">10♠</span>
+										<span class="karte kreuz"><span class="karte_inner">A</span></span>
+										<span class="karte karo"><span class="karte_inner">10</span></span>
 									</div>
 									<div class="einsatz"><div class="einsatz_inner">
 										
