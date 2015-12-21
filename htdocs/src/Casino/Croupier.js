@@ -1,19 +1,10 @@
 "use strict";
 
-var CasinoCroupierVerbindungen = [];
-function CasinoCroupierHerzschrittmacher(instanzId) {
-	if(instanzId > -1 && CasinoCroupierVerbindungen[instanzId]) {
-		CasinoCroupierVerbindungen[instanzId].wiederholeLetzteSpielerfrage();
-	} else {
-		throw new Error("Herztot! Croupier-Instanz nicht gefunden.");
-	}
-}
 // CLASS DEFINITION
 CasinoCroupier.prototype = new CasinoBesucher();
 function CasinoCroupier(name, passwort) {
 	this.name = name;
 	this.passwort = passwort;
-	this.instanzId = -1;
 	this.spielerTimeout = 100;
 	this.aktuelleFrage = null;
 	this.aufzeichnung = new CasinoPokerSpielaufzeichnung();
@@ -47,11 +38,7 @@ function CasinoCroupier(name, passwort) {
 				"croupierPasswort":this.passwort,
 				"spielerTimeout": spielerTimeout
 			},
-			function(daten) {
-				CasinoCroupierVerbindungen.push(self);
-				self.instanzId = CasinoCroupierVerbindungen.length - 1;
-				antwortFunktion(daten);
-			}
+			antwortFunktion
 		);
 	};
 	// VOID
@@ -72,7 +59,9 @@ function CasinoCroupier(name, passwort) {
 		this.aktuelleFrage = function() {
 			var timeout = this.spielerTimeout * 2;
 			if(timeout < 50) timeout = 50;
-			var herzschrittmacher = setTimeout("CasinoCroupierHerzschrittmacher(" + this.instanzId + ")", timeout);
+			var herzschrittmacher = setTimeout(function() {
+				self.wiederholeLetzteSpielerfrage();
+			}, timeout);
 			this._sende(
 				{
 					"aktion": "frageDenSpieler",
