@@ -12,7 +12,13 @@ var MITSPIELER = [
 	[INTERNE_BOTS[3], INTERNE_BOTS[1]],
 	[],
 ];
-
+// STRING
+function uuidgen() {
+	function s4() {
+		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+	}
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 // VOID
 function anzeige_vergroessern() {
 	ANZEIGE_GROESSE += 10;
@@ -34,6 +40,8 @@ function befuelle_interne_bots() {
 		content = content.replace(/\[beschreibung\]/, INTERNE_BOTS[i].beschreibung);
 		$beschreibung.append(content);
 	}
+	
+	
 	var mitspieler_template = $('#mitspieler .template').parent().html();
 	$('#mitspieler .template').remove();
 	var $mitspieler = $('#mitspieler');
@@ -53,6 +61,13 @@ function befuelle_interne_bots() {
 		content = content.replace(/\[text\]/, text);
 		$mitspieler.append(content);
 	}
+	
+	$('#tisch_name').val(uuidgen());
+	$('#croupier_user').val(uuidgen());
+	$('#croupier_passwort').val(uuidgen());
+	$('#anzahl_relevanter_spiele').val(10000);
+	$('#casino_domain').val('127.0.0.1');
+	$('#casino_port').val('8080');
 }
 $(function() {
 	befuelle_interne_bots();
