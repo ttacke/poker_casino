@@ -46,19 +46,13 @@
 						<div>
 							<p>Welche Spieler sollen bereits am Tisch sitzen?</p>
 							<select name="mitspieler" id="mitspieler">
-								<option>Verlierer + Verlierer</option>
-								<option>Checker + Checker</option>
-								<option>Narziss + Checker</option>
-								<option>Ygramul + Checker</option>
-								<option>Keine: freies Spiel, z.B. Turniere</option>
+								<option class="template" value="[value]">[text]</option>
 							</select>
 							<ul id="bot_liste">
-								<div class="template">
-									<li>
-										<span class="bot_name">[name]</span>
-										<span class="bot_beschreibung">[beschreibung]</span>
-									</li>
-								</div>
+								<li class="template">
+									<span class="bot_name">[name]</span>
+									<span class="bot_beschreibung">[beschreibung]</span>
+								</li>
 							</ul>
 						</div>
 						<h3>Erweitert: Croupier</h3>
