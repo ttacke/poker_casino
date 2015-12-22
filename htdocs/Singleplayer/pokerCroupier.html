@@ -18,6 +18,12 @@
 		<script type="text/javascript" src="../src/Casino/Poker/Spielkarte.js"></script>
 		<script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
 		
+		<script type="text/javascript" src="../src/PokerBot/Base.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Verlierer.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Checker.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Narziss.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Ygramul.js"></script>
+		
 		<link href="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
 		<script src="../lib/jquery-2.1.4.min.js"></script>
 		<script src="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
@@ -47,10 +53,12 @@
 								<option>Keine: freies Spiel, z.B. Turniere</option>
 							</select>
 							<ul id="bot_liste">
-								<li><span class="bot_name">Verlierer:</span><span class="bot_beschreibung">antwortet nur mit "fold"</span></li>
-								<li><span class="bot_name">Checker:</span><span class="bot_beschreibung">antwortet nur mit "check"</span></li>
-								<li><span class="bot_name">Narziss:</span><span class="bot_beschreibung">Schaut nur auf sich</span></li>
-								<li><span class="bot_name">Ygramul:</span><span class="bot_beschreibung">ümmert sich um Viele</span></li>
+								<div class="template">
+									<li>
+										<span class="bot_name">[name]</span>
+										<span class="bot_beschreibung">[beschreibung]</span>
+									</li>
+								</div>
 							</ul>
 						</div>
 						<h3>Erweitert: Croupier</h3>

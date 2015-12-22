@@ -15,8 +15,8 @@ function PokerBotYgramul() {
 		}
 		
 		var best_counter = 0;
-		alleKarten = []
-
+		var alleKarten = []
+		
 		if ('Hand' in frage) {
 			frage.Hand.forEach(function(value) {
 				alleKarten.push(value);
@@ -26,8 +26,8 @@ function PokerBotYgramul() {
 			alleKarten.push(value);
 		});
 		
-		for (i = 0; i < alleKarten.length; i++) {
-			for (j = i+1; j < alleKarten.length; j++) {
+		for (var i = 0; i < alleKarten.length; i++) {
+			for (var j = i+1; j < alleKarten.length; j++) {
 				if (getvalueofcard(alleKarten[i]) == getvalueofcard(alleKarten[j])) {
 					best_counter += 1;
 				}
