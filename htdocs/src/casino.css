@@ -54,7 +54,7 @@ p {
 			font-weight: bold;
 		}
 #spiel {
-	display: none;
+	xdisplay: none;
 }
 body > div {
 	height: 100%;
