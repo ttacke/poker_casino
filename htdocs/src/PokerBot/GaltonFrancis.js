@@ -3,9 +3,9 @@
 // CLASS DEFINITION
 PokerBotYgramul.prototype = new PokerBotBase();
 function PokerBotYgramul() {
-	this.name = 'Ygramul';
+	this.name = 'GaltonFrancis';
 	this.passwort = 'b3bea06b-c3fc-44e0-9e67-e9fe74d59a11';
-	this.beschreibung = 'Kümmert sich um Viele';
+	this.beschreibung = 'Betreibt Zwillingsforschung';
 	
 	// VOID
 	this.reagiere = function(frage) {
