@@ -31,14 +31,18 @@
 		<link href="./casino.css" rel="stylesheet">
 		<script type="text/javascript" src="./PokerSpiel.js"></script>
 		<script type="text/javascript">
-			var pokerSpiel = new PokerSpiel([
-				new PokerBotVerlierer(),
-				new PokerBotChecker(),
-				new PokerBotNarziss(),
-				new GaltonFrancis()
-			]);
+			var pokerSpiel = new PokerSpiel(
+				[
+					new PokerBotVerlierer(),
+					new PokerBotChecker(),
+					new PokerBotNarziss(),
+					new GaltonFrancis()
+				],
+				new PokerBotVerlierer()
+			);
 			$(function() {
 				pokerSpiel.init();
+				$('#mitspieler').val(-2);//TODO
 				pokerSpiel.start();//TODO zum entwickeln
 			});
 		</script>

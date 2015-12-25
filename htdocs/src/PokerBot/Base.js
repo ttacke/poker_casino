@@ -21,7 +21,6 @@ function PokerBotBase() {
 	// VOID
 	this._starte = function() {
 		var self = this;
-		console.log(this.casinoUrl);
 		this.ws = new WebSocket(this.casinoUrl);
 		this.ws.onopen = function(event) {
 			self.ws.onmessage = function(event) {

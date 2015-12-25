@@ -1,9 +1,11 @@
 "use strict";
 
 // CLASS DEFINITION
-function PokerSpiel(interne_bots) {
+function PokerSpiel(interne_bots, sparring_partner) {
 	this.anzeige_groesse = 100;
 	this.interne_bots = interne_bots;
+	this.sparring_partner = sparring_partner;
+	this.mitspieler_variante = null;
 	this.tisch_name = null;
 	this.croupier_user = null;
 	this.croupier_passwort = null;
@@ -15,6 +17,7 @@ function PokerSpiel(interne_bots) {
 	
 	// VOID
 	this.init = function() {
+		this.sparring_partner.name = this.sparring_partner.name + '(sparring)';
 		this._befuelle_mitspieler_liste();
 		this._befuelle_mitspieler_beschreibungen();
 		this._befuelle_croupiereinstellungen();
@@ -45,8 +48,18 @@ function PokerSpiel(interne_bots) {
 			function(daten) {
 				if(daten.status == 'ok') {
 					self._zeige_spieltisch();
-					//TODO
-					console.log('spiele');
+					setTimeout(
+						function() {
+							self._spiele();
+						},
+						0
+					);
+					setTimeout(
+						function() {
+							self._starte_mitspieler();
+						},
+						0
+					);
 				} else {
 					//TODO logge('status', "Tisch anlegen ist fehlgeschlagen");
 					// setTimeout('_init()', 1000);
@@ -54,7 +67,48 @@ function PokerSpiel(interne_bots) {
 				}
 			}
 		);
-	}
+	};
+	// VOID
+	this._starte_mitspieler = function() {
+		if(this.mitspieler_variante == -1) {
+			// DoNothing: freihes Spiel
+		} else if(this.mitspieler_variante == -2) {
+			for(var i = 0; i < this.interne_bots.length; i++) {
+				this.interne_bots[i].starte(
+					this.casino_domain, this.casino_port, this.tisch_name
+				);
+			}
+		} else if(this.interne_bots[this.mitspieler_variante]) {
+			this.interne_bots[this.mitspieler_variante].starte(
+				this.casino_domain, this.casino_port, this.tisch_name
+			);
+			this.sparring_partner.starte(
+				this.casino_domain, this.casino_port, this.tisch_name
+			);
+		}
+	};
+	// VOID
+	this._spiele = function() {
+		// TODO hier weiter
+		//if(SPIELRUNDENZAEHLER % 100 == 0) {
+		//	setTimeout(function() { _warteAufSpieler(); }, 1000);
+		//	return;
+		//}
+		
+		this.croupier.spieleEinSpiel(function(erfolg) {
+			if(erfolg) {
+				console.log('ein spiel gespielt');
+				//logge('status', 'spiele...');
+				var aufzeichnung = croupier.gibAufzeichnung();
+				//_loggeSpielerdaten(aufzeichnung);
+			} else {
+				console.log('warte...');
+				//setTimeout(function() { _warteAufSpieler(); }, 1000);
+				return;
+			}
+			//setTimeout(function() { _spiele(); }, VERZOEGERUNG);
+		});
+	};
 	// VOID
 	this._zeige_spieltisch = function() {
 		$('#start').hide();
@@ -69,6 +123,7 @@ function PokerSpiel(interne_bots) {
 		this.maximale_antwortzeit_der_bots = $('#maximale_antwortzeit_der_bots').val();
 		this.casino_domain = $('#casino_domain').val();
 		this.casino_port = $('#casino_port').val();
+		this.mitspieler_variante = $('#mitspieler').val();
 	};
 	// VOID
 	this.anzeige_vergroessern = function() {
@@ -98,7 +153,7 @@ function PokerSpiel(interne_bots) {
 			mitspieler_content = mitspieler_content.replace(/\[value\]/, i);
 			mitspieler_content = mitspieler_content.replace(
 				/\[text\]/,
-				this.interne_bots[i].name + ' + ' + this.interne_bots[0].name + '' 
+				this.interne_bots[i].name + ' + ' + this.sparring_partner.name + '' 
 			);
 			$mitspieler.append(mitspieler_content);
 		}
