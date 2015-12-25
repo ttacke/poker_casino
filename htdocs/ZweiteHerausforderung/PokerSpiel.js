@@ -7,7 +7,10 @@ function PokerSpiel(interne_bots) {
 	
 	// VOID
 	this.init = function() {
-		this._befuelle_interne_bots();
+		this._befuelle_mitspieler_liste();
+		this._befuelle_mitspieler_beschreibungen();
+		this._befuelle_croupiereinstellungen();
+		this._befuelle_casinoeinstellungen();
 		this._aktiviere_ui_elemente();
 	};
 	// VOID
@@ -29,21 +32,12 @@ function PokerSpiel(interne_bots) {
 		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	}
 	// VOID
-	this._befuelle_interne_bots = function() {
-		var beschreibung_template = $('#bot_liste .template').parent().html();
-		$('#bot_liste .template').remove();
-		var $beschreibung = $('#bot_liste');
-		
+	this._befuelle_mitspieler_liste = function() {
 		var mitspieler_template = $('#mitspieler .template').parent().html();
 		$('#mitspieler .template').remove();
 		var $mitspieler = $('#mitspieler');
 		
 		for(var i = 0; i < this.interne_bots.length; i++) {
-			var beschreibung_content = beschreibung_template;
-			beschreibung_content = beschreibung_content.replace(/\[name\]/, this.interne_bots[i].name);
-			beschreibung_content = beschreibung_content.replace(/\[beschreibung\]/, this.interne_bots[i].beschreibung);
-			$beschreibung.append(beschreibung_content);
-			
 			var mitspieler_content = mitspieler_template;
 			mitspieler_content = mitspieler_content.replace(/\[value\]/, i);
 			mitspieler_content = mitspieler_content.replace(
@@ -68,11 +62,29 @@ function PokerSpiel(interne_bots) {
 			'Keine: freies Spiel, z.B. Turniere'
 		);
 		$mitspieler.append(mitspieler_content);
+	};
+	// VOID
+	this._befuelle_mitspieler_beschreibungen = function() {
+		var beschreibung_template = $('#bot_liste .template').parent().html();
+		$('#bot_liste .template').remove();
+		var $beschreibung = $('#bot_liste');
 		
+		for(var i = 0; i < this.interne_bots.length; i++) {
+			var beschreibung_content = beschreibung_template;
+			beschreibung_content = beschreibung_content.replace(/\[name\]/, this.interne_bots[i].name);
+			beschreibung_content = beschreibung_content.replace(/\[beschreibung\]/, this.interne_bots[i].beschreibung);
+			$beschreibung.append(beschreibung_content);
+		}
+	};
+	// VOID
+	this._befuelle_croupiereinstellungen = function() {
 		$('#tisch_name').val(this._uuidgen());
 		$('#croupier_user').val(this._uuidgen());
 		$('#croupier_passwort').val(this._uuidgen());
 		$('#anzahl_relevanter_spiele').val(10000);
+	};
+	// VOID
+	this._befuelle_casinoeinstellungen= function() {
 		$('#casino_domain').val('127.0.0.1');
 		$('#casino_port').val('8080');
 	};
