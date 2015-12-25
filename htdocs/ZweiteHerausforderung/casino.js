@@ -5,13 +5,6 @@ var INTERNE_BOTS = [
 	new PokerBotNarziss(),
 	new PokerBotYgramul()
 ];
-var MITSPIELER = [
-	[INTERNE_BOTS[0], INTERNE_BOTS[0]],
-	[INTERNE_BOTS[1], INTERNE_BOTS[1]],
-	[INTERNE_BOTS[2], INTERNE_BOTS[1]],
-	[INTERNE_BOTS[3], INTERNE_BOTS[1]],
-	[],
-];
 // STRING
 function uuidgen() {
 	function s4() {
