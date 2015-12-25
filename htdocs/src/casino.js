@@ -34,33 +34,41 @@ function befuelle_interne_bots() {
 	var beschreibung_template = $('#bot_liste .template').parent().html();
 	$('#bot_liste .template').remove();
 	var $beschreibung = $('#bot_liste');
-	for(var i = 0; i < INTERNE_BOTS.length; i++) {
-		var content = beschreibung_template;
-		content = content.replace(/\[name\]/, INTERNE_BOTS[i].name);
-		content = content.replace(/\[beschreibung\]/, INTERNE_BOTS[i].beschreibung);
-		$beschreibung.append(content);
-	}
-	
 	
 	var mitspieler_template = $('#mitspieler .template').parent().html();
 	$('#mitspieler .template').remove();
 	var $mitspieler = $('#mitspieler');
-	for(var i = 0; i < MITSPIELER.length; i++) {
-		var content = mitspieler_template;
-		content = content.replace(/\[value\]/, i);
-		var text = '';
-		if(MITSPIELER[i].length == 0) {
-			text = 'Keine: freies Spiel, z.B. Turniere';
-		} else {
-			var list = [];
-			for(var j = 0; j < MITSPIELER[i].length; j++) {
-				list.push(MITSPIELER[i][j].name);
-			}
-			text = list.join(' + ');
-		}
-		content = content.replace(/\[text\]/, text);
-		$mitspieler.append(content);
+	
+	for(var i = 0; i < INTERNE_BOTS.length; i++) {
+		var beschreibung_content = beschreibung_template;
+		beschreibung_content = beschreibung_content.replace(/\[name\]/, INTERNE_BOTS[i].name);
+		beschreibung_content = beschreibung_content.replace(/\[beschreibung\]/, INTERNE_BOTS[i].beschreibung);
+		$beschreibung.append(beschreibung_content);
+		
+		var mitspieler_content = mitspieler_template;
+		mitspieler_content = mitspieler_content.replace(/\[value\]/, i);
+		mitspieler_content = mitspieler_content.replace(
+			/\[text\]/,
+			INTERNE_BOTS[i].name + ' + ' + INTERNE_BOTS[0].name + '' 
+		);
+		$mitspieler.append(mitspieler_content);
 	}
+	
+	var mitspieler_content = mitspieler_template;
+	mitspieler_content = mitspieler_content.replace(/\[value\]/, -2);
+	mitspieler_content = mitspieler_content.replace(
+		/\[text\]/,
+		'Alle unten genannten'
+	);
+	$mitspieler.append(mitspieler_content);
+	
+	var mitspieler_content = mitspieler_template;
+	mitspieler_content = mitspieler_content.replace(/\[value\]/, -1);
+	mitspieler_content = mitspieler_content.replace(
+		/\[text\]/,
+		'Keine: freies Spiel, z.B. Turniere'
+	);
+	$mitspieler.append(mitspieler_content);
 	
 	$('#tisch_name').val(uuidgen());
 	$('#croupier_user').val(uuidgen());
