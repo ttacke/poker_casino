@@ -25,11 +25,22 @@
 		<script type="text/javascript" src="../src/PokerBot/GaltonFrancis.js"></script>
 		
 		<link href="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet">
-		<script src="../lib/jquery-2.1.4.min.js"></script>
-		<script src="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 		
 		<link href="./casino.css" rel="stylesheet">
-		<script src="./casino.js"></script>
+		<script type="text/javascript" src="./PokerSpiel.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				var pokerSpiel = new PokerSpiel([
+					new PokerBotVerlierer(),
+					new PokerBotChecker(),
+					new PokerBotNarziss(),
+					new GaltonFrancis()
+				]);
+				pokerSpiel.init();
+			});
+		</script>
 	</head>
 	<body>
 		<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
@@ -86,16 +97,16 @@
 							<input type="text" value="" name="casino_port" id="casino_port"/>
 						</div>
 					</div>
-					<button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+					<button type="button" onclick="" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
 					</button>
 				</form>
 				<form id="spiel">
 					<div id="groesse">
-						<button type="button" onclick="anzeige_vergroessern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+						<button type="button" onclick="pokerSpiel.anzeige_vergroessern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 							<span class="ui-button-text">+</span>
 						</button>
-						<button type="button" onclick="anzeige_verkleinern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+						<button type="button" onclick="pokerSpiel.anzeige_verkleinern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 							<span class="ui-button-text">-</span>
 						</button>
 					</div>

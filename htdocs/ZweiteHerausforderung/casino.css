@@ -39,7 +39,6 @@ p {
 	font-style: italic;
 }
 #start {
-	xdisplay: none;
 }
 	ul#bot_liste {
 		list-style-type: none;
@@ -54,7 +53,7 @@ p {
 			font-weight: bold;
 		}
 #spiel {
-	xdisplay: none;
+	display: none;
 }
 body > div {
 	height: 100%;
