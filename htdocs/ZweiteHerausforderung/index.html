@@ -31,14 +31,15 @@
 		<link href="./casino.css" rel="stylesheet">
 		<script type="text/javascript" src="./PokerSpiel.js"></script>
 		<script type="text/javascript">
+			var pokerSpiel = new PokerSpiel([
+				new PokerBotVerlierer(),
+				new PokerBotChecker(),
+				new PokerBotNarziss(),
+				new GaltonFrancis()
+			]);
 			$(function() {
-				var pokerSpiel = new PokerSpiel([
-					new PokerBotVerlierer(),
-					new PokerBotChecker(),
-					new PokerBotNarziss(),
-					new GaltonFrancis()
-				]);
 				pokerSpiel.init();
+				pokerSpiel.start();//TODO zum entwickeln
 			});
 		</script>
 	</head>
@@ -84,6 +85,10 @@
 							
 							<label for="anzahl_relevanter_spiele">Anzahl relevanter Spiele:</label>
 							<input type="number" name="anzahl_relevanter_spiele" id="anzahl_relevanter_spiele" min="0" max="1000000000" step="100" value="0"/>
+							<br/>
+							
+							<label for="maximale_antwortzeit_der_bots">Maximale Antwortzeit der Bots:</label>
+							<input type="number" name="maximale_antwortzeit_der_bots" id="maximale_antwortzeit_der_bots" min="0" max="1000000000" step="10" value="0"/>
 						</div>
 						<h3>Erweitert: Casino-Server</h3>
 						<div>
@@ -97,7 +102,7 @@
 							<input type="text" value="" name="casino_port" id="casino_port"/>
 						</div>
 					</div>
-					<button type="button" onclick="" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+					<button type="button" onclick="pokerSpiel.start()" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 						<span class="ui-button-text">Spiel starten <span class="ui-icon ui-icon-play"></span></span>
 					</button>
 				</form>

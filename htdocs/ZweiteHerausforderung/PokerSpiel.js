@@ -4,6 +4,14 @@
 function PokerSpiel(interne_bots) {
 	this.anzeige_groesse = 100;
 	this.interne_bots = interne_bots;
+	this.tisch_name = null;
+	this.croupier_user = null;
+	this.croupier_passwort = null;
+	this.anzahl_relevanter_spiele = null;
+	this.maximale_antwortzeit_der_bots = null;
+	this.casino_domain = null;
+	this.casino_port = null;
+	this.croupier = null;
 	
 	// VOID
 	this.init = function() {
@@ -12,6 +20,55 @@ function PokerSpiel(interne_bots) {
 		this._befuelle_croupiereinstellungen();
 		this._befuelle_casinoeinstellungen();
 		this._aktiviere_ui_elemente();
+	};
+	// VOID
+	this.start = function() {
+		this._uebernehme_start_parameter();
+		this.croupier = new CasinoCroupierTexasHoldEmLimitedPoker(
+			this.croupier_user, this.croupier_passwort
+		);
+		var self = this;
+		this.croupier.betrete(
+			'ws:' + this.casino_domain + ':' + this.casino_port,
+			function() {
+				self._eroeffneTisch()
+			}
+		);
+	};
+	// VOID
+	this._eroeffneTisch = function() {
+		var self = this;
+		this.croupier.eroeffneTisch(
+			this.tisch_name,
+			'TexasHoldEmFixedLimit-Poker',
+			this.maximale_antwortzeit_der_bots, 
+			function(daten) {
+				if(daten.status == 'ok') {
+					self._zeige_spieltisch();
+					//TODO
+					console.log('spiele');
+				} else {
+					//TODO logge('status', "Tisch anlegen ist fehlgeschlagen");
+					// setTimeout('_init()', 1000);
+					console.log('fehler beim eroeffnen');
+				}
+			}
+		);
+	}
+	// VOID
+	this._zeige_spieltisch = function() {
+		$('#start').hide();
+		$('#spiel').show();
+	};
+	// VOID
+	this._uebernehme_start_parameter = function() {
+		this.tisch_name = $('#tisch_name').val();
+		this.croupier_user = $('#croupier_user').val();
+		this.croupier_passwort = $('#croupier_passwort').val();
+		this.anzahl_relevanter_spiele = $('#anzahl_relevanter_spiele').val();
+		this.maximale_antwortzeit_der_bots = $('#maximale_antwortzeit_der_bots').val();
+		this.casino_domain = $('#casino_domain').val();
+		this.casino_port = $('#casino_port').val();
 	};
 	// VOID
 	this.anzeige_vergroessern = function() {
@@ -23,7 +80,6 @@ function PokerSpiel(interne_bots) {
 		this.anzeige_groesse -= 10;
 		$('html').attr('style', 'font-size: ' + this.anzeige_groesse + '%');
 	};
-	
 	// STRING
 	this._uuidgen = function() {
 		function s4() {
@@ -82,6 +138,7 @@ function PokerSpiel(interne_bots) {
 		$('#croupier_user').val(this._uuidgen());
 		$('#croupier_passwort').val(this._uuidgen());
 		$('#anzahl_relevanter_spiele').val(10000);
+		$('#maximale_antwortzeit_der_bots').val(150);
 	};
 	// VOID
 	this._befuelle_casinoeinstellungen= function() {
