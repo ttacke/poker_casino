@@ -55,15 +55,6 @@ p {
 #spiel {
 	display: none;
 }
-body > div {
-	height: 100%;
-}
-.ui-tabs-panel {
-	height: 70%;
-}
-form, #tisch {
-	height: 100%;
-}
 #tisch > span {
 	height: 100%;
 	border-radius: 10rem;
