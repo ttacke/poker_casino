@@ -3,7 +3,7 @@
 <html data-ember-extension="1"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Vorlage eines Poker-Bots</title>
 		<meta charset="utf-8">
-		<script type="text/javascript" src="./Vorlage eines Poker-Bots_files/spielstatistik.js"></script>
+		<script type="text/javascript" src="./spielstatistik.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
 		<script type="text/javascript">
 			var casinoUrl = 'ws:10.1.6.150:8080';
