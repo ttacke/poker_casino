@@ -128,7 +128,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			
 			self.aktueller_status = 'Zu wenig Mitspieler, warte...';
 			self.croupier.nimmMitspielerAuf(function() {
-				setTimeout(function() { self._spiele() }, 2000);
+				setTimeout(function() { self._spiele() }, 1000);
 			});
 			return;
 		});
