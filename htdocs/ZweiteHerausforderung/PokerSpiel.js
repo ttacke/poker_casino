@@ -17,6 +17,8 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	this.aktueller_status = 'Uninitialisiert';
 	this.letzter_status = '';
 	this.rundenzaehler = 0;
+	this.aufgezeichnetes_spiel = null;
+	this.abspielvorgang_laeuft = false;
 	
 	// VOID
 	this.init = function() {
@@ -30,14 +32,28 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		var self = this;
 		setInterval(
 			function() {
-				if(self.letzter_status != self.aktueller_status) {
-					self.letzter_status = self.aktueller_status
-					$('#status').html(self.aktueller_status);
-				}
+				self._zeige_status();
+				self._spiele_aufzeichnung_ab();
 			},
 			500
 		);
 	};
+	// VOID
+	this._zeige_status = function() {
+		if(this.letzter_status != this.aktueller_status) {
+			this.letzter_status = this.aktueller_status
+			$('#status').html(this.aktueller_status);
+		}
+	};
+	// VOID
+	this._spiele_aufzeichnung_ab = function() {
+		if(!this.aufgezeichnetes_spiel || this.abspielvorgang_laeuft) return;
+		
+		this.abspielvorgang_laeuft = true;
+		//TODO hier weiter
+		console.log(this.aufgezeichnetes_spiel);
+	};
+	
 	// VOID
 	this.start = function() {
 		this._uebernehme_start_parameter();
@@ -112,8 +128,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			if(erfolg) {
 				self.rundenzaehler++;
 				self.aktueller_status = 'Runde #' + (self.rundenzaehler + 1) + ' gespielt';
-				//TODO var aufzeichnung = croupier.gibAufzeichnung();
-				//_loggeSpielerdaten(aufzeichnung);
+				self.aufgezeichnetes_spiel = self.croupier.gibAufzeichnung();
 				
 				if(self.rundenzaehler % 100 == 0) {
 					self.aktueller_status = 'Warte auf neue Mitspieler';
