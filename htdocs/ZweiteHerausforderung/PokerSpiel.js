@@ -14,6 +14,9 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	this.casino_domain = null;
 	this.casino_port = null;
 	this.croupier = null;
+	this.aktueller_status = 'Uninitialisiert';
+	this.letzter_status = '';
+	this.rundenzaehler = 0;
 	
 	// VOID
 	this.init = function() {
@@ -23,6 +26,17 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		this._befuelle_croupiereinstellungen();
 		this._befuelle_casinoeinstellungen();
 		this._aktiviere_ui_elemente();
+		this.aktueller_status = 'Warte auf Start';
+		var self = this;
+		setInterval(
+			function() {
+				if(self.letzter_status != self.aktueller_status) {
+					self.letzter_status = self.aktueller_status
+					$('#status').html(self.aktueller_status);
+				}
+			},
+			500
+		);
 	};
 	// VOID
 	this.start = function() {
@@ -31,45 +45,53 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			this.croupier_user, this.croupier_passwort
 		);
 		var self = this;
+		this.aktueller_status = 'Starte';
 		this.croupier.betrete(
 			'ws:' + this.casino_domain + ':' + this.casino_port,
 			function() {
+				self.aktueller_status = 'Verbindung zum Casino hergestellt';
 				self._eroeffneTisch()
+			},
+			function() {
+				self.aktueller_status = 'Verbindung zum Casino fehlgeschlagen';
+				setTimeout(function() { self.start() }, 2000);
 			}
 		);
 	};
 	// VOID
 	this._eroeffneTisch = function() {
 		var self = this;
+		self.aktueller_status = 'Eröffne Tisch';
 		this.croupier.eroeffneTisch(
 			this.tisch_name,
 			'TexasHoldEmFixedLimit-Poker',
 			this.maximale_antwortzeit_der_bots, 
 			function(daten) {
 				if(daten.status == 'ok') {
+					self.aktueller_status = 'Tisch ist eröffnet';
 					self._zeige_spieltisch();
 					setTimeout(
 						function() {
-							self._spiele();
-						},
-						0
-					);
-					setTimeout(
-						function() {
 							self._starte_mitspieler();
+							setTimeout(
+								function() {
+									self._spiele();
+								},
+								2000
+							);
 						},
-						0
+						1000
 					);
 				} else {
-					//TODO logge('status', "Tisch anlegen ist fehlgeschlagen");
-					// setTimeout('_init()', 1000);
-					console.log('fehler beim eroeffnen');
+					self.aktueller_status = 'Konnte Tisch nicht eröffnen';
+					setTimeout(function() { self.start() }, 2000);
 				}
 			}
 		);
 	};
 	// VOID
 	this._starte_mitspieler = function() {
+		this.aktueller_status = 'Starte Mitspieler';
 		if(this.mitspieler_variante == -1) {
 			// DoNothing: freihes Spiel
 		} else if(this.mitspieler_variante == -2) {
@@ -86,27 +108,34 @@ function PokerSpiel(interne_bots, sparring_partner) {
 				this.casino_domain, this.casino_port, this.tisch_name
 			);
 		}
+		this.aktueller_status = 'Mitspieler gestartet';
 	};
 	// VOID
 	this._spiele = function() {
-		// TODO hier weiter
-		//if(SPIELRUNDENZAEHLER % 100 == 0) {
-		//	setTimeout(function() { _warteAufSpieler(); }, 1000);
-		//	return;
-		//}
-		
+		var self = this;
 		this.croupier.spieleEinSpiel(function(erfolg) {
 			if(erfolg) {
-				console.log('ein spiel gespielt');
-				//logge('status', 'spiele...');
-				var aufzeichnung = croupier.gibAufzeichnung();
+				self.rundenzaehler++;
+				self.aktueller_status = 'Runde #' + (self.rundenzaehler + 1) + ' gespielt';
+				//TODO var aufzeichnung = croupier.gibAufzeichnung();
 				//_loggeSpielerdaten(aufzeichnung);
-			} else {
-				console.log('warte...');
-				//setTimeout(function() { _warteAufSpieler(); }, 1000);
+				
+				if(self.rundenzaehler % 100 == 0) {
+					self.aktueller_status = 'Warte auf neue Mitspieler';
+					self.croupier.nimmMitspielerAuf(function() {
+						setTimeout(function() { self._spiele() }, 0);
+					});
+					return;
+				}
+				setTimeout(function() { self._spiele() }, 0);
 				return;
 			}
-			//setTimeout(function() { _spiele(); }, VERZOEGERUNG);
+			
+			self.aktueller_status = 'Zu wenig Mitspieler, warte...';
+			self.croupier.nimmMitspielerAuf(function() {
+				setTimeout(function() { self._spiele() }, 2000);
+			});
+			return;
 		});
 	};
 	// VOID

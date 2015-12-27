@@ -29,7 +29,7 @@ function CasinoBesucher() {
 		}
 	};
 	// VOID
-	this.betrete = function(url, istVerbundenFunktion) {
+	this.betrete = function(url, istVerbundenFunktion, verbindungFehlgeschlagenFunc) {
 		try {
 			this.verbindung = new WebSocket(url + '?noCache=' + new Date().getTime());
 		} catch(e) {
@@ -45,7 +45,11 @@ function CasinoBesucher() {
 			self.istVerbunden = false;
 		};
 		this.verbindung.onerror = function() {
-			console.log('Es sind Fehler bei der Verbindung aufgetreten');
+			if(verbindungFehlgeschlagenFunc) {
+				verbindungFehlgeschlagenFunc();
+			} else {
+				console.log('Es sind Fehler bei der Verbindung aufgetreten');
+			}
 		};
 		this.verbindung.onmessage = function(event) {
 			self._verarbeiteAntwort(event);
