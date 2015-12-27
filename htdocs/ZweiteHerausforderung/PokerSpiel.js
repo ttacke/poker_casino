@@ -70,15 +70,10 @@ function PokerSpiel(interne_bots, sparring_partner) {
 				if(daten.status == 'ok') {
 					self.aktueller_status = 'Tisch ist eröffnet';
 					self._zeige_spieltisch();
+					self._starte_mitspieler();
 					setTimeout(
 						function() {
-							self._starte_mitspieler();
-							setTimeout(
-								function() {
-									self._spiele();
-								},
-								2000
-							);
+							self._spiele();
 						},
 						1000
 					);
