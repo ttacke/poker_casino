@@ -314,8 +314,32 @@ p {
 	padding: 0;
 	border-right: solid 0.5rem #333;
 	border-radius: 1rem;
-	overflow: hidden;
+	vertical-align: top;
 }
+	.statistik .trend {
+		text-align: right;
+		padding-right: 1rem;
+		width: 6rem;
+	}
+	.statistik thead td {
+		color: #999;
+		font-weight: bold;
+		border-top: solid 0.1rem #333;
+		border-bottom: solid 0.1rem #999;
+	}
+	.statistik tbody th {
+		text-align: left;
+		vertical-align: top;
+		overflow: hidden;
+	}
+	.statistik tbody td small {
+		color: #CCC;
+		font-size: 0.85rem;
+		display: block;
+	}
+	.statistik tbody td small:before {
+		content: "Kurz: ";
+	}
 .anzeige {
 	padding: 0;
 }
