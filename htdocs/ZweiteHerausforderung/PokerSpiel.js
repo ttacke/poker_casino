@@ -19,6 +19,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	this.rundenzaehler = 0;
 	this.aufgezeichnetes_spiel = null;
 	this.abspielvorgang_laeuft = false;
+	this.statistik = new PokerSpielStatistik();
 	
 	// VOID
 	this.init = function() {
@@ -34,9 +35,14 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			function() {
 				self._zeige_status();
 				self._spiele_aufzeichnung_ab();
+				self._zeige_statistik();
 			},
 			500
 		);
+	};
+	// VOID
+	this._zeige_statistik = function() {
+		this.statistik.zeige();
 	};
 	// VOID
 	this._zeige_status = function() {
@@ -51,12 +57,19 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		
 		this.abspielvorgang_laeuft = true;
 		//TODO hier weiter
-		console.log(this.aufgezeichnetes_spiel);
+		//console.log(this.aufgezeichnetes_spiel);
 	};
 	
 	// VOID
 	this.start = function() {
 		this._uebernehme_start_parameter();
+		
+		this.statistik.init(
+			this.anzahl_relevanter_spiele * 1,
+			$('.statistik tbody'),
+			$('.statistik .spielerstatistik_template')
+		);
+		
 		this.croupier = new CasinoCroupierTexasHoldEmLimitedPoker(
 			this.croupier_user, this.croupier_passwort
 		);
@@ -129,6 +142,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 				self.rundenzaehler++;
 				self.aktueller_status = 'Runde #' + (self.rundenzaehler + 1) + ' gespielt';
 				self.aufgezeichnetes_spiel = self.croupier.gibAufzeichnung();
+				self.statistik.logge(self.aufgezeichnetes_spiel);
 				
 				if(self.rundenzaehler % 100 == 0) {
 					self.aktueller_status = 'Warte auf neue Mitspieler';
@@ -231,7 +245,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		$('#tisch_name').val(this._uuidgen());
 		$('#croupier_user').val(this._uuidgen());
 		$('#croupier_passwort').val(this._uuidgen());
-		$('#anzahl_relevanter_spiele').val(10000);
+		$('#anzahl_relevanter_spiele').val(3000);
 		$('#maximale_antwortzeit_der_bots').val(150);
 	};
 	// VOID

@@ -1,7 +1,7 @@
 "use strict";
 
 // CLASS DEFINITION
-function CasinoPokerSpielaufzeichnung() {
+function PokerSpielaufzeichnung() {
 	
 	this.spielzuege = [];
 	// VOID

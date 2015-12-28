@@ -7,11 +7,13 @@ function CasinoCroupier(name, passwort) {
 	this.passwort = passwort;
 	this.spielerTimeout = 100;
 	this.aktuelleFrage = null;
-	this.aufzeichnung = new CasinoPokerSpielaufzeichnung();
+	this.aufzeichnung = [];
 	
 	// OBJ
 	this.gibAufzeichnung = function() {
-		return this.aufzeichnung
+		var list = this.aufzeichnung;
+		this.aufzeichnung = [];
+		return list;
 	};
 	// VOID
 	this.herzschrittmacherLog = function() {
@@ -71,11 +73,19 @@ function CasinoCroupier(name, passwort) {
 				function(daten) {
 					self.aktuelleFrage = null;
 					clearTimeout(herzschrittmacher);
-					self.aufzeichnung.fuegeSpielzugEin(spielerName, nachricht, daten);
+					self._zeichneSpielzugAuf(spielerName, nachricht, daten);
 					antwortFunktion(daten);
 				}
 			);
 		}
 		this.aktuelleFrage();
+	};
+	// VOID
+	this._zeichneSpielzugAuf = function(spielerName, frage, antwort) {
+		this.aufzeichnung.push({
+			spieler: spielerName,
+			frage: frage,
+			antwort: antwort
+		});
 	};
 }

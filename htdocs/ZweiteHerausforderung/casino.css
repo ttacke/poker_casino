@@ -340,6 +340,9 @@ p {
 	.statistik tbody td small:before {
 		content: "Kurz: ";
 	}
+	.spielerstatistik_template {
+		display: none;
+	}
 .anzeige {
 	padding: 0;
 }
