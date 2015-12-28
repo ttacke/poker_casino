@@ -54,7 +54,7 @@ function PokerSpielStatistik() {
 			var kurz_trend = this._gib_trend(this.stack_historie[name], datenmenge_fuer_kurztrend);
 			
 			statistik.push({
-				name: name,
+				name: this._gib_name(name),
 				trend: trend,
 				kurz: kurz_trend,
 				timeouts: timeouts,
@@ -72,6 +72,15 @@ function PokerSpielStatistik() {
 			template_liste.push(t);
 		}
 		this.$ramen.html(template_liste.join(''));
+	};
+	// STRING
+	this._gib_name = function(name) {
+		var string = encodeURIComponent(name);
+		string = string.replace(
+			/(%[0-9A-F]{2})%83%C2(%[0-9A-F]{2})/g, 
+			function(hit) { return RegExp.$1 + RegExp.$2 }
+		);
+		return decodeURIComponent(string);
 	};
 	// STRING
 	this._gib_trend = function(stackliste, benutzte_anzahl) {
