@@ -80,6 +80,7 @@ p {
 	margin: auto;
 	margin-top: 1rem;
 }
+	#spiel table,
 	#tisch table {
 		width: 100%;
 	}
@@ -308,3 +309,13 @@ p {
 			left: -1.0rem;
 			top: 2.5rem;
 		}
+.statistik {
+	width: 15rem;
+	padding: 0;
+	border-right: solid 0.5rem #333;
+	border-radius: 1rem;
+	overflow: hidden;
+}
+.anzeige {
+	padding: 0;
+}
