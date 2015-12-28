@@ -21,15 +21,14 @@ h1 span span {
 	}
 	#status {
 		position: absolute;
-		color: black;
-		background-color: #999;
+		color: #666;
+		background-color: rgba(128, 128, 128, 0.5);
 		border-radius: 0.3rem;
 		text-align: right;
 		width: auto;
 		margin-top: -0.35rem;
 		right: 1rem;
 		padding: 0.2rem 0.3rem;
-		opacity: 0.5;
 	}
 button {
 	margin-top: 1.5rem;
@@ -120,6 +119,7 @@ p {
 		width: 19rem;
 		height: 3rem;
 		position: absolute;
+		padding: 0.3rem 0 0.2rem 0;
 	}
 		.links .spieler_inner {
 			left: -12rem;
@@ -143,9 +143,11 @@ p {
 			right: 0;
 		}
 		.ist_an_der_reihe .name {
-			text-decoration: underline;
-			font-size: 1.2em;
-			color: yellow;
+			color: black;
+		}
+		.ist_an_der_reihe .spieler_inner {
+			background-color: rgba(255, 255, 255, 0.5);
+			border-radius: 0.5rem;
 		}
 		.ist_raus .name {
 			text-decoration: line-through;
@@ -346,9 +348,10 @@ p {
 		display: block;
 		padding-left: 1rem;
 	}
-	.spielerstatistik_template {
-		display: none;
-	}
 .anzeige {
 	padding: 0;
+}
+.spielerstatistik_template,
+#spieler_template {
+	display: none;
 }

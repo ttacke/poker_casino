@@ -4,23 +4,73 @@
 function PokerSpielaufzeichnungAbspielen() {
 	this.doneFunc = null;
 	this.spielzuege = [];
+	this.showdown_daten = {};
+	this.$spieler_template = null;
+	this.$spielerplaetze_links = null;
+	this.$spielerplaetze_rechts = null;
+	this.spieler_zuordnung = {};
+	
 	// VOID
-	this.starte = function(spielzuege, doneFunc) {
-		this.spielzuege = spielzuege;
+	this._naechsterZug = function() {
+		/*
+			#tisch .spieler.ist_an_der_reihe.ist_raus
+		*/
+		var zug = this.spielzuege.shift();
+		this.spieler_zuordnung[zug.spieler].addClass('ist_an_der_reihe');
+		console.log(zug);
+		// TODO
+		var self = this;
+		setTimeout(function() { self._naechsterZug() }, 1000)
+	};
+	// VOID
+	this._extrahiere_showdown_daten = function(spielzuege) {
+		var showdown = null;
+		while(spielzuege[spielzuege.length - 1].frage.Rundenname == 'showdown') {
+			showdown = spielzuege.pop();
+		}
+		return showdown;
+	};
+	// VOID
+	this._erzeuge_spieler = function(spieler) {
+		this.$spielerplaetze_links.html('');
+		this.$spielerplaetze_rechts.html('');
+		
+		var sitzen_links = Math.floor(spieler.length / 2) - 1;
+		for(var i = 0; i < spieler.length; i++) {
+			var t = '<div id="spieleranzeige' + i + '" class="spieler">' + this.$spieler_template.html() + '</spieler>';
+			t = t.replace(/\[name\]/, spieler[i].Name);
+			if(i <= sitzen_links) {
+				this.$spielerplaetze_links.append(t);
+			} else {
+				this.$spielerplaetze_rechts.prepend(t);
+			}
+			this.spieler_zuordnung[spieler[i].Name] = $('#spieleranzeige' + i);
+			console.log(spieler[i].Name);
+			console.log($('#spieleranzeige' + i));
+		}
+	};
+	// VOID
+	this.starte = function(aufzeichnung, doneFunc) {
+		this.showdown_daten = this._extrahiere_showdown_daten(aufzeichnung);
+		this.spielzuege = aufzeichnung;
 		this.doneFunc = doneFunc;
+		this.$spielerplaetze_links = $('#tisch tbody .links');
+		this.$spielerplaetze_rechts = $('#tisch tbody .rechts');
+		this.$spieler_template = $('#spieler_template');
 		
 		//TODO hier weiter
 		// -> jeden Spielzug als Schritt durchlaufen (1s)
 		// -> am ende done melden
 		// -> board leeren und karten dort anzeigen
 		// -> spieler leeren und aktuelle spieler einsetzen
+		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
 		// -> aktiven spieler markieren
 		// -> aktion zeigen
 		// -> wenn fold, spieler entsprechend markieren
 		// -> handkarten zeigen
 		// -> einsatz zeigen (muss aus nächstem Zug ermittelt werden - frage.Spieler.Einsatz )
-		
-		console.log(spielzuege);
+		this._naechsterZug();
+		//console.log(spielzuege);
 		/*Relevante Daten
 		
 			#tisch .links
