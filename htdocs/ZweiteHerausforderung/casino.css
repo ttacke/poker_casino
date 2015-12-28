@@ -337,9 +337,6 @@ p {
 		font-size: 0.85rem;
 		display: block;
 	}
-	.statistik tbody td small:before {
-		content: "Kurz: ";
-	}
 	.spielerstatistik_template {
 		display: none;
 	}
