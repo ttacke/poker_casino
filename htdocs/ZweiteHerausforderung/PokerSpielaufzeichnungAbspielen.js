@@ -113,16 +113,20 @@ function PokerSpielaufzeichnungAbspielen() {
 			}
 		}
 		
-		var $einsatz = $anzeige.find('.einsatz_inner');
-		while($einsatz.children().length < neuer_einsatz) {
-			var t = '<span class="coin">' + this.$coin_template.html() + '</span>';
-			$einsatz.append(t);
-		}
+		this._fuege_einsatz_in_anzeige_hinzu($anzeige, neuer_einsatz);
 		
 		var self = this;
 		setTimeout(function() {
 			self._naechsterZug();
 		}, 1000);
+	};
+	// VOID
+	this._fuege_einsatz_in_anzeige_hinzu = function($anzeige, neuer_einsatz) {
+		var $einsatz = $anzeige.find('.einsatz_inner');
+		while($einsatz.children().length < neuer_einsatz) {
+			var t = '<span class="coin">' + this.$coin_template.html() + '</span>';
+			$einsatz.append(t);
+		}
 	};
 	// VOID
 	this._gib_showdown_daten = function(spielzuege) {
@@ -139,8 +143,22 @@ function PokerSpielaufzeichnungAbspielen() {
 			} else {
 				this.$spielerplaetze_rechts.prepend(t);
 			}
+			
 			this.spieler_zuordnung[spieler[i].Name] = $('#spieleranzeige' + i);
 		}
+	};
+	// VOID
+	this._zeige_blinds = function(spieler) {
+		var smallBlind = this.spielzuege[spieler.length - 2];
+		var bigBlind = this.spielzuege[spieler.length - 1];
+		this._fuege_einsatz_in_anzeige_hinzu(
+			this.spieler_zuordnung[smallBlind.spieler],
+			smallBlind.frage.Einsatz
+		);
+		this._fuege_einsatz_in_anzeige_hinzu(
+			this.spieler_zuordnung[bigBlind.spieler],
+			bigBlind.frage.Einsatz
+		);
 	};
 	// VOID
 	this.starte = function(aufzeichnung, doneFunc) {
@@ -159,11 +177,14 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$board.html('');
 		
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
+		this._zeige_blinds(this.showdown_daten.frage.Spieler);
+		
 		// TODO
 		// Blinds anzeigen
 		// -> gewinner anzeigen
 		// -> am ende done melden
-		this._naechsterZug();
+		var self = this;
+		setTimeout(function() { self._naechsterZug() }, 1000);
 		
 		/*Relevante Daten
 			// showdown
