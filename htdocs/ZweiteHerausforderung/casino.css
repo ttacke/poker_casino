@@ -84,6 +84,10 @@ p {
 	#tisch table {
 		width: 100%;
 	}
+	#tisch {
+		padding-left: 12%;
+		padding-right: 12%;
+	}
 	#tisch tbody td {
 		width: 50%;
 		padding-bottom: 3rem;
@@ -125,7 +129,7 @@ p {
 		}
 	.name {
 		position: absolute;
-		width: 50%;
+		width: 55%;
 		font-size: 1rem;
 		max-height: 3rem;
 		overflow: hidden;

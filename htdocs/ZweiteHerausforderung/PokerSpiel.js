@@ -3,6 +3,7 @@
 // CLASS DEFINITION
 function PokerSpiel(interne_bots, sparring_partner) {
 	this.anzeige_groesse = 100;
+	this.anzeige_rand = 12;
 	this.interne_bots = interne_bots;
 	this.sparring_partner = sparring_partner;
 	this.mitspieler_variante = null;
@@ -181,12 +182,16 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	// VOID
 	this.anzeige_vergroessern = function() {
 		this.anzeige_groesse += 10;
+		this.anzeige_rand += 6;
 		$('html').attr('style', 'font-size: ' + this.anzeige_groesse + '%');
+		$('#tisch').attr('style', 'padding-left: ' + this.anzeige_rand + '%;padding-right:' + this.anzeige_rand + '%');
 	};
 	// VOID
 	this.anzeige_verkleinern = function() {
 		this.anzeige_groesse -= 10;
+		this.anzeige_rand -= 6;
 		$('html').attr('style', 'font-size: ' + this.anzeige_groesse + '%');
+		$('#tisch').attr('style', 'padding-left: ' + this.anzeige_rand + '%;padding-right:' + this.anzeige_rand + '%');
 	};
 	// STRING
 	this._uuidgen = function() {
