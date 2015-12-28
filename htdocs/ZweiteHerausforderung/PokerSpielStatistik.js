@@ -38,7 +38,7 @@ function PokerSpielStatistik() {
 			}
 			
 			var trend = this._gib_trend(this.daten[name], this.trendmenge);
-			var datenmenge_fuer_kurztrend = Math.floor(this.trendmenge / 50);
+			var datenmenge_fuer_kurztrend = Math.floor(this.trendmenge / 20);
 			var kurz_trend = this._gib_trend(this.daten[name], datenmenge_fuer_kurztrend);
 			
 			statistik.push({
