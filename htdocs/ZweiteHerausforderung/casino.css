@@ -134,6 +134,21 @@ p {
 		max-height: 3rem;
 		overflow: hidden;
 	}
+		.name .antwort {
+			color: black;
+			width: 5rem;
+			text-align: center;
+			background-color: #FF0;
+			margin-top: 0.2rem;
+			border-radius: 0.4rem;
+			display: none;
+		}
+			.links .antwort {
+				margin-left: auto;
+			}
+			.rechts .antwort {
+				margin-right: auto;
+			}
 		.links .name {
 			text-align: right;
 			left: 0;
@@ -149,9 +164,12 @@ p {
 			background-color: rgba(255, 255, 255, 0.5);
 			border-radius: 0.5rem;
 		}
+		.ist_raus .spieler_inner {
+			background-color: rgba(0, 0, 0, 0.6);
+			border-radius: 0.5rem;
+		}
 		.ist_raus .name {
-			text-decoration: line-through;
-			color: #333;
+			color: #555;
 		}
 	.einsatz {
 		font-size: 0;

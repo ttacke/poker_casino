@@ -12,15 +12,32 @@ function PokerSpielaufzeichnungAbspielen() {
 	
 	// VOID
 	this._naechsterZug = function() {
-		/*
-			#tisch .spieler.ist_an_der_reihe.ist_raus
-		*/
 		var zug = this.spielzuege.shift();
-		this.spieler_zuordnung[zug.spieler].addClass('ist_an_der_reihe');
-		console.log(zug);
-		// TODO
+		var $anzeige = this.spieler_zuordnung[zug.spieler];
+		for(var name in this.spieler_zuordnung) {
+			if(name == zug.spieler) continue;
+			this.spieler_zuordnung[name].removeClass('ist_an_der_reihe');
+		}
+		$anzeige.addClass('ist_an_der_reihe');
+		
 		var self = this;
-		setTimeout(function() { self._naechsterZug() }, 1000)
+		setTimeout(function() { self._zeige_antwort($anzeige, zug.antwort.details) }, 1000);
+	};
+	// VOID
+	this._zeige_antwort = function($anzeige, antwort) {
+		if(antwort != 'check' && antwort != 'raise') antwort = 'fold';
+		
+		var $a = $anzeige.find('.antwort');
+		$a.html(antwort);
+		$a.show();
+		
+		var self = this;
+		setTimeout(function() {
+			$a.hide();
+			if(antwort == 'fold') $anzeige.addClass('ist_raus');
+			
+			self._naechsterZug();
+		}, 1000);
 	};
 	// VOID
 	this._extrahiere_showdown_daten = function(spielzuege) {
