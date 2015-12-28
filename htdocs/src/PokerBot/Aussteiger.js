@@ -1,11 +1,11 @@
 "use strict";
 
 // CLASS DEFINITION
-PokerBotVerlierer.prototype = new PokerBotBase();
-function PokerBotVerlierer() {
-	this.name = 'Verlierer';
+PokerBotAussteiger.prototype = new PokerBotBase();
+function PokerBotAussteiger() {
+	this.name = 'Aussteiger';
 	this.passwort = 'c0ebf5ff-c1aa-4a28-bfdc-c12a5ea72e88';
-	this.beschreibung = 'antwortet nur mit "fold"';
+	this.beschreibung = 'steigt immer sofort aus';
 	
 	// VOID
 	this.reagiere = function(frage) {

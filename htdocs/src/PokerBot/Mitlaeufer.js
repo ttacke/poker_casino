@@ -1,11 +1,11 @@
 "use strict";
 
 // CLASS DEFINITION
-PokerBotChecker.prototype = new PokerBotBase();
-function PokerBotChecker() {
-	this.name = 'Checker';
+PokerBotMitlaeufer.prototype = new PokerBotBase();
+function PokerBotMitlaeufer() {
+	this.name = 'Mitläufer';
 	this.passwort = '1aff7aec-9956-4dad-be2a-ba10bebec86d';
-	this.beschreibung = 'antwortet nur mit "check"';
+	this.beschreibung = 'geht überall mit';
 	
 	// VOID
 	this.reagiere = function(frage) {

@@ -18,8 +18,8 @@
 		<script type="text/javascript" src="../src/Casino/Poker/Spielerrunde.js"></script>
 		
 		<script type="text/javascript" src="../src/PokerBot/Base.js"></script>
-		<script type="text/javascript" src="../src/PokerBot/Verlierer.js"></script>
-		<script type="text/javascript" src="../src/PokerBot/Checker.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Aussteiger.js"></script>
+		<script type="text/javascript" src="../src/PokerBot/Mitlaeufer.js"></script>
 		<script type="text/javascript" src="../src/PokerBot/Narziss.js"></script>
 		<script type="text/javascript" src="../src/PokerBot/GaltonFrancis.js"></script>
 		
@@ -34,12 +34,12 @@
 		<script type="text/javascript">
 			var pokerSpiel = new PokerSpiel(
 				[
-					new PokerBotVerlierer(),
-					new PokerBotChecker(),
+					new PokerBotAussteiger(),
+					new PokerBotMitlaeufer(),
 					new PokerBotNarziss(),
 					new GaltonFrancis()
 				],
-				new PokerBotVerlierer()
+				new PokerBotAussteiger()
 			);
 			$(function() {
 				pokerSpiel.init();
