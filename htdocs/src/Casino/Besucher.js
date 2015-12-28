@@ -144,11 +144,20 @@ function CasinoBesucher() {
 		}
 		var antwort = {
 			'status': uebersetzung[status],
-			'details': details,
+			'details': this._repariere_encoding(details),
 		};
 		// var antwort = JSON.parse(daten);
 		func(antwort);
-	}
+	};
+	// STRING
+	this._repariere_encoding = function(content) {
+		var string = encodeURIComponent(content);
+		string = string.replace(
+			/(%[0-9A-F]{2})%83%C2(%[0-9A-F]{2})/g, 
+			function(hit) { return RegExp.$1 + RegExp.$2 }
+		);
+		return decodeURIComponent(string);
+	};
 	// VOID
 	this._sendeRohdaten = function(daten) {
 		// this.verbindung.send(JSON.stringify(daten));

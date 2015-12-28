@@ -1,9 +1,19 @@
 "use strict";
 
 // CLASS DEFINITION
-function PokerSpielaufzeichnung() {
-	
+function PokerSpielaufzeichnungAbspielen() {
+	this.doneFunc = null;
 	this.spielzuege = [];
+	// VOID
+	this.starte = function(spielzuege, doneFunc) {
+		this.spielzuege = spielzuege;
+		this.doneFunc = doneFunc;
+		console.log(spielzuege);
+	}
+	
+	//TODO hier weiter
+
+/*	this.spielzuege = [];
 	// VOID
 	this.fuegeSpielzugEin = function(spielerName, frage, antwort) {
 		this.spielzuege.push({
@@ -45,4 +55,6 @@ function PokerSpielaufzeichnung() {
 		}
 		return liste;
 	};
+	
+*/
 }

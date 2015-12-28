@@ -57,8 +57,14 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		if(!this.aufgezeichnetes_spiel || this.abspielvorgang_laeuft) return;
 		
 		this.abspielvorgang_laeuft = true;
-		//TODO hier weiter
-		//console.log(this.aufgezeichnetes_spiel);
+		var self = this;
+		var abspieler = new PokerSpielaufzeichnungAbspielen();
+		abspieler.starte(
+			this.aufgezeichnetes_spiel,
+			function() {
+				self.abspielvorgang_laeuft = false;
+			}
+		);
 	};
 	
 	// VOID
