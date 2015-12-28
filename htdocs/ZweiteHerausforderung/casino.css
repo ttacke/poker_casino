@@ -370,6 +370,7 @@ p {
 	padding: 0;
 }
 .spielerstatistik_template,
+#karte_template,
 #spieler_template {
 	display: none;
 }

@@ -9,6 +9,7 @@ function PokerSpielaufzeichnungAbspielen() {
 	this.$spielerplaetze_links = null;
 	this.$spielerplaetze_rechts = null;
 	this.spieler_zuordnung = {};
+	this.$karten_template = null;
 	
 	// VOID
 	this._naechsterZug = function() {
@@ -20,8 +21,38 @@ function PokerSpielaufzeichnungAbspielen() {
 		}
 		$anzeige.addClass('ist_an_der_reihe');
 		
+		this._zeige_karten(zug, $anzeige);
+	};
+	// VOID
+	this._zeige_karten = function(zug, $anzeige) {
+		var $handkarten = $anzeige.find('.hand');
 		var self = this;
+		
+		if($handkarten.html() == '' && zug.frage.Hand.length > 0) {
+			setTimeout(function() {
+				for(var i = 0; i < zug.frage.Hand.length; i++) {
+					var farbe = self._gib_kartenfarbe(zug.frage.Hand[i]);
+					var t = '<span class="karte ' + farbe + '">' + self.$karten_template.html() + '</span>';
+					t = t.replace(/\[wert\]/, self._gib_kartenwert(zug.frage.Hand[i]));
+					$handkarten.append(t);
+				}
+				setTimeout(function() { self._zeige_antwort($anzeige, zug.antwort.details) }, 1000);
+			}, 1000);
+			return;
+		}
 		setTimeout(function() { self._zeige_antwort($anzeige, zug.antwort.details) }, 1000);
+	}
+	// STRING
+	this._gib_kartenwert = function(karte) {
+		return karte.replace(/[♥♦♣♠]/, '');
+	};
+	// STRING
+	this._gib_kartenfarbe = function(karte) {
+		if(karte.match(/♥/)) return 'herz';
+		if(karte.match(/♦/)) return 'karo';
+		if(karte.match(/♣/)) return 'kreuz';
+		if(karte.match(/♠/)) return 'pik';
+		throw new Error('neverReachHere');
 	};
 	// VOID
 	this._zeige_antwort = function($anzeige, antwort) {
@@ -62,8 +93,6 @@ function PokerSpielaufzeichnungAbspielen() {
 				this.$spielerplaetze_rechts.prepend(t);
 			}
 			this.spieler_zuordnung[spieler[i].Name] = $('#spieleranzeige' + i);
-			console.log(spieler[i].Name);
-			console.log($('#spieleranzeige' + i));
 		}
 	};
 	// VOID
@@ -74,99 +103,31 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$spielerplaetze_links = $('#tisch tbody .links');
 		this.$spielerplaetze_rechts = $('#tisch tbody .rechts');
 		this.$spieler_template = $('#spieler_template');
+		this.$karten_template = $('#karte_template');
 		
 		//TODO hier weiter
-		// -> jeden Spielzug als Schritt durchlaufen (1s)
 		// -> am ende done melden
 		// -> board leeren und karten dort anzeigen
-		// -> spieler leeren und aktuelle spieler einsetzen
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
-		// -> aktiven spieler markieren
-		// -> aktion zeigen
-		// -> wenn fold, spieler entsprechend markieren
-		// -> handkarten zeigen
 		// -> einsatz zeigen (muss aus nächstem Zug ermittelt werden - frage.Spieler.Einsatz )
 		this._naechsterZug();
-		//console.log(spielzuege);
+		
 		/*Relevante Daten
 		
-			#tisch .links
-			#tisch .rechts
-			
-			#tisch .spieler.ist_an_der_reihe.ist_raus
-				.name
-				.hand
+			#tisch .spieler
 				.einsatz_inner
-			
-			#tisch .karte (.kreuz.karo.herz.pik) .karte_inner
 			
 			#tisch #board
 			
-			spieler = INT:Mitläufer
-			antwort.details = check, fold, raise
 			frage.Einsatz = 0
-			frage.Hand = [ A+ A* ]
 			frage.Rundenname = preflop
 			frage.Tisch = [ K+ K* ... ]
-			frage.Spieler[]
-				Name = INT:Mitläufer
-				Einsatz = 0
 				
 			// showdown
 			frage.Gewinner[]
 				Blatt = [ A* A+ K+ K* ]
 				Gewinn = 38
 				Name = INT:Mitläufer
-		
-		
-		
 		*/
 	}
-	
-	
-
-/*	this.spielzuege = [];
-	// VOID
-	this.fuegeSpielzugEin = function(spielerName, frage, antwort) {
-		this.spielzuege.push({
-			spieler: spielerName,
-			frage: frage,
-			antwort: antwort
-		});
-	};
-	// VOID
-	this.gibNaechstenSpielzug = function() {
-		return this.spielzuege.shift();
-	}
-	// ARRAY
-	this.gibSpielerPunkte = function() {
-		var timeouts = {};
-		for(var i = 0; i < this.spielzuege.length; i++) {
-			if(this.spielzuege[i].antwort.status == 'timeout') {
-				timeouts[this.spielzuege[i].spieler] = true;
-			}
-		}
-		
-		var showdown = this.spielzuege[this.spielzuege.length - 1];
-		var liste = [];
-		for(var i = 0; i < showdown.frage.Spieler.length; i++) {
-			var spielerdaten = showdown.frage.Spieler[i];
-			var istGewinner = false;
-			for(var ii = 0; ii < showdown.frage.Gewinner.length; ii++) {
-				if(showdown.frage.Gewinner[ii].Name == spielerdaten.Name) {
-					istGewinner = true;
-				}
-			}
-			
-			liste.push({
-				name: spielerdaten.Name,
-				stack: spielerdaten.Stack,
-				hatGewonnen: istGewinner,
-				hatTimeout: (timeouts[spielerdaten.Name] ? true : false),
-			});
-		}
-		return liste;
-	};
-	
-*/
 }
