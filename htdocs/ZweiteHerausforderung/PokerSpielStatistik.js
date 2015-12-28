@@ -4,7 +4,8 @@
 function PokerSpielStatistik() {
 	this.$ramen = null;
 	this.$template = null;
-	this.daten = [];
+	this.stack_historie = {};
+	this.timeout_historie = {};
 	this.trendmenge = 1;
 	this.init = function(trendmenge, $ramen, $template) {
 		this.$ramen = $ramen;
@@ -19,32 +20,44 @@ function PokerSpielStatistik() {
 		if(daten.frage.Rundenname != 'showdown') return;
 		
 		for(var i = 0;i < daten.frage.Spieler.length; i++) {
-			if(!this.daten[daten.frage.Spieler[i].Name]) {
-				this.daten[daten.frage.Spieler[i].Name] = [];
+			if(!this.stack_historie[daten.frage.Spieler[i].Name]) {
+				this.stack_historie[daten.frage.Spieler[i].Name] = [];
 			}
-			this.daten[daten.frage.Spieler[i].Name].push(daten.frage.Spieler[i].Stack);
+			this.stack_historie[daten.frage.Spieler[i].Name].push(daten.frage.Spieler[i].Stack);
+			
+			if(!this.timeout_historie[daten.frage.Spieler[i].Name]) {
+				this.timeout_historie[daten.frage.Spieler[i].Name] = [];
+			}
+			this.timeout_historie[daten.frage.Spieler[i].Name].push(daten.antwort.status != 'ok' ? true : false);
 		}
 	};
 	// VOID
 	this.zeige = function() {
 		var statistik = [];
-		for(var name in this.daten) {
-			var stack = this.daten[name][
-				this.daten[name].length - 1
-			];
-			
-			while(this.daten[name].length > this.trendmenge) {
-				this.daten[name].shift();
+		for(var name in this.stack_historie) {
+			while(this.stack_historie[name].length > this.trendmenge) {
+				this.stack_historie[name].shift();
+			}
+			while(this.timeout_historie[name].length > 100) {
+				this.timeout_historie[name].shift();
 			}
 			
-			var trend = this._gib_trend(this.daten[name], this.trendmenge);
+			var timeouts = 0;
+			for(var i = 0; i < this.timeout_historie[name].length; i++) {
+				if(this.timeout_historie[name][i] == true) {
+					timeouts++;
+				}
+			}
+			
+			var trend = this._gib_trend(this.stack_historie[name], this.trendmenge);
 			var datenmenge_fuer_kurztrend = Math.floor(this.trendmenge / 20);
-			var kurz_trend = this._gib_trend(this.daten[name], datenmenge_fuer_kurztrend);
+			var kurz_trend = this._gib_trend(this.stack_historie[name], datenmenge_fuer_kurztrend);
 			
 			statistik.push({
 				name: name,
 				trend: trend,
-				kurz: kurz_trend
+				kurz: kurz_trend,
+				timeouts: timeouts,
 			});
 		}
 		statistik.sort(function(a, b){ return b.trend - a.trend });
@@ -55,6 +68,7 @@ function PokerSpielStatistik() {
 			t = t.replace(/\[name\]/, statistik[i].name);
 			t = t.replace(/\[trend\]/, statistik[i].trend);
 			t = t.replace(/\[kurz\]/, statistik[i].kurz);
+			t = t.replace(/\[timeouts\]/, statistik[i].timeouts);
 			template_liste.push(t);
 		}
 		this.$ramen.html(template_liste.join(''));

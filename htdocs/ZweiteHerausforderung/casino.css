@@ -310,7 +310,7 @@ p {
 			top: 2.5rem;
 		}
 .statistik {
-	width: 15rem;
+	width: 18rem;
 	padding: 0;
 	border-right: solid 0.5rem #333;
 	border-radius: 1rem;
@@ -330,12 +330,17 @@ p {
 	.statistik tbody th {
 		text-align: left;
 		vertical-align: top;
+	}
+	.statistik .spieler_name {
+		display: inline-block;
+		width: 100%;
 		overflow: hidden;
 	}
-	.statistik tbody td small {
-		color: #CCC;
+	.statistik small {
+		color: #999;
 		font-size: 0.85rem;
 		display: block;
+		padding-left: 1rem;
 	}
 	.spielerstatistik_template {
 		display: none;
