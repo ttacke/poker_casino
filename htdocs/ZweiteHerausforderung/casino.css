@@ -107,9 +107,13 @@ p {
 #board {
 	padding-top: 1rem;
 	width: 12rem;
+	height: 2.8rem;
 	margin-left: auto;
 	margin-right: auto;
 }
+	#board .karte {
+		margin-right: 0.2rem;
+	}
 .spieler {
 	margin-bottom: 2rem;
 	position: relative;
