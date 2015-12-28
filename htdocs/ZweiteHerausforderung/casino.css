@@ -375,6 +375,7 @@ p {
 }
 .spielerstatistik_template,
 #karte_template,
+#coin_template,
 #spieler_template {
 	display: none;
 }

@@ -11,10 +11,16 @@ function PokerSpielaufzeichnungAbspielen() {
 	this.spieler_zuordnung = {};
 	this.$karten_template = null;
 	this.$board = null;
+	this.$coin_template = null;
 	
 	// VOID
 	this._naechsterZug = function() {
 		var zug = this.spielzuege.shift();
+		
+		if(zug.frage.Rundenname == 'showdown') {
+			throw new Error('Gewinner...');
+		}
+		
 		for(var name in this.spieler_zuordnung) {
 			if(name == zug.spieler) continue;
 			this.spieler_zuordnung[name].removeClass('ist_an_der_reihe');
@@ -61,7 +67,7 @@ function PokerSpielaufzeichnungAbspielen() {
 			return;
 		}
 		
-		setTimeout(function() { self._zeige_antwort($anzeige, zug.antwort.details) }, 1000);
+		setTimeout(function() { self._zeige_antwort($anzeige, zug) }, 1000);
 	}
 	// STRING
 	this._gib_kartenwert = function(karte) {
@@ -76,7 +82,8 @@ function PokerSpielaufzeichnungAbspielen() {
 		throw new Error('neverReachHere');
 	};
 	// VOID
-	this._zeige_antwort = function($anzeige, antwort) {
+	this._zeige_antwort = function($anzeige, zug) {
+		var antwort = zug.antwort.details;
 		if(antwort != 'check' && antwort != 'raise') antwort = 'fold';
 		
 		var $a = $anzeige.find('.antwort');
@@ -88,16 +95,38 @@ function PokerSpielaufzeichnungAbspielen() {
 			$a.hide();
 			if(antwort == 'fold') $anzeige.addClass('ist_raus');
 			
+			self._zeige_einsatz($anzeige, zug, antwort);
+		}, 1000);
+	};
+	// VOID
+	this._zeige_einsatz = function($anzeige, zug, antwort) {
+		if(antwort == 'fold') {
+			return this._naechsterZug();
+		}
+		
+		var naehsterZug = this.spielzuege[0];
+		var neuer_einsatz = zug.frage.Einsatz;
+		for(var i = 0; i < naehsterZug.frage.Spieler.length; i++) {
+			if(naehsterZug.frage.Spieler[i].Name == zug.spieler) {
+				neuer_einsatz = naehsterZug.frage.Spieler[i].Einsatz;
+				break;
+			}
+		}
+		
+		var $einsatz = $anzeige.find('.einsatz_inner');
+		while($einsatz.children().length < neuer_einsatz) {
+			var t = '<span class="coin">' + this.$coin_template.html() + '</span>';
+			$einsatz.append(t);
+		}
+		
+		var self = this;
+		setTimeout(function() {
 			self._naechsterZug();
 		}, 1000);
 	};
 	// VOID
-	this._extrahiere_showdown_daten = function(spielzuege) {
-		var showdown = null;
-		while(spielzuege[spielzuege.length - 1].frage.Rundenname == 'showdown') {
-			showdown = spielzuege.pop();
-		}
-		return showdown;
+	this._gib_showdown_daten = function(spielzuege) {
+		return spielzuege[spielzuege.length - 1];
 	};
 	// VOID
 	this._erzeuge_spieler = function(spieler) {
@@ -115,7 +144,7 @@ function PokerSpielaufzeichnungAbspielen() {
 	};
 	// VOID
 	this.starte = function(aufzeichnung, doneFunc) {
-		this.showdown_daten = this._extrahiere_showdown_daten(aufzeichnung);
+		this.showdown_daten = this._gib_showdown_daten(aufzeichnung);
 		this.spielzuege = aufzeichnung;
 		this.doneFunc = doneFunc;
 		this.$spielerplaetze_links = $('#tisch tbody .links');
@@ -123,30 +152,20 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$spieler_template = $('#spieler_template');
 		this.$karten_template = $('#karte_template');
 		this.$board = $('#board');
+		this.$coin_template = $('#coin_template');
 		
 		this.$spielerplaetze_links.html('');
 		this.$spielerplaetze_rechts.html('');
 		this.$board.html('');
 		
-		//TODO hier weiter
-		// -> am ende done melden
-		// -> board leeren und karten dort anzeigen
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
-		// -> einsatz zeigen (muss aus nächstem Zug ermittelt werden - frage.Spieler.Einsatz )
-		// gewinner anzeigen
+		// TODO
+		// Blinds anzeigen
+		// -> gewinner anzeigen
+		// -> am ende done melden
 		this._naechsterZug();
 		
 		/*Relevante Daten
-		
-			#tisch .spieler
-				.einsatz_inner
-			
-			#tisch #board
-			
-			frage.Einsatz = 0
-			frage.Rundenname = preflop
-			frage.Tisch = [ K+ K* ... ]
-				
 			// showdown
 			frage.Gewinner[]
 				Blatt = [ A* A+ K+ K* ]
