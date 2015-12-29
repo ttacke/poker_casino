@@ -113,13 +113,23 @@
 					</button>
 				</form>
 				<form id="spiel">
-					<div id="groesse">
-						<button type="button" onclick="pokerSpiel.anzeige_vergroessern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-							<span class="ui-button-text">+</span>
-						</button>
-						<button type="button" onclick="pokerSpiel.anzeige_verkleinern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-							<span class="ui-button-text">-</span>
-						</button>
+					<div id="steuerung">
+						<div>
+							<button type="button" onclick="pokerSpiel.abspielen_verlangsamen();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+								<span class="ui-button-text">&lt;&lt;</span>
+							</button>
+							<button type="button" onclick="pokerSpiel.abspielen_beschleunigen();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+								<span class="ui-button-text">&gt;&gt;</span>
+							</button>
+						</div>
+						<div>
+							<button type="button" onclick="pokerSpiel.anzeige_vergroessern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+								<span class="ui-button-text">+</span>
+							</button>
+							<button type="button" onclick="pokerSpiel.anzeige_verkleinern();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+								<span class="ui-button-text">-</span>
+							</button>
+						</div>
 					</div>
 					<table>
 						<thead/>

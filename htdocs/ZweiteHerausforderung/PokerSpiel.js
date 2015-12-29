@@ -21,6 +21,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	this.aufgezeichnetes_spiel = null;
 	this.abspielvorgang_laeuft = false;
 	this.statistik = new PokerSpielStatistik();
+	this.abspieler = new PokerSpielaufzeichnungAbspielen();
 	
 	// VOID
 	this.init = function() {
@@ -58,15 +59,23 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		
 		this.abspielvorgang_laeuft = true;
 		var self = this;
-		var abspieler = new PokerSpielaufzeichnungAbspielen();
-		abspieler.starte(
+		this.abspieler.starte(
 			this.aufgezeichnetes_spiel,
 			function() {
 				self.abspielvorgang_laeuft = false;
 			}
 		);
 	};
-	
+	// VOID
+	this.abspielen_verlangsamen = function() {
+		this.abspieler.pause_zwischen_den_aktionen += 500;
+	};
+	// VOID
+	this.abspielen_beschleunigen = function() {
+		if(this.abspieler.pause_zwischen_den_aktionen > 500) {
+			this.abspieler.pause_zwischen_den_aktionen -= 500;
+		}
+	};
 	// VOID
 	this.start = function() {
 		this._uebernehme_start_parameter();
