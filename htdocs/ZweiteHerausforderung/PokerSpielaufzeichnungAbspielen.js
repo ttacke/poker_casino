@@ -13,7 +13,8 @@ function PokerSpielaufzeichnungAbspielen() {
 	this.$board = null;
 	this.$coin_template = null;
 	this.$gewinneranzeige = null;
-	this.pause_zwischen_den_aktionen = 0;
+	this.pause_zwischen_den_aktionen = 1000;
+	this.$gewinner_template = null;
 	
 	// VOID
 	this._naechsterZug = function() {
@@ -21,6 +22,7 @@ function PokerSpielaufzeichnungAbspielen() {
 		
 		if(zug.frage.Rundenname == 'showdown') {
 			this._zeige_gewinner();
+			return;
 		}
 		
 		for(var name in this.spieler_zuordnung) {
@@ -164,11 +166,22 @@ function PokerSpielaufzeichnungAbspielen() {
 	};
 	// VOID
 	this._zeige_gewinner = function() {
-		this.$gewinneranzeige.show();
-		
 		var gewinn = 0;
 		var gewinnerliste = this.showdown_daten.frage.Gewinner;
 		for(var i = 0; i < gewinnerliste.length; i++) {
+			var t = '<div class="gewinner">' + this.$gewinner_template.html() + '</div>';
+			t = t.replace(/\[name\]/, gewinnerliste[i].Name);
+			
+			var gewinnerkarten = '';
+			for(var j = 0; j < gewinnerliste[i].Blatt.length; j++) {
+				var farbe = this._gib_kartenfarbe(gewinnerliste[i].Blatt[j]);
+				var kt = '<span class="karte ' + farbe + '">' + this.$karten_template.html() + '</span>';
+				kt = kt.replace(/\[wert\]/, this._gib_kartenwert(gewinnerliste[i].Blatt[j]));
+				gewinnerkarten += kt;
+			}
+			
+			t = t.replace(/\[gewinnerkarten\]/, gewinnerkarten);
+			this.$gewinneranzeige.find('#spieler').append(t);
 			gewinn = gewinnerliste[i].Gewinn;
 		}
 		
@@ -176,19 +189,17 @@ function PokerSpielaufzeichnungAbspielen() {
 			this.$gewinneranzeige,
 			gewinn
 		);
+		this.$gewinneranzeige.show();
 		
-		//TODO
-		// TODO
-		// -> gewinner anzeigen
-		// -> am ende done melden
-		/*Relevante Daten
-			// showdown
-			frage.Gewinner[]
-				Blatt = [ A* A+ K+ K* ]
-				Gewinn = 38
-				Name = INT:Mitläufer
-		*/
-		throw new Error('Ende');
+		var self = this;
+		setTimeout(
+			function() {
+				self.$gewinneranzeige.hide();
+				self.doneFunc()
+			},
+			this.pause_zwischen_den_aktionen * 5
+		);
+		return;
 	};
 	// VOID
 	this.starte = function(aufzeichnung, doneFunc) {
@@ -202,10 +213,14 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$board = $('#board');
 		this.$coin_template = $('#coin_template');
 		this.$gewinneranzeige = $('#gewinner_outer');
+		this.$gewinner_template = $('#gewinner_template');
 		
+		this.$gewinneranzeige.hide();
 		this.$spielerplaetze_links.html('');
 		this.$spielerplaetze_rechts.html('');
 		this.$board.html('');
+		this.$gewinneranzeige.find('#spieler').html('');
+		this.$gewinneranzeige.find('.einsatz_inner').html('');
 		
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
 		this._zeige_blinds(this.showdown_daten.frage.Spieler);

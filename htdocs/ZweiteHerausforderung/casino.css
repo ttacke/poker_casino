@@ -329,7 +329,7 @@ p {
 		}
 	.gewinner {
 		padding-top: 1rem;
-		width: 12rem;
+		width: 15rem;
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -390,6 +390,7 @@ p {
 .spielerstatistik_template,
 #karte_template,
 #coin_template,
+#gewinner_template,
 #spieler_template {
 	display: none;
 }
