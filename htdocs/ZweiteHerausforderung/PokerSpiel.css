@@ -321,7 +321,6 @@ p {
 	left: 50%;
 	z-index: 1;
 	display: none;
-	opacity: 0.9;
 }
 	#gewinner {
 		position: relative;
@@ -332,6 +331,7 @@ p {
 		text-align: center;
 		border-width: 0.5rem;
 		border-radius: 1.5rem;
+		background-color: rgba(76, 76, 76, 0.8);
 	}
 		#gewinner h2 {
 			margin-top: 0;
