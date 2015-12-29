@@ -94,20 +94,18 @@ function PokerSpielaufzeichnungAbspielen() {
 		$a.html(antwort);
 		$a.show();
 		
+		if(antwort != 'fold') this._zeige_einsatz($anzeige, zug);
+		
 		var self = this;
 		setTimeout(function() {
 			$a.hide();
 			if(antwort == 'fold') $anzeige.addClass('ist_raus');
 			
-			self._zeige_einsatz($anzeige, zug, antwort);
+			self._naechsterZug();
 		}, this.pause_zwischen_den_aktionen);
 	};
 	// VOID
-	this._zeige_einsatz = function($anzeige, zug, antwort) {
-		if(antwort == 'fold') {
-			return this._naechsterZug();
-		}
-		
+	this._zeige_einsatz = function($anzeige, zug) {
 		var naehsterZug = this.spielzuege[0];
 		var neuer_einsatz = zug.frage.Einsatz;
 		for(var i = 0; i < naehsterZug.frage.Spieler.length; i++) {
@@ -118,11 +116,6 @@ function PokerSpielaufzeichnungAbspielen() {
 		}
 		
 		this._fuege_einsatz_in_anzeige_hinzu($anzeige, neuer_einsatz);
-		
-		var self = this;
-		setTimeout(function() {
-			self._naechsterZug();
-		}, this.pause_zwischen_den_aktionen);
 	};
 	// VOID
 	this._fuege_einsatz_in_anzeige_hinzu = function($anzeige, neuer_einsatz) {
