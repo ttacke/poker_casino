@@ -12,13 +12,15 @@ function PokerSpielaufzeichnungAbspielen() {
 	this.$karten_template = null;
 	this.$board = null;
 	this.$coin_template = null;
+	this.$gewinneranzeige = null;
+	this.pause_zwischen_den_aktionen = 0;
 	
 	// VOID
 	this._naechsterZug = function() {
 		var zug = this.spielzuege.shift();
 		
 		if(zug.frage.Rundenname == 'showdown') {
-			throw new Error('Gewinner...');
+			this._zeige_gewinner();
 		}
 		
 		for(var name in this.spieler_zuordnung) {
@@ -41,7 +43,7 @@ function PokerSpielaufzeichnungAbspielen() {
 			var self = this;
 			setTimeout(function() {
 				self._zeige_spielzug(zug, $anzeige);
-			}, 1000);
+			}, this.pause_zwischen_den_aktionen);
 			return;
 		}
 		
@@ -63,11 +65,11 @@ function PokerSpielaufzeichnungAbspielen() {
 					$handkarten.append(t);
 				}
 				self._zeige_karten(zug, $anzeige);
-			}, 1000);
+			}, this.pause_zwischen_den_aktionen);
 			return;
 		}
 		
-		setTimeout(function() { self._zeige_antwort($anzeige, zug) }, 1000);
+		setTimeout(function() { self._zeige_antwort($anzeige, zug) }, this.pause_zwischen_den_aktionen);
 	}
 	// STRING
 	this._gib_kartenwert = function(karte) {
@@ -96,7 +98,7 @@ function PokerSpielaufzeichnungAbspielen() {
 			if(antwort == 'fold') $anzeige.addClass('ist_raus');
 			
 			self._zeige_einsatz($anzeige, zug, antwort);
-		}, 1000);
+		}, this.pause_zwischen_den_aktionen);
 	};
 	// VOID
 	this._zeige_einsatz = function($anzeige, zug, antwort) {
@@ -118,7 +120,7 @@ function PokerSpielaufzeichnungAbspielen() {
 		var self = this;
 		setTimeout(function() {
 			self._naechsterZug();
-		}, 1000);
+		}, this.pause_zwischen_den_aktionen);
 	};
 	// VOID
 	this._fuege_einsatz_in_anzeige_hinzu = function($anzeige, neuer_einsatz) {
@@ -161,6 +163,34 @@ function PokerSpielaufzeichnungAbspielen() {
 		);
 	};
 	// VOID
+	this._zeige_gewinner = function() {
+		this.$gewinneranzeige.show();
+		
+		var gewinn = 0;
+		var gewinnerliste = this.showdown_daten.frage.Gewinner;
+		for(var i = 0; i < gewinnerliste.length; i++) {
+			gewinn = gewinnerliste[i].Gewinn;
+		}
+		
+		this._fuege_einsatz_in_anzeige_hinzu(
+			this.$gewinneranzeige,
+			gewinn
+		);
+		
+		//TODO
+		// TODO
+		// -> gewinner anzeigen
+		// -> am ende done melden
+		/*Relevante Daten
+			// showdown
+			frage.Gewinner[]
+				Blatt = [ A* A+ K+ K* ]
+				Gewinn = 38
+				Name = INT:Mitläufer
+		*/
+		throw new Error('Ende');
+	};
+	// VOID
 	this.starte = function(aufzeichnung, doneFunc) {
 		this.showdown_daten = this._gib_showdown_daten(aufzeichnung);
 		this.spielzuege = aufzeichnung;
@@ -171,6 +201,7 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$karten_template = $('#karte_template');
 		this.$board = $('#board');
 		this.$coin_template = $('#coin_template');
+		this.$gewinneranzeige = $('#gewinner_outer');
 		
 		this.$spielerplaetze_links.html('');
 		this.$spielerplaetze_rechts.html('');
@@ -179,19 +210,7 @@ function PokerSpielaufzeichnungAbspielen() {
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
 		this._zeige_blinds(this.showdown_daten.frage.Spieler);
 		
-		// TODO
-		// Blinds anzeigen
-		// -> gewinner anzeigen
-		// -> am ende done melden
 		var self = this;
-		setTimeout(function() { self._naechsterZug() }, 1000);
-		
-		/*Relevante Daten
-			// showdown
-			frage.Gewinner[]
-				Blatt = [ A* A+ K+ K* ]
-				Gewinn = 38
-				Name = INT:Mitläufer
-		*/
+		setTimeout(function() { self._naechsterZug() }, this.pause_zwischen_den_aktionen);
 	}
 }

@@ -69,6 +69,9 @@ p {
 #spiel {
 	display: none;
 }
+#tisch {
+	position: relative;
+}
 #tisch > span {
 	height: 100%;
 	border-radius: 10rem;
@@ -302,13 +305,14 @@ p {
 	left: 50%;
 	z-index: 1;
 	display: none;
+	opacity: 0.9;
 }
 	#gewinner {
 		position: relative;
 		left: -50%;
 		padding: 1.0rem 2rem;
 		margin-bottom: 3rem;
-		width: 20rem;
+		width: 30rem;
 		text-align: center;
 		border-width: 0.5rem;
 		border-radius: 1.5rem;
@@ -318,24 +322,28 @@ p {
 			margin-bottom: 0;
 		}
 	.gewinner {
-		padding-top: 2.5rem;
+		padding-top: 1rem;
 		width: 12rem;
 		margin-left: auto;
 		margin-right: auto;
 	}
 		.gewinner .name {
 			margin-top: -1.5rem;
+			position: static;
 		}
 	#gewinner .einsatz_outer {
 		position: relative;
 		padding-top: 3.0rem;
 		padding-bottom: 0;
 		text-align: left;
-		height: 4rem;
+		height: 6rem;
 	}
 		#gewinner .einsatz {
 			left: -1.0rem;
-			top: 2.5rem;
+			top: 5.5rem;
+		}
+		#gewinner .einsatz_inner {
+			width: 5rem;
 		}
 .statistik {
 	width: 18rem;
