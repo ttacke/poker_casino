@@ -5,6 +5,7 @@ function PokerBotBase() {
 	this.name = '';
 	this.passwort = '';
 	this.beschreibung = '';
+	this.prefix = 'INT:';
 	
 	this.casinoUrl = null;
 	this.tischName = null;
@@ -41,7 +42,7 @@ function PokerBotBase() {
 					if(self.ws) self.reagiere(frage);
 				}
 			};
-			self.ws.send('p' + self.tischName + "\nINT:" + self.name + "\n" + self.passwort);
+			self.ws.send('p' + self.tischName + "\n" + self.prefix + self.name + "\n" + self.passwort);
 		};
 	};
 	// VOID

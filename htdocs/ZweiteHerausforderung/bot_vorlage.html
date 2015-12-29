@@ -1,137 +1,43 @@
 <!DOCTYPE html>
-<!--
-
-Spielanleitung
-==============
-
-Schnellstart
-------------
-
-Dieser Bot ist, wenn Ihr Name und Passwort anpasst und die Zeile "lösch mich" entfernt, direkt lauffähig.
-
-Hinweis: beim allerersten Start eures Bots müsst ihr ein paar Sekunden Geduld haben, denn der Croupier
-lässt ganz neue Spieler nur alle 100 Spiele rein.
-
-
-
-Technische Regeln:
-------------------
-
-- Ob ihr diesen Bot als Grundlage nutzt (JavaScript) oder selber was schreibt, ist egal. Es gibt aktuell
-  aber keine Vorlage für andere Sprachen. Der Croupier spricht mit eurem Bot via WebSocket, das ist alles,
-  was man braucht.
-
-- Die Kombination Spielername und Passwort kann frei gewählt werden. Nach dem ersten betreten ist das
-  Password gesetzt und kann nicht mehr geändert werden. Ohne das Passwort kann man also das Casino
-  dann nicht mehr mit diesem Namen betreten.
-
-- Hat die Verbindung geklappt, müsst ihr nur noch auf die Fragen des Croupiers antworten. Valide Antworten sind
-  "fold", "check" und "raise". Alles andere wird als "fold" interpretiert.
-  
-- Ihr bekommt 150ms Zeit für eine Antwort (incl Netzwerk-Roundtrip-Zeit). Schafft ihr das nicht, wird für euch
-  mit "fold" geantwortet.
-
-- Bei 10 Timeouts in Folge werded ihr 3 Sekunden lang immer als "Timeout" gewertet. Warum? Ihr sollt die anderen
-  Spieler nicht ausbremsen. Zeit ist hier wirklich Geld.
-
-
-Spielregeln
------------
-
-- Grob ist es Texas Hold´em Poker mit Fixed Limit (LHE) https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Limits
-
-- Der BigBlind ist 2, der Small Blind 1
-
-- Euer Stack (= euer Geldhaufen) beginnt bei 0. Ihr könnt "beliebig" ins Negative und Positive gehen
-  (mindestens +/-2.147.483.647, aber heutzutage mit 64bit sind es +/-9.223.372.036.854.775.807)
-
-- Euch werden 5 Wettrunden gespielt: reflop, flop, turncard, river, showdown
-  In welcher Wettrunden ihr euch befindet, wird in der Frage des Croupiers in "Rundenname"
-
-  - preflop:
-    - der Gebertoken (= "erster Spieler" der Runde wird im Uhrzeigersinn auf den nächsten Spieler gesetzt
-    - vom ersten Spieler wird der SmallBlind abgezogen und in den Pot geworfen
-      (das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)
-    - vom zweiten Spieler wird der BigBlind abgezogen und in den Pot geworfen
-      (das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)
-    - eine normale Wettrunde beginnt: siehe Wettrunde
-      jedem Spieler werden bei jeder Frage seine 2 Handkarten gezeigt
-
-  - flop
-    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
-    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 3 Tischkarten gezeigt
-
-  - turncard
-    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
-    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 4 Tischkarten gezeigt
-
-  - river
-    - eine weitere, normale Wettrunde wird beim ersten Spieler begonnen
-    - jedem Spieler werden bei jeder Frage seine 2 Handkarten und 5 Tischkarten gezeigt
-
-  - showdown (eigentlich keine Wettrunde)
-    - der Croupier ermittelt aus den Karten aller Spielern den Gewinner und gibt jedem Spieler das Ergebnis bekannt
-      Siehe: Gewinner ermitteln
-    - der Pot wird an den/die Gewinner ausgeschüttet
-    - ein neues Spiel beginnt mit preflop
-
-  - Wettrundenregeln:
-    - mit "fold" steigt man aus dem Spiel aus und ist erst beim nächsten Spiel wieder dabei
-    - mit "raise" erhöht man das aktuelle Höchstgebot um einen BigBlind, also um 2
-    - mit "check" wird der eigene Einsatz auf das aktuelle Höchstgebot gesetzt
-    - sind alle Spieler, bis auf einer, mit "fold" ausgestiegen, ist das Spiel sofort beendet und
-      der letzte verbleibende Spieler hat gewonnen.
-    - antworten alle Spieler hintereinander nur mit "check" ist die Wettrunde beendet und die nächste beginnt
-    - Antwortet ein Spieler mit "raise" und nach ihm alle anderen mit "check", ist die Wettrunde beendet und
-      die nächste beginnt
-    - antwortet ein Spieler mit "raise" und hat aber schon 3 mal mit "raise" in dieser Wettrunde geantwortet,
-      wird die Antwort als "check" interpretiert
-
-  - Gewinner ermitteln
-      - die Karten aller Spieler werden in allen varianten mit den Tischkarten kombiniert und das beste Blatt
-        jedes Spielers ermittelt. Es werden dazu immer 5 Karten benutzt. Welches Blatt welches Schlägt, findet 
-        ihr hier:
-          https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Wahrscheinlichkeiten
-        oder etwas detaillierter hier:
-          https://de.wikipedia.org/wiki/Hand_%28Poker%29#Kombinationsm.C3.B6glichkeiten_bei_f.C3.BCnf_aus_52_Karten
--->
 <html>
 	<head>
-		<title>Vorlage eines Poker-Bots</title>
 		<meta charset="utf-8" />
-		<script type="text/javascript" src="http://10.1.6.150/casino/XXX/spielstatistik.js"></script>
+		<script type="text/javascript" src="http://127.0.0.1/src/PokerBot/Base.js?867sad"></script>
+		<script type="text/javascript" src="http://127.0.0.1/src/PokerBot/Vorlage.js?kgsad"></script>
 		<script type="text/javascript">
-			var casinoUrl = 'ws:10.1.6.150:8080';
-			var tischName = 'DieErsteHerausforderung-20151215';
+			/* TODO
 			
-			var spielerName = 'DeinName';// bitte anpassen, aber Sonderzeichen besser vermeiden
-			var spielerPasswort = 'DeingeheimesPasswort';// bitte anpassen, aber Sonderzeichen besser vermeiden
+				Spieltisch:
+				- tischName anzeigen
+				- timeouts, sobald der Bot am Start ist: stimmt aber nicht, nur der MyBot hat timeout
+				
+				- bei Gewinnanzeige: spieler_ist_dran ausblenden
+				- Gewinner: opacity durch rgba ersetzen?
+				- Einsatz: 10er (blau) und 100er (rot) + Legende anzeigen, jeder hat eigenen "haufen" 
+				
+				Bot:
+				- Anleitung extrahieren
+			*/
 			
 			
-			Lösch mich, damit ich funktioniere. Aber erst Name und Passwort richtig einsetzen!
-			
-			var ws = new WebSocket(casinoUrl);
-			ws.onopen = function(event) {
-				ws.onmessage = function(event) {
-					if(event.data != 'o') {
-						document.body.innerHTML = 'Betreten fehlgeschlagen';
-						throw new Error('Betreten fehlgeschlagen');
-					}
-					ws.onmessage = function(event) {
-						var frage = JSON.parse(event.data.substr(1, event.data.length));
-						spielstatistik_log(frage);// Dient der Anzeige der Spielergebnisse
-						
-						if(frage.Rundenname == 'showdown') {//preflop, flop, turncard, river, showdown
-							ws.send('r' + 'ok');
-							return;
-						}
-						
-						ws.send('r' + 'fold');//raise, check, fold
-					}
-				};
-				ws.send('p' + tischName + "\n" + spielerName + "\n" + spielerPasswort);
-			};
+			starte_bot({// Hier wird der Bot gestartet und an den Spieltisch gesetzt
+				
+				tisch_name: 'devel',// den TischNamen aus der Spielanzeige hier einkopieren
+				
+				bot_name: 'DeinName',// bitte anpassen, aber Sonderzeichen besser vermeiden
+				
+				bot_passwort: 'DeinGeheimesPasswort',// bitte anpassen, aber Sonderzeichen besser vermeiden
+				
+			});
+			// ENUM(fold, check, raise): Damit beantwortet man die Fragen des Croupiers beim Spielen
+			function beantworte_frage(frage) {
+				return 'fold';
+			}
+			// VOID: nach jedem Spiel bekommt man hier die infos, wer gewonnen hat und wer welche Karten hatte
+			function showdown_info(info) {
+				// wasAuchImmerIhrDamitMacht
+			}
 		</script>
 	</head>
-	<body>Starte...</body>
+	<body>Ich bin ein Poker-Bot</body>
 </html>
