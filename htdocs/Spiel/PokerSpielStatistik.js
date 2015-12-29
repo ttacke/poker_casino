@@ -7,10 +7,12 @@ function PokerSpielStatistik() {
 	this.stack_historie = {};
 	this.timeout_historie = {};
 	this.trendmenge = 1;
+	this.ist_initialisiert = false;
 	this.init = function(trendmenge, $ramen, $template) {
 		this.$ramen = $ramen;
 		this.$template = $template;
 		this.trendmenge = trendmenge;
+		this.ist_initialisiert = true;
 	};
 	// VOID
 	this.logge = function(aufgezeichnetes_spiel) {
@@ -37,6 +39,8 @@ function PokerSpielStatistik() {
 	};
 	// VOID
 	this.zeige = function() {
+		if(!this.ist_initialisiert) return;
+		
 		var statistik = [];
 		for(var name in this.stack_historie) {
 			while(this.stack_historie[name].length > this.trendmenge) {
