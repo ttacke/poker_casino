@@ -352,14 +352,14 @@ p {
 		padding-top: 3.0rem;
 		padding-bottom: 0;
 		text-align: left;
-		height: 6rem;
+		height: 3rem;
 	}
 		#gewinner .einsatz {
 			left: -1.0rem;
-			top: 5.5rem;
+			top: 2.5rem;
 		}
 		#gewinner .einsatz_inner {
-			width: 5rem;
+			width: 2.5rem;
 		}
 .statistik {
 	width: 18rem;
