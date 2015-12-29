@@ -95,6 +95,12 @@ p {
 		padding-bottom: 3rem;
 		padding-top: 3rem;
 	}
+		#tisch .rechts {
+			padding-top: 7.5rem;
+		}
+		#tisch .links {
+			padding-bottom: 7.5rem;
+		}
 #spiel {
 	position: relative;
 }
@@ -118,7 +124,7 @@ p {
 		margin-right: 0.2rem;
 	}
 .spieler {
-	margin-bottom: 2rem;
+	margin-bottom: 6.5rem;
 	position: relative;
 	height: 3rem;
 }
