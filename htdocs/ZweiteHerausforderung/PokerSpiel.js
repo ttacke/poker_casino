@@ -113,6 +113,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			this.maximale_antwortzeit_der_bots, 
 			function(daten) {
 				if(daten.status == 'ok') {
+					$('.tisch_name span').html(self.tisch_name);
 					self.aktueller_status = 'Tisch ist eröffnet';
 					self._zeige_spieltisch();
 					self._starte_mitspieler();
@@ -213,7 +214,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 		}
-		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+		return s4() + s4() + 'X' + s4() + 'X' + s4() + 'X' + s4() + 'X' + s4() + s4() + s4();
 	}
 	// VOID
 	this._befuelle_mitspieler_liste = function() {
