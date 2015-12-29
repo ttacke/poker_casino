@@ -69,7 +69,6 @@ function erzeugeSpieler(name, croupier, spielerAntwortFunktion) {
 	croupier.frageDenSpieler = function(spielerName, nachricht, antwortFunktion) {
 		if(spielerName == name) {
 			setTimeout(function() {
-				//TODO: per Timeout auf externes warten
 				var antwort = spielerAntwortFunktion(nachricht);
 				antwortFunktion({ details: antwort });
 			}, 0);

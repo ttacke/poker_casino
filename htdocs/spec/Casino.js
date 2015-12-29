@@ -20,13 +20,6 @@ var spaeteAntwort = function(welcherSpieler, frage) {
 	}
 };
 
-xit("TODO TimeoutStrafe abtesten", function() {
-});
-xit("TODO Herzschrittmacher abtesten", function() {
-});
-xit("TODO Maxschen Croupier und dummy-Spieler umsetzen: https://www.spielwiki.de/M%C3%A4xchen", function() {
-});
-
 describe("Szenario: das Casino ist geöffnet", function() {
 	beforeEach(function(done) {
 		var verbindung = new WebSocket(wsUrl);

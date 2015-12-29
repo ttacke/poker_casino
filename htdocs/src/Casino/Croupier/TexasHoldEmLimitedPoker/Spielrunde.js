@@ -72,7 +72,6 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 			function(antwort) {
 				var aktion = self._uebersetzeAntwort(spieler, antwort);
 				if(aktion == 'raise') {
-					//TODO
 					var hoechsteinsatz = spielerrunde.gibAktuellenHoechsteinsatz();
 					spielerrunde.erhoeheEinsatzAuf(spieler, hoechsteinsatz + self._gibRaiseEinsatz());
 				}
