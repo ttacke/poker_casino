@@ -39,7 +39,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 				self._spiele_aufzeichnung_ab();
 				self._zeige_statistik();
 			},
-			500
+			1000
 		);
 	};
 	// VOID

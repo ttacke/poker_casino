@@ -24,11 +24,15 @@ function PokerSpielStatistik() {
 				this.stack_historie[daten.frage.Spieler[i].Name] = [];
 			}
 			this.stack_historie[daten.frage.Spieler[i].Name].push(daten.frage.Spieler[i].Stack);
-			
-			if(!this.timeout_historie[daten.frage.Spieler[i].Name]) {
-				this.timeout_historie[daten.frage.Spieler[i].Name] = [];
+		}
+		
+		for(var i = 0; i < aufgezeichnetes_spiel.length; i++) {
+			var daten = aufgezeichnetes_spiel[i];
+			if(!this.timeout_historie[daten.spieler]) {
+				this.timeout_historie[daten.spieler] = [];
 			}
-			this.timeout_historie[daten.frage.Spieler[i].Name].push(daten.antwort.status != 'ok' ? true : false);
+			
+			this.timeout_historie[daten.spieler].push(daten.antwort.status != 'ok' ? true : false);
 		}
 	};
 	// VOID
