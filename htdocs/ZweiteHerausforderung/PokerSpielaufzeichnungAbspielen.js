@@ -20,15 +20,16 @@ function PokerSpielaufzeichnungAbspielen() {
 	this._naechsterZug = function() {
 		var zug = this.spielzuege.shift();
 		
+		for(var name in this.spieler_zuordnung) {
+			if(name == zug.spieler) continue;
+			this.spieler_zuordnung[name].removeClass('ist_an_der_reihe');
+		}
+		
 		if(zug.frage.Rundenname == 'showdown') {
 			this._zeige_gewinner();
 			return;
 		}
 		
-		for(var name in this.spieler_zuordnung) {
-			if(name == zug.spieler) continue;
-			this.spieler_zuordnung[name].removeClass('ist_an_der_reihe');
-		}
 		this._zeige_spielzug(zug);
 	};
 	// VOID
@@ -119,11 +120,26 @@ function PokerSpielaufzeichnungAbspielen() {
 	};
 	// VOID
 	this._fuege_einsatz_in_anzeige_hinzu = function($anzeige, neuer_einsatz) {
-		var $einsatz = $anzeige.find('.einsatz_inner');
-		while($einsatz.children().length < neuer_einsatz) {
+		var $hundert = $anzeige.find('.einsatz_inner .hundert');
+		var $zehn = $anzeige.find('.einsatz_inner .zehn');
+		var $ein = $anzeige.find('.einsatz_inner .ein');
+		
+		var verbleibender_einsatz = this._passe_coins_an($hundert, 100, neuer_einsatz);
+		verbleibender_einsatz = this._passe_coins_an($zehn, 10, verbleibender_einsatz);
+		this._passe_coins_an($ein, 1, verbleibender_einsatz);
+	};
+	// INT
+	this._passe_coins_an = function($slot, teiler, neuer_einsatz) {
+		var anzahl = Math.floor(neuer_einsatz / teiler);
+		while($slot.children().length < anzahl) {
 			var t = '<span class="coin">' + this.$coin_template.html() + '</span>';
-			$einsatz.append(t);
+			$slot.append(t);
 		}
+		while($slot.children().length > anzahl) {
+			$slot.children().last().remove();
+		}
+		var rest = neuer_einsatz - (anzahl * teiler);
+		return rest;
 	};
 	// VOID
 	this._gib_showdown_daten = function(spielzuege) {
@@ -213,7 +229,9 @@ function PokerSpielaufzeichnungAbspielen() {
 		this.$spielerplaetze_rechts.html('');
 		this.$board.html('');
 		this.$gewinneranzeige.find('#spieler').html('');
-		this.$gewinneranzeige.find('.einsatz_inner').html('');
+		this.$gewinneranzeige.find('.einsatz_inner .hundert').html('');
+		this.$gewinneranzeige.find('.einsatz_inner .zehn').html('');
+		this.$gewinneranzeige.find('.einsatz_inner .ein').html('');
 		
 		this._erzeuge_spieler(this.showdown_daten.frage.Spieler);
 		this._zeige_blinds(this.showdown_daten.frage.Spieler);

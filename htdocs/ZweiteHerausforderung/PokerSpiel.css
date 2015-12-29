@@ -220,7 +220,6 @@ p {
 		display: inline-block;
 		width: 1.4rem;
 		height: 1.8rem;
-		background-color: #a2941e;
 		margin-right: -0.9rem;
 		margin-bottom: 0.2rem;
 		border-radius: 0.7rem;
@@ -232,12 +231,45 @@ p {
 			text-align: center;
 			vertical-align: 50%;
 			display: inline-block;
-			height: calc(100% - 0.3rem);
 			width: 100%;
-			padding-top: 0.3rem;
 			border-radius: 0.7rem;
-			background-color: #eef113;
 		}
+			.ein .coin {
+				background-color: #a2941e;
+			}
+				.ein .coin_inner {
+					background-color: #eef113;
+					height: calc(100% - 0.3rem);
+					padding-top: 0.3rem;
+				}
+				.ein .coin_inner:after {
+					font-size: 1rem;
+					content: "1";
+				}
+			.zehn .coin {
+				background-color: #a2941e;
+			}
+				.zehn .coin_inner {
+					background-color: #33F;
+					height: calc(100% - 0.2rem);
+					padding-top: 0.2rem;
+				}
+				.zehn .coin_inner:after {
+					font-size: 0.8rem;
+					content: "10";
+				}
+			.hundert .coin {
+				background-color: #a2941e;
+			}
+				.hundert .coin_inner {
+					background-color: #F00;
+					height: calc(100% - 0.15rem);
+					padding-top: 0.15rem;
+				}
+				.hundert .coin_inner:after {
+					font-size: 0.6rem;
+					content: "100";
+				}
 			.links .coin_inner {
 				margin-left: 20%;
 			}
