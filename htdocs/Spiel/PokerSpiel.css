@@ -53,6 +53,7 @@ p {
 	font-style: italic;
 }
 #start {
+	display: none;
 }
 	ul#bot_liste {
 		list-style-type: none;

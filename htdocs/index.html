@@ -41,14 +41,41 @@
 				],
 				new PokerBotAussteiger()
 			);
-			$(function() {
+			var vorbelegungen = {
+				gegenAlle: {
+					mitspieler: -2,
+				}
+			};
+			// STRING
+			function getUrlParameter(sParam) {
+				var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+					sURLVariables = sPageURL.split('&'),
+					sParameterName,
+					i;
+					
+					for (i = 0; i < sURLVariables.length; i++) {
+						sParameterName = sURLVariables[i].split('=');
+					
+					if (sParameterName[0] === sParam) {
+						return sParameterName[1] === undefined ? true : sParameterName[1];
+					}
+				}
+			}
+			// VOID
+			function einstellungenStarten() {
+				$('#uebersicht').hide();
+				$('#start').show();
 				pokerSpiel.init();
-				//TODO zum entwickeln
-				$('#mitspieler').val(-2);
-				//$('#tisch_name').val('devel');
-				//$('#croupier_user').val('123');
-				//$('#croupier_passwort').val('123');
-				//pokerSpiel.start();
+			};
+			$(function() {
+				var benutzeVorbelegung = getUrlParameter('vorbelegung');
+				if(vorbelegungen[benutzeVorbelegung]) {
+					einstellungenStarten();
+					
+					var e = vorbelegungen[benutzeVorbelegung];
+					if(e.mitspieler) $('#mitspieler').val(e.mitspieler);
+					pokerSpiel.start();
+				}
 			});
 		</script>
 	</head>
@@ -62,6 +89,22 @@
 				</span>
 			</h1>
 			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<form id="uebersicht">
+					<h2>Hi</h2>
+					/* TODO
+						- Bot: '' als "darf Tisch nicht betreten" in JS abfangen
+						- Anleitung extrahieren
+						- 127/localhost -> garagenIP nutzen
+					*/
+					<ul>
+						<li><a href="./index.html?vorbelegung=gegenAlle" target="_blank">Spiel starten</a></li>
+						<li><a href="./bot_vorlage.html" target="_blank">Bot öffnen</a></li>
+					</ul>
+					
+					<button type="button" onclick="einstellungenStarten();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+						<span class="ui-button-text">Einstellungen <span class="ui-icon ui-icon-play"></span></span>
+					</button>
+				</form>
 				<form id="start">
 					<div class="accordeon">
 						<h3>Mitspieler</h3>
