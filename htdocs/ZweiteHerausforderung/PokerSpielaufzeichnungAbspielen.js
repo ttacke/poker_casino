@@ -131,11 +131,11 @@ function PokerSpielaufzeichnungAbspielen() {
 	};
 	// VOID
 	this._erzeuge_spieler = function(spieler) {
-		var sitzen_links = Math.floor(spieler.length / 2) - 1;
+		var sitzen_links = Math.ceil(spieler.length / 2);
 		for(var i = 0; i < spieler.length; i++) {
 			var t = '<div id="spieleranzeige' + i + '" class="spieler">' + this.$spieler_template.html() + '</spieler>';
 			t = t.replace(/\[name\]/, spieler[i].Name);
-			if(i <= sitzen_links) {
+			if(i < sitzen_links) {
 				this.$spielerplaetze_links.append(t);
 			} else {
 				this.$spielerplaetze_rechts.prepend(t);

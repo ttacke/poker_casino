@@ -97,9 +97,10 @@ p {
 	}
 		#tisch .rechts {
 			padding-top: 7.5rem;
+			vertical-align: top;
 		}
 		#tisch .links {
-			padding-bottom: 7.5rem;
+			vertical-align: top;
 		}
 #spiel {
 	position: relative;
