@@ -22,7 +22,7 @@ function CasinoCroupier(name, passwort) {
 	// VOID
 	this.wiederholeLetzteSpielerfrage = function() {
 		if(!this.aktuelleFrage || !this.warteAufAntwort) {
-			throw new Error("Herztot! Die letzte Frage konnte nicht wiederholt werden.");
+			throw "Herztot! Die letzte Frage konnte nicht wiederholt werden.";
 		}
 		this.herzschrittmacherLog();
 		this.warteAufAntwort = false;

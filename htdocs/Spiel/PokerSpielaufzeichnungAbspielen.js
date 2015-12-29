@@ -84,7 +84,7 @@ function PokerSpielaufzeichnungAbspielen() {
 		if(karte.match(/♦/)) return 'karo';
 		if(karte.match(/♣/)) return 'kreuz';
 		if(karte.match(/♠/)) return 'pik';
-		throw new Error('neverReachHere');
+		throw 'neverReachHere';
 	};
 	// VOID
 	this._zeige_antwort = function($anzeige, zug) {

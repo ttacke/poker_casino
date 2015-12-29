@@ -21,6 +21,13 @@ function PokerBotVorlage(name, passwort) {
 }
 // VOID
 function starte_bot(conf) {
+	if(
+		conf.bot_name == 'derNameDeinesBots'
+		|| conf.bot_passwort == 'dasPasswortDeinesBots'
+		|| conf.tisch_name == 'derTischName'
+	) {
+		throw "Bitte TischName, BotName und BotPasswort entsprechend anpassen";
+	}
 	new PokerBotVorlage(conf.bot_name, conf.bot_passwort).starte(
 		'127.0.0.1', '8080', conf.tisch_name
 	);

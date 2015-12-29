@@ -34,7 +34,7 @@ function CasinoSpieler(name, passwort) {
 				if(daten.status == 'frageVonCroupier') {
 					self.derCroupierFragt(daten.details);
 				} else {
-					throw new Error("Unerwartete Antwort erhalten: " + originalDaten);
+					throw "Unerwartete Antwort erhalten: " + originalDaten;
 				}
 			},
 			originalDaten
@@ -42,7 +42,7 @@ function CasinoSpieler(name, passwort) {
 	};
 	// VOID
 	this.derCroupierFragt = function(frage) {
-		throw new Error("Das ist vom Spieler zu implementieren!");
+		throw "Das ist vom Spieler zu implementieren!";
 		this._antworteDemCroupier('antwort');
 	};
 	// VOID

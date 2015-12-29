@@ -160,7 +160,7 @@ function CasinoPokerSpielerrunde(minimaleSpieleranzahl, maximaleSpieleranzahl) {
 				return spieler;
 			}
 		}
-		throw new Error("Alle Spieler sind ausgestiegen");
+		throw "Alle Spieler sind ausgestiegen";
 	};
 	// OBJ
 	this._gibDenSpielerDerAnDerReiheIst = function() {

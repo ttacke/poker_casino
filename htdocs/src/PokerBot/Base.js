@@ -26,7 +26,7 @@ function PokerBotBase() {
 		this.ws.onopen = function(event) {
 			self.ws.onmessage = function(event) {
 				if(event.data != 'o') {
-					throw new Error('Betreten fehlgeschlagen: ' + event.data);
+					throw 'Betreten fehlgeschlagen: ' + event.data;
 				}
 				self.invervallId = setInterval(function() {
 					if(self.zeitpunktLetzteAktion + self.maximaleZeitZwischenDenAktionen < new Date().getTime()) {
@@ -47,6 +47,6 @@ function PokerBotBase() {
 	};
 	// VOID
 	this.reagiere = function(frage) {
-		throw Error('Implementieren');
+		throw 'Implementieren';
 	};
 }

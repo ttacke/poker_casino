@@ -33,7 +33,7 @@ function CasinoBesucher() {
 		try {
 			this.verbindung = new WebSocket(url + '?noCache=' + new Date().getTime());
 		} catch(e) {
-			throw new Error("die Casino-URL entspricht nicht dem Websocket-Protokoll");
+			throw "die Casino-URL entspricht nicht dem Websocket-Protokoll";
 		}
 		var self = this;
 		this.verbindung.onopen = function(event) {
@@ -108,10 +108,10 @@ function CasinoBesucher() {
 	// VOID
 	this._sende = function(daten, empfangsFunktion) {
 		if(!this.istVerbunden) {
-			throw new Error("Du hast das Casino noch nicht betreten");
+			throw "Du hast das Casino noch nicht betreten";
 		}
 		if(this.warteAufAntwort) {
-			throw new Error("Es wartet noch eine Anfrage auf Antwort");
+			throw "Es wartet noch eine Anfrage auf Antwort";
 		}
 		this.empfangsFunktion = empfangsFunktion;
 		this.warteAufAntwort = true;
@@ -127,7 +127,7 @@ function CasinoBesucher() {
 	};
 	// VOID
 	this._unerwarteteAntwort = function(event) {
-		throw new Error("Unerwartete Antwort erhalten: " + event.data);
+		throw "Unerwartete Antwort erhalten: " + event.data;
 	};
 	// VOID
 	this._empfangeRohdaten = function(func, daten) {
@@ -140,7 +140,7 @@ function CasinoBesucher() {
 			'q': 'frageVonCroupier',
 		};
 		if(!uebersetzung[status]) {
-			throw new Error("Ungueltige Antwort: " + daten);
+			throw "Ungueltige Antwort: " + daten;
 		}
 		var antwort = {
 			'status': uebersetzung[status],
