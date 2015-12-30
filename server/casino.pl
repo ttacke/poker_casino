@@ -27,6 +27,7 @@ while(1) {
 			},
 		)->start;
 	};
+	sleep(1);
 	my $error = $@;
 	eval {
 		open(my $fh, '>>', '/tmp/casino_server_error.log');
