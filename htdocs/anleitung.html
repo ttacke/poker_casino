@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Anleitung</title>
+		<meta charset="utf-8" />
+		<style>
+			html {
+				font-size: 1.2rem;
+				line-height: 180%;
+			}
+			dt {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+<h1>Spielanleitung</h1>
+
+<p>Hinweis: beim allerersten Start eures Bots müsst ihr ein paar Sekunden Geduld haben, denn der Croupier
+lässt ganz neue Spieler nur alle 100 Spiele rein.</p>
+
+<h2>Technische Regeln</h2>
+<ul>
+	<li>Ob ihr die Bot-Vorlage nutzt (JavaScript) oder selber was schreibt, ist egal. Es gibt aktuell
+	aber keine Vorlage für andere Sprachen. Der Croupier spricht mit eurem Bot via WebSocket, das ist alles,
+	was man braucht.</li>
+
+	<li>Die Kombination Spielername und Passwort kann frei gewählt werden. Nach dem ersten betreten ist das
+	Password gesetzt und kann nicht mehr geändert werden. Ohne das Passwort kann man also das Casino
+	dann nicht mehr mit diesem Namen betreten.</li>
+
+	<li>Hat die Verbindung geklappt, müsst ihr nur noch auf die Fragen des Croupiers antworten. Valide Antworten sind
+	"fold", "check" und "raise". Alles andere wird als "fold" interpretiert.</li>
+
+	<li>Ihr bekommt 150ms Zeit für eine Antwort (incl. Netzwerk-Roundtrip-Zeit). Schafft ihr das nicht, wird für euch
+	mit "fold" geantwortet.</li>
+
+	<li>Bei 10 Timeouts in Folge werded ihr 3 Sekunden lang immer als "Timeout" gewertet. Warum? Ihr sollt die anderen
+	Spieler nicht ausbremsen. Zeit ist hier wirklich Geld.</li>
+</ul>
+<h2>Bedeutung der Spielanzeige</h2>
+<dl>
+	<dt>Spielstatistik (links)</dt>
+	<dd>
+		<ul>
+			<li><b>Name</b>: der Name des Bots. der Prefix "INT:" steht für Bots, die im Spiel integriert sind.</li>
+			<li><b>Timeout</b>: wie viel Prozent der letzten 100 Anfragen dieses Bots waren zu langsam und wurden
+			deswegen als "fold" gewertet. Stehen hier Werte deutlich größer Null, ist das ein Hinweis auf Netzwerkprobleme</li>
+			<li><b>Trend</b>: der Trend über den Gewinn bzw. Verlust der letzten 3000 Spiele dieses Bots. Nach diesem
+			Wert ist die Spielerliste sortiert. "warten([ZAHL])" bedeutet, dass noch nicht genügend Spiele gespielt worden sind.</li>
+			<li><b>Kurztrend</b>: das gleiche wie Trend, aber nur 150 Spiele werden benutzt. Damit kriegt man ggf. schnell eine
+			Rückmeldung, ob der eigene Bot durch die letzte Änderung eher besser oder schlechter wurde.</li>
+		</ul>
+	</dd>
+	<dt>Spielansicht (mitte)</dt>
+	<dd>
+		Es wird wahllos ein Spiel aufgezeichnet und dann hier (sehr) langsam abgespielt damit man sehen kann, was die Bots
+		da eigentlich so treiben. Durch das "wahllos" ergibt sich,
+		das beim Abspielen mehrerer Spiele der Startgeber nicht reihum weitergewechselt wird.
+	</dd>
+	<dt>Steuerung (rechts)<dt>
+	<dd>
+		Mit +/- kann die größe der Spielanzeige eingestellt werden.
+		<br/>Mit &lt;&lt; bzw &gt;&gt; kann die Geschwindigkeit,
+		mit der die aufgezeichneten Spiele abgespielt werden, verändert werden.
+	</dd>
+</dl>
+
+<h2>Spielregeln dieses Poker-Spieles</h2>
+<ul>
+	<li>Grob ist es <a href="https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Limits" target="blank">Texas Hold´em Poker mit Fixed Limit (LHE)</a></li>
+
+	<li>Der BigBlind ist 2, der Small Blind 1</li>
+
+	<li>Euer Stack (= euer Konto) taucht zwar in euren Daten auf, spielt aber beim Spielen keine Rolle.
+	Aus ihm wird lediglich der relevante Trend ermittelt. Es gibt also kein All-In, keinen Side-Pot und auch nicht die
+	Möglichkeit, wegen des Geldes aus dem Spiel zu fliegen. Technisch ist es so:
+	Er beginnt bei 0 und kann "belebig" ins positive oder negative gehen
+	(mindestens +/-2.147.483.647, aber heutzutage, mit 64bit, sind es +/-9.223.372.036.854.775.807)</li>
+
+	<li>Euch werden 5 Wettrunden gespielt: reflop, flop, turncard, river, showdown
+	In welcher Wettrunden ihr euch befindet, wird in der Frage des Croupiers in "Rundenname" genannt.
+		<dl>
+			<dt>preflop</dt>
+			<dd>
+				<ul>
+					<li>der Gebertoken (= "erster Spieler" der Runde wird im Uhrzeigersinn auf den nächsten Spieler gesetzt</li>
+	
+					<li>vom ersten Spieler wird der SmallBlind abgezogen und in den Pot geworfen
+					(das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)</li>
+	
+					<li>vom zweiten Spieler wird der BigBlind abgezogen und in den Pot geworfen
+					(das zählt nicht als Gebot, der Spieler wird auch nicht gefragt)</li>
+					
+					<li>eine normale Wettrunde beginnt (siehe: Wettrundenregeln)
+					jedem Spieler werden bei jeder Frage seine 2 Handkarten gezeigt</li>
+			</dd>
+			<dt>flop</dt>
+			<dd>
+				<ul>
+					<li>eine weitere, normale Wettrunde wird beim ersten Spieler begonnen</li>
+					
+					<li>jedem Spieler werden bei jeder Frage seine 2 Handkarten und 3 Tischkarten gezeigt</li>
+				</ul>
+			</dd>
+			<dt>turncard</dt>
+			<dd>
+				<ul>
+					<li>eine weitere, normale Wettrunde wird beim ersten Spieler begonnen</li>
+					
+					<li>jedem Spieler werden bei jeder Frage seine 2 Handkarten und 4 Tischkarten gezeigt</li>
+				</ul>
+			</dd>
+			<dt>river</dt>
+			<dd>
+				<ul>
+					<li>eine weitere, normale Wettrunde wird beim ersten Spieler begonnen</li>
+					<li>jedem Spieler werden bei jeder Frage seine 2 Handkarten und 5 Tischkarten gezeigt</li>
+				</ul>
+			</dd>
+			<dt>showdown (ist keine Wettrunde; in der Bot-Vorlage wird hier nur die Funktion "showdown_info" benutzt)</dt>
+			<dd>
+				<ul>
+					<li>der Croupier ermittelt aus den Karten aller Spielern den Gewinner und gibt jedem Spieler das
+					Ergebnis bekannt (siehe: Gewinner ermitteln)</li>
+					
+					<li>der Pot wird an den/die Gewinner ausgeschüttet</li>
+					
+					<li>ein neues Spiel beginnt mit preflop</li>
+				</ul>
+			</dd>
+		</dl>
+	</li>
+	<li><b>Wettrundenregeln</b>
+		<ul>
+			<li>mit "fold" steigt man aus dem Spiel aus und ist erst beim nächsten Spiel wieder dabei</li>
+			
+			<li>mit "raise" erhöht man das aktuelle Höchstgebot um einen BigBlind, also um 2</li>
+			
+			<li>mit "check" wird der eigene Einsatz auf das aktuelle Höchstgebot gesetzt</li>
+			
+			<li>sind alle Spieler, bis auf einer, mit "fold" ausgestiegen, ist das Spiel sofort beendet und
+			der letzte verbleibende Spieler hat gewonnen.</li>
+			
+			<li>antworten alle Spieler hintereinander nur mit "check" ist die Wettrunde beendet und die nächste beginnt</li>
+			
+			<li>Antwortet ein Spieler mit "raise" und nach ihm alle anderen mit "check", ist die Wettrunde beendet und
+			die nächste beginnt</li>
+			
+			<li>antwortet ein Spieler mit "raise" und hat aber schon 3 mal mit "raise" in dieser Wettrunde geantwortet,
+			wird die Antwort als "check" interpretiert</li>
+		</ul>
+	</li>
+	<li><b>Gewinner ermitteln</b>
+		<p>
+		die Karten aller Spieler werden in allen varianten mit den Tischkarten kombiniert und das beste Blatt
+		jedes Spielers ermittelt. Es werden dazu immer 5 Karten benutzt. Welches Blatt welches schlägt, findet 
+		ihr <a href="https://de.wikipedia.org/wiki/Texas_Hold%E2%80%99em#Wahrscheinlichkeiten" target="_blank">hier</a>
+		oder 
+		<a href="https://de.wikipedia.org/wiki/Hand_%28Poker%29#Kombinationsm.C3.B6glichkeiten_bei_f.C3.BCnf_aus_52_Karten" target="_blank">etwas detaillierter hier</a>
+		.
+	</li>
+</ul>
+	</body>
+</html>

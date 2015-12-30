@@ -52,6 +52,20 @@ p {
 	color: #CCC;
 	font-style: italic;
 }
+#uebersicht {
+	color: #AAA;
+}
+#uebersicht h3 {
+	color: #CCC;
+	text-decoration: underline;
+}
+#uebersicht a {
+	color: yellow;
+}
+#uebersicht li {
+	font-size: 1.4rem;
+	line-height: 2.8rem;
+}
 #start {
 	display: none;
 }

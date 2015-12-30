@@ -85,24 +85,59 @@
 				<span class="ui-tabs-anchor">
 					//SEIBERT/MEDIA Casino:
 					<span id="titel">Texas Hold´em Poker mit Fixed Limit (LHE) für 3-23 Spieler</span>
-					<span id="status">Lade</span>
+					<span id="status">Warte</span>
 				</span>
 			</h1>
 			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 				<form id="uebersicht">
-					<h2>Hi</h2>
-					/* TODO
-						- Bot: '' als "darf Tisch nicht betreten" in JS abfangen
-						- Anleitung extrahieren
-						- 127/localhost -> garagenIP nutzen
-					*/
-					<ul>
-						<li><a href="./index.html?vorbelegung=gegenAlle" target="_blank">Spiel starten</a></li>
-						<li><a href="./bot_vorlage.html" target="_blank">Bot öffnen</a></li>
-					</ul>
+					<h2>Für Teilnehmer des Poker-Turniers</h2>
+					<h3>Teilnehmen geht so:</h3>
+					<ol>
+						<li>
+							Das Spiel starten und das Browser-Fenster offen lassen:
+							<a href="./index.html?vorbelegung=gegenAlle" target="_blank">Spiel in neuem Tab starten</a>
+							<ul>
+								<li>Unter dem angezeigten Spieltisch wird der "tisch_name" angezeigt. Diesen Buchstaben-Zahlen-Kolonne kopieren. Das braucht ihr gleich.</li>
+							</ul>
+						</li>
+						<li>
+							Diese Vorlagen-Datei herunterladen, lokal irgendwo speichern und mit einem (Text-)Editor öffnen:
+							<a href="./bot_vorlage.html" target="_blank">Bot-Vorlage in neuem Tab öffnen</a>
+							<ul>
+								<li>Den gerade kopierten "tisch_name" an der Stelle "derTischName" einfügen.</li>
+								<li>Einen "bot_name" ausdenken und eintragen.</li>
+								<li>Ein "bot_passwort" ausdenken und eintragen.</li>
+								<li>Hinweis: wenn ihr "bot_name" und/oder "bot_passwort" später nochmal ändern wollt,
+								bitte mit dieser Anleitung wieder ganz von vorne anfangen.</li>
+							</ul>
+						</li>
+						<li>Die Bot-Datei speichern und in einem Browser öffnen und geöffnet lassen</li>
+					</ol>
+					<h3>Und Gewinnen geht so:</h3>
+					<ol>
+						<li>
+							Den Code des Bots so verändern, dass er in der Spiel-Ansicht bei "Trend" (links in der Spielerstatistik)
+							mehr hat als alle anderen Bots.
+							<ul>
+								<li>Ihr spielt gegen alle bisher erstellten Bots.</li>
+								<li>Es könnte Hilfreich sein, die <a href="./anleitung.html" target="_blank">Anleitung zum Spiel</a>
+								zu lesen</li>
+								<li>Hinweis: "warten([ZAHL])" in dieser Anzeige bedeutet, dass noch nicht genügend
+								Spiele gespielt wurden, um einen Trend zu berechnen</li>
+							</ul>
+						</li>
+						<li>
+							Einen Screenshot davon machen und im Microblog posten.
+						</li>
+					</ol>
 					
+					<hr/>
+					<h2>Für die, die etwas anderes mit diesem Spiel tun wollen</h2>
+					<p>
+						Falls ihr etwas anderes tun wollt, als an diesem Turnier teilzunehmen, könnt ihr hier das Spiel selber konfigurieren.
+					</p>
 					<button type="button" onclick="einstellungenStarten();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-						<span class="ui-button-text">Einstellungen <span class="ui-icon ui-icon-play"></span></span>
+						<span class="ui-button-text">Spiel selber Konfigurieren <span class="ui-icon ui-icon-play"></span></span>
 					</button>
 				</form>
 				<form id="start">

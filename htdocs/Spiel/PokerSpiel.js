@@ -271,7 +271,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	};
 	// VOID
 	this._befuelle_casinoeinstellungen= function() {
-		$('#casino_domain').val('127.0.0.1');
+		$('#casino_domain').val('10.1.6.150');
 		$('#casino_port').val('8080');
 	};
 	// VOID
