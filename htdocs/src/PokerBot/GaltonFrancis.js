@@ -3,7 +3,7 @@
 // CLASS DEFINITION
 GaltonFrancis.prototype = new PokerBotBase();
 function GaltonFrancis() {
-	this.name = 'GaltonFrancis';
+	this.name = 'GaltonFrancis';// von mbykowski aus #1, hieß dort mbykowski
 	this.passwort = 'b3bea06b-c3fc-44e0-9e67-e9fe74d59a11';
 	this.beschreibung = 'Betreibt Zwillingsforschung';
 	

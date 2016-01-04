@@ -3,7 +3,7 @@
 // CLASS DEFINITION
 PokerBotNarziss.prototype = new PokerBotBase();
 function PokerBotNarziss() {
-	this.name = 'Narziss';
+	this.name = 'Narziss';// Vorgabe aus #1, hieß dort minimeee
 	this.passwort = 'de722016-582c-4393-9ad9-791138430f76';
 	this.beschreibung = 'Schaut nur auf sich';
 	

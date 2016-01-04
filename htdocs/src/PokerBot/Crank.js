@@ -3,7 +3,7 @@
 // CLASS DEFINITION
 Crank.prototype = new PokerBotBase();
 function Crank() {
-	this.name = 'Crank';
+	this.name = 'Crank';// von mbykowski aus #2
 	this.passwort = '3e00b261-72fd-4be7-9270-6bab6b741873';
 	this.beschreibung = 'Bewertet die Karten';
 
@@ -46,8 +46,8 @@ function Crank() {
 
 	function check_for_doubles(all_cards) {
 		var points = 0;
-		for (i = 0; i < all_cards.length; i++) {
-			for (j = i + 1; j < all_cards.length; j++) {
+		for (var i = 0; i < all_cards.length; i++) {
+			for (var j = i + 1; j < all_cards.length; j++) {
 				if (
 					get_value_of_card(all_cards[i]) ==
 					get_value_of_card(all_cards[j])
@@ -61,7 +61,7 @@ function Crank() {
 
 	function check_for_high_cards(all_cards) {
 		var points = 0;
-		for (i = 0; i < all_cards.length; i++) {
+		for (var i = 0; i < all_cards.length; i++) {
 			for (var high_card in high_cards) {
 				if (
 					get_value_of_card(all_cards[i]) ==
@@ -75,7 +75,7 @@ function Crank() {
 	}
 
 	function get_all_cards(Tisch, Hand) {
-		all_cards = [];
+		var all_cards = [];
 		Hand.forEach(function(value) {
 			all_cards.push(value);
 		});
