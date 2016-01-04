@@ -8,11 +8,27 @@ function PokerSpielStatistik() {
 	this.timeout_historie = {};
 	this.trendmenge = 1;
 	this.ist_initialisiert = false;
+	
+	// VOID
 	this.init = function(trendmenge, $ramen, $template) {
+		if(this.ist_initialisiert) {
+			this.stack_historie = this._setze_endpunkt_auf_nulllinie(this.stack_historie);
+		}
+		
 		this.$ramen = $ramen;
 		this.$template = $template;
 		this.trendmenge = trendmenge;
 		this.ist_initialisiert = true;
+	};
+	// VOID
+	this._setze_endpunkt_auf_nulllinie = function(liste) {
+		for(var name in liste) {
+			var letzter_wert = liste[name][liste[name].length - 1];
+			for(var i = 0; i < liste[name].length; i++) {
+				liste[name][i] -= letzter_wert;
+			}
+		}
+		return liste;
 	};
 	// VOID
 	this.logge = function(aufgezeichnetes_spiel) {
@@ -46,8 +62,11 @@ function PokerSpielStatistik() {
 			while(this.stack_historie[name].length > this.trendmenge) {
 				this.stack_historie[name].shift();
 			}
+			
+			var hat_neue_daten = false;
 			while(this.timeout_historie[name].length > 100) {
 				this.timeout_historie[name].shift();
+				hat_neue_daten = true;
 			}
 			
 			var timeouts = 0;
@@ -63,9 +82,9 @@ function PokerSpielStatistik() {
 			
 			statistik.push({
 				name: name,
-				trend: trend,
-				kurz: kurz_trend,
-				timeouts: timeouts,
+				trend: (hat_neue_daten ? trend : '-'),
+				kurz: (hat_neue_daten ? kurz_trend : '-'),
+				timeouts: (hat_neue_daten ? timeouts : 100),
 			});
 		}
 		statistik.sort(function(a, b){ return b.trend - a.trend });

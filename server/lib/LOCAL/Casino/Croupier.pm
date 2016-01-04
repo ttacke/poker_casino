@@ -15,7 +15,6 @@ sub _erhoeheTimeoutzaehler {
 			return;
 		}
 	}
-	warn "Kann Timeoutzaehler nicht finden $spielerName";
 	return;
 }
 # VOID

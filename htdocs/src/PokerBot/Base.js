@@ -46,6 +46,11 @@ function PokerBotBase() {
 		};
 	};
 	// VOID
+	this.stoppe = function() {
+		clearInterval(this.invervallId);
+		if(this.ws) this.ws.close();
+	};
+	// VOID
 	this.reagiere = function(frage) {
 		throw 'Implementieren';
 	};

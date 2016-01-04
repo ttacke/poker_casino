@@ -22,6 +22,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	this.abspielvorgang_laeuft = false;
 	this.statistik = new PokerSpielStatistik();
 	this.abspieler = new PokerSpielaufzeichnungAbspielen();
+	this.intervallId = null;
 	
 	// VOID
 	this.init = function() {
@@ -32,8 +33,11 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		this._befuelle_casinoeinstellungen();
 		this._aktiviere_ui_elemente();
 		this.aktueller_status = 'Warte auf Start';
+	};
+	// VOID
+	this._starteAnzeigeintervalle = function() {
 		var self = this;
-		setInterval(
+		this.intervallId = setInterval(
 			function() {
 				self._zeige_status();
 				self._spiele_aufzeichnung_ab();
@@ -90,6 +94,13 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			this.croupier_user, this.croupier_passwort
 		);
 		var self = this;
+		this.croupier.verbindungsfehlerFunktion = function() {
+			self._neustart();
+		};
+		
+		this._starteAnzeigeintervalle();
+		
+		var self = this;
 		this.aktueller_status = 'Starte';
 		this.croupier.betrete(
 			'ws:' + this.casino_domain + ':' + this.casino_port,
@@ -99,9 +110,29 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			},
 			function() {
 				self.aktueller_status = 'Verbindung zum Casino fehlgeschlagen';
-				setTimeout(function() { self.start() }, 2000);
+				setTimeout(function() { self._neustart() }, 2000);
 			}
 		);
+	};
+	// VOID
+	this._neustart = function() {
+		clearInterval(this.intervallId);
+		
+		this.aktueller_status = 'Verbindung unterbrochen, neuer Versuch...';
+		this._zeige_status();
+		
+		console.log('Spiel wird wegen eines Casino-Server-Neustarts auch neu gestartet');
+		
+		for(var i = 0; i < this.interne_bots.length; i++) {
+			this.interne_bots[i].stoppe();
+		}
+		this.sparring_partner.stoppe();
+		
+		var self = this;
+		setTimeout(function() {
+			console.log('Neustart erfolgt...');
+			self.start();
+		}, 3 * 1000);
 	};
 	// VOID
 	this._eroeffneTisch = function() {
@@ -125,7 +156,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 					);
 				} else {
 					self.aktueller_status = 'Konnte Tisch nicht eröffnen';
-					setTimeout(function() { self.start() }, 2000);
+					setTimeout(function() { self._neustart() }, 2000);
 				}
 			}
 		);

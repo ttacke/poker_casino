@@ -7,6 +7,7 @@ function CasinoBesucher() {
 	this.warteAufAntwort = false;
 	this.istAnTisch = null;
 	this.empfangsFunktion = function() {};
+	this.verbindungsfehlerFunktion = null;
 	
 	// VOID
 	this.DESTROY = function(func) {
@@ -108,7 +109,8 @@ function CasinoBesucher() {
 	// VOID
 	this._sende = function(daten, empfangsFunktion) {
 		if(!this.istVerbunden) {
-			throw "Du hast das Casino noch nicht betreten";
+			this._verbindungsfehlerAufgetreten();
+			return;
 		}
 		if(this.warteAufAntwort) {
 			throw "Es wartet noch eine Anfrage auf Antwort";
@@ -116,6 +118,14 @@ function CasinoBesucher() {
 		this.empfangsFunktion = empfangsFunktion;
 		this.warteAufAntwort = true;
 		this._sendeRohdaten(daten);
+	};
+	// VOID
+	this._verbindungsfehlerAufgetreten = function() {
+		if(this.verbindungsfehlerFunktion) {
+			this.verbindungsfehlerFunktion();
+		} else {
+			throw "Du hast das Casino noch nicht betreten";
+		}
 	};
 	// VOID
 	this._verarbeiteAntwort = function(event) {
