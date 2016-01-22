@@ -157,7 +157,7 @@ sub _timeoutStrafzeitNeuStarten {
 sub _timeoutstrafzeitLaeuftNoch {
 	my ($class, $spieler) = @_;
 	
-	return 1 if(Time::HiRes::time() - $spieler->{'timeoutDaten'}->{'strafzeitStart'} < 3.0);
+	return 1 if(Time::HiRes::time() - $spieler->{'timeoutDaten'}->{'strafzeitStart'} < 10.0);
 	
 	return 0;
 }

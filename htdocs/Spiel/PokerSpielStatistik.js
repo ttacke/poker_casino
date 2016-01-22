@@ -8,6 +8,7 @@ function PokerSpielStatistik() {
 	this.timeout_historie = {};
 	this.trendmenge = 1;
 	this.ist_initialisiert = false;
+	this.statistik_bereits_gezeigt = false;
 	
 	// VOID
 	this.init = function(trendmenge, $ramen, $template) {
@@ -56,8 +57,10 @@ function PokerSpielStatistik() {
 	// VOID
 	this.zeige = function() {
 		if(!this.ist_initialisiert) return;
+		console.log(1);
 		
 		var statistik = [];
+		var neue_daten_vorhanden = false;
 		for(var name in this.stack_historie) {
 			while(this.stack_historie[name].length > this.trendmenge) {
 				this.stack_historie[name].shift();
@@ -86,8 +89,13 @@ function PokerSpielStatistik() {
 				kurz: (hat_neue_daten ? kurz_trend : '-'),
 				timeouts: (hat_neue_daten ? timeouts : 100),
 			});
+			if(hat_neue_daten) neue_daten_vorhanden = true;
 		}
 		statistik.sort(function(a, b){ return b.trend - a.trend });
+		
+		if(this.statistik_bereits_gezeigt && !neue_daten_vorhanden) {
+			return;
+		}
 		
 		var template_liste = [];
 		for(var i = 0; i < statistik.length; i++) {
@@ -99,6 +107,7 @@ function PokerSpielStatistik() {
 			template_liste.push(t);
 		}
 		this.$ramen.html(template_liste.join(''));
+		this.statistik_bereits_gezeigt = true;
 	};
 	// STRING
 	this._gib_trend = function(stackliste, benutzte_anzahl) {
