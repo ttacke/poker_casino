@@ -57,7 +57,6 @@ function PokerSpielStatistik() {
 	// VOID
 	this.zeige = function() {
 		if(!this.ist_initialisiert) return;
-		console.log(1);
 		
 		var statistik = [];
 		var neue_daten_vorhanden = false;
