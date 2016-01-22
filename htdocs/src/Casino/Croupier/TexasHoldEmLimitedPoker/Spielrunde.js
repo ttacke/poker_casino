@@ -116,8 +116,8 @@ function CasinoCroupierTexasHoldEmLimitedPokerSpielrunde(croupier, smallBlind) {
 	};
 	// STRING
 	this._uebersetzeAntwort = function(spieler, antwort) {
-		if(antwort.details != 'check' && antwort.details != 'raise') {
-			return 'fold';
+		if(antwort.details != 'fold' && antwort.details != 'check' && antwort.details != 'raise') {
+			antwort.details = 'raise';
 		}
 		if(antwort.details == 'raise') {
 			spieler.fuegeRaiseHinzu();

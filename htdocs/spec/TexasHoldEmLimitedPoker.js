@@ -111,6 +111,34 @@ describe("Szenario: das Casino ist geöffnet", function() {
 					]);
 				});
 			});
+			describe("und spiele eine komplettes Spiel mit den 3 Spielern A, B und C die immer inkorrekte Antworten geben", function() {
+				beforeEach(function(done) {
+					erzeugeAntwortendenSpieler('A', []);
+					erzeugeAntwortendenSpieler('B', []);
+					erzeugeAntwortendenSpieler('C', []);
+					ich.nimmMitspielerAuf(
+						function() {
+							ich._bereiteNeuesSpielVor();
+							ich._spieleAlleWettrunden(ich._erstelleKartenstapel(), function() {
+								done();
+							});
+						}
+					);
+				});
+				it("dann sind alle Antworten in 'raise' übersetzt worden", function() {
+					waechter.holeDieNachstenXAnfragen(4);
+					var letzteFrage = waechter.gibLetzteSpielerFrage();
+					expect(letzteFrage.Spieler[0]).toEqual(
+						{ Name: 'A', letzteAktion: 'raise', Stack: '-6', Einsatz: '6' }
+					);
+					expect(letzteFrage.Spieler[1]).toEqual(
+						{ Name: 'B', letzteAktion: 'raise', Stack: '-8', Einsatz: '8' }
+					);
+					expect(letzteFrage.Spieler[2]).toEqual(
+						{ Name: 'C', letzteAktion: 'raise', Stack: '-4', Einsatz: '4' }
+					);
+				});
+			});
 			describe("und spiele nur die PreFlop-Wettrunde mit den 3 Spielern A, B und C die immer nur checken", function() {
 				beforeEach(function(done) {
 					erzeugeAntwortendenSpieler('A', ['check', 'check']);
@@ -162,9 +190,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 			describe("und raise in der Flop-Wettrunde", function() {
 				beforeEach(function(done) {
-					erzeugeAntwortendenSpieler('A', ['check']);
-					erzeugeAntwortendenSpieler('B', ['check']);
-					erzeugeAntwortendenSpieler('C', ['raise']);
+					erzeugeAntwortendenSpieler('A', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('B', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('C', ['raise', 'fold']);
 					
 					derAktuellePotIst(ich, 0);
 					
@@ -186,9 +214,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 			describe("und raise in der TurnCard-Wettrunde", function() {
 				beforeEach(function(done) {
-					erzeugeAntwortendenSpieler('A', ['check']);
-					erzeugeAntwortendenSpieler('B', ['check']);
-					erzeugeAntwortendenSpieler('C', ['raise']);
+					erzeugeAntwortendenSpieler('A', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('B', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('C', ['raise', 'fold']);
 					
 					derAktuellePotIst(ich, 0);
 					
@@ -210,9 +238,9 @@ describe("Szenario: das Casino ist geöffnet", function() {
 			});
 			describe("und raise in der RiverCard-Wettrunde", function() {
 				beforeEach(function(done) {
-					erzeugeAntwortendenSpieler('A', ['check']);
-					erzeugeAntwortendenSpieler('B', ['check']);
-					erzeugeAntwortendenSpieler('C', ['raise']);
+					erzeugeAntwortendenSpieler('A', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('B', ['check', 'fold']);
+					erzeugeAntwortendenSpieler('C', ['raise', 'fold']);
 					
 					derAktuellePotIst(ich, 0);
 					

@@ -95,6 +95,10 @@ function spielerKommunikationsWaechter() {
 		this.spieler_liste.push(spieler);
 		this.fragen_liste.push(frage);
 	};
+	// OBJ
+	this.gibLetzteSpielerFrage = function(key, val) {
+		return this.naechste_3_fragen[this.naechste_3_fragen.length - 1];
+	};
 	// VOID
 	this.aktuelleSpielerFragenEnthalten = function(key, val) {
 		for(var i = 0; i < 3; i++) {

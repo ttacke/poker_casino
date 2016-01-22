@@ -30,10 +30,10 @@ lässt ganz neue Spieler nur alle 100 Spiele rein.</p>
 	dann nicht mehr mit diesem Namen betreten.</li>
 
 	<li>Hat die Verbindung geklappt, müsst ihr nur noch auf die Fragen des Croupiers antworten. Valide Antworten sind
-	"fold", "check" und "raise". Alles andere wird als "fold" interpretiert.</li>
+	"fold", "check" und "raise". Alles andere wird als "raise" interpretiert, das schadet am meisten.</li>
 
 	<li>Ihr bekommt 150ms Zeit für eine Antwort (incl. Netzwerk-Roundtrip-Zeit). Schafft ihr das nicht, wird für euch
-	mit "fold" geantwortet.</li>
+	mit "raise" geantwortet.</li>
 
 	<li>Bei 10 Timeouts in Folge werded ihr 3 Sekunden lang immer als "Timeout" gewertet. Warum? Ihr sollt die anderen
 	Spieler nicht ausbremsen. Zeit ist hier wirklich Geld.</li>
@@ -45,7 +45,7 @@ lässt ganz neue Spieler nur alle 100 Spiele rein.</p>
 		<ul>
 			<li><b>Name</b>: der Name des Bots. der Prefix "INT:" steht für Bots, die im Spiel integriert sind.</li>
 			<li><b>Timeout</b>: wie viel Prozent der letzten 100 Anfragen dieses Bots waren zu langsam und wurden
-			deswegen als "fold" gewertet. Stehen hier Werte deutlich größer Null, ist das ein Hinweis auf Netzwerkprobleme</li>
+			deswegen als "raise" gewertet. Stehen hier Werte deutlich größer Null, ist das ein Hinweis auf Netzwerkprobleme oder zu langsame Bots</li>
 			<li><b>Trend</b>: der Trend über den Gewinn bzw. Verlust der letzten 3000 Spiele dieses Bots. Nach diesem
 			Wert ist die Spielerliste sortiert. "warten([ZAHL])" bedeutet, dass noch nicht genügend Spiele gespielt worden sind.</li>
 			<li><b>Kurztrend</b>: das gleiche wie Trend, aber nur 150 Spiele werden benutzt. Damit kriegt man ggf. schnell eine
