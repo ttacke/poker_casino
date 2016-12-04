@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib './lib';
 
 use Data::Dumper;
 use LOCAL::Gewinnermittlung();
@@ -83,6 +84,7 @@ sub generateCombinationSpec {
 }
 
 test("HighCard A♦ 10♦ 9♠ 5♣ 4♣", 'schlaegt', "HighCard K♣ Q♦ J♣ 8♥ 7♥");
+__END__
 test("HighCard A♦ 10♦ 9♠ 5♣ 4♣", 'schlaegt', "HighCard A♣ 9♦ 8♥ 5♠ 4♠");
 test("HighCard Q♣ J♣ 5♦", 'unterliegt', "HighCard K♦ 10♦ 5♣");
 test("EinPaar 9♥ 9♣ 2♥ Q♦ 10♦", 'schlaegt', "HighCard A♦ Q♦ 9♠ 10♣ 4♣");
