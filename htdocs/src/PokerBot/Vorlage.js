@@ -29,6 +29,6 @@ function starte_bot(conf) {
 		throw "Bitte TischName, BotName und BotPasswort entsprechend anpassen";
 	}
 	new PokerBotVorlage(conf.bot_name, conf.bot_passwort).starte(
-		'10.1.6.150', '8080', conf.tisch_name
+		'10.7.0.34', '8080', conf.tisch_name
 	);
 }

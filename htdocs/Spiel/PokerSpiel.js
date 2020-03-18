@@ -141,7 +141,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 		this.croupier.eroeffneTisch(
 			this.tisch_name,
 			'TexasHoldEmFixedLimit-Poker',
-			this.maximale_antwortzeit_der_bots, 
+			this.maximale_antwortzeit_der_bots,
 			function(daten) {
 				if(daten.status == 'ok') {
 					$('.tisch_name span').html(self.tisch_name);
@@ -258,7 +258,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 			mitspieler_content = mitspieler_content.replace(/\[value\]/, i);
 			mitspieler_content = mitspieler_content.replace(
 				/\[text\]/,
-				this.interne_bots[i].name + ' + ' + this.sparring_partner.name + '' 
+				this.interne_bots[i].name + ' + ' + this.sparring_partner.name + ''
 			);
 			$mitspieler.append(mitspieler_content);
 		}
@@ -302,7 +302,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	};
 	// VOID
 	this._befuelle_casinoeinstellungen= function() {
-		$('#casino_domain').val('10.1.6.150');
+		$('#casino_domain').val('10.7.0.34');
 		$('#casino_port').val('8080');
 	};
 	// VOID
