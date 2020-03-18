@@ -79,7 +79,7 @@
   (println "replstart")
   (future
     (play
-      "ws://10.7.0.34:8080"
+      "ws://poker.wunschpuns.ch:8080"
       "f546402fX020dXd55fXbb75Xda327935a146"
       "Ben"
       "TR8T0R")

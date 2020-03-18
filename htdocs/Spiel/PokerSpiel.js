@@ -302,7 +302,7 @@ function PokerSpiel(interne_bots, sparring_partner) {
 	};
 	// VOID
 	this._befuelle_casinoeinstellungen= function() {
-		$('#casino_domain').val('10.7.0.34');
+		$('#casino_domain').val('poker.wunschpuns.ch');
 		$('#casino_port').val('8080');
 	};
 	// VOID
