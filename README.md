@@ -22,3 +22,11 @@ sudo mv server /var/www/poker_server
 ## Server online starten
 cd /var/www/poker_server
 perl casino.pl 10.7.0.34 8080 &
+
+
+
+
+# Aktuelles Problem
+
+Ein neuer Bot wird nicht direkt ins Spiel aufgenommen. Wieso? Erst, wenn der Server neu startete ging das.
+Ansonsten kriegt er zwar ein "o" als Loginantwort, aber wird nicht bei den Antworten beachtet
